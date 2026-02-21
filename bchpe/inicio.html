@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Banca Móvil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="mobile-wrapper">
+        <div class="mobile-container">
+            
+            <header class="top-header">
+                <div class="header-row">
+                    <div class="logo-container">
+                        <img src="img/Logo-Bcp.svg" alt="BCP" class="logo-img">
+                    </div>
+                    
+                    <div class="bell-icon">
+                        <img src="img/campana-icon.svg" alt="Notificaciones">
+                    </div>
+                </div>
+                <h1 class="greeting">Hola, Maikol Esleiter</h1>
+            </header>
+
+            <main class="main-card">
+                
+                <section class="products-section">
+                    <div class="section-title">
+                        <h2>Mis productos</h2>
+                        <div class="actions">
+                            <img src="img/ojo-abierto-g-icon.svg" alt="Ver Saldo" class="action-icon" id="eye-icon" onclick="toggleBalance()">
+                            <img src="img/lapiz-in.svg" alt="Editar" class="action-icon">
+                        </div>
+                    </div>
+
+                    <div class="card-product">
+                        <div class="product-icon-col">
+                            <img src="img/lg_favicon_light.svg" alt="Cuenta" class="account-img-icon"> 
+                        </div>
+                        <div class="product-info-col">
+                            <p class="product-label">CUENTAS DE AHORRO</p>
+                            <p class="product-number">7809</p>
+                        </div>
+                        <div class="product-balance-col">
+                            <p class="balance" id="balance-text">S/ *****</p>
+                        </div>
+                        <div class="product-arrow-col">›</div>
+                    </div>
+
+                    <div class="ver-todos">
+                        <a href="#">Ver todos</a>
+                    </div>
+                </section>
+
+                <section class="operations-grid">
+                    <a href="yapearcel.html" class="op-item" style="text-decoration: none; color: inherit;">
+                        <div class="icon-circle">
+                            <img src="img/yapear-a-celular.svg" alt="" class="op-img">
+                        </div>
+                        <p>Yapear a<br>celular</p>
+                    </a>
+
+                    <div class="op-item">
+                        <div class="icon-circle">
+                            <img src="img/qricono.svg" alt="" class="op-img">
+                        </div>
+                        <p>Pagar con<br>QR</p>
+                    </div>
+
+                    <a href="servicio.html" class="op-item" style="text-decoration: none; color: inherit;">
+                        <div class="icon-circle">
+                            <img src="img/pagar-servicios.svg" alt="" class="op-img">
+                        </div>
+                        <p>Pagar<br>servicios</p>
+                    </a>
+
+                    <a href="trans.html" class="op-item" style="text-decoration: none; color: inherit;">
+                        <div class="icon-circle">
+                            <img src="img/transf-dinero.svg" alt="" class="op-img">
+                        </div>
+                        <p>Transferir<br>dinero</p>
+                    </a>
+                </section>
+
+                <section class="highlights-section">
+                    <h3>Lo más destacado</h3>
+                    <div class="scroll-container">
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/highlight-1.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Descubre Qore</h4>
+                                <p>Tu nueva zona de beneficios</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-2.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Cambia soles y dólares</h4>
+                                <p>¡Con el mejor tipo de cambio!</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-3.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Seguro de Tarjetas</h4>
+                                <p>Protégete contra robos</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-4.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Actualiza tus datos</h4>
+                                <p>Mejora tu nivel de seguridad</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-5.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Adelanto de Sueldo</h4>
+                                <p>¡Obtenlo al instante!</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-6.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Tarjeta de Crédito</h4>
+                                <p>Solicítala 100% online</p>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="card-icon">
+                                <img src="img/destacado-7.jpg" alt="Icono" class="highlight-icon-img">
+                            </div>
+                            <div class="card-text">
+                                <h4>Dónaciones</h4>
+                                <p>Sé parte del cambio</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dots-container">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </section>
+
+                <section class="promotions-section">
+                    <h3>Promociones exclusivas</h3>
+                    <div class="scroll-container banner-scroll">
+                        
+                        <div class="promo-card">
+                            <div class="promo-image-box">
+                                <img src="img/promo-1.jpg" alt="Seguro" class="promo-img">
+                            </div>
+                            <div class="promo-content">
+                                <h4>Protege tus cuenta y tarjetas BCP por S/ 12.99 al mes</h4>
+                                <p>Y obtén la máxima tranquilidad en cada transacción</p>
+                            </div>
+                        </div>
+
+                        <div class="promo-card">
+                            <div class="promo-image-box">
+                                <img src="img/promo-2.jpg" alt="Inversión" class="promo-img">
+                            </div>
+                            <div class="promo-content">
+                                <h4>Haz crecer tu dinero de forma segura con Depósito a Plazo</h4>
+                                <p>Invierte tus ahorros y obtén intereses fijos</p>
+                            </div>
+                        </div>
+
+                        <div class="promo-card">
+                            <div class="promo-image-box">
+                                <img src="img/promo-3.jpg" alt="SOAT" class="promo-img">
+                            </div>
+                            <div class="promo-content">
+                                <h4>Consigue tu SOAT de manera fácil y segura</h4>
+                                <p>Y aprovecha los descuentos en establecimientos afiliados</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                
+                <div style="height: 90px;"></div>
+            </main>
+
+            <footer class="bottom-menu">
+                <div class="menu-item active">
+                    <img src="img/inicio-flash.svg" alt="Inicio" class="icon">
+                    <span class="text">Inicio</span>
+                </div>
+                <div class="menu-item">
+                    <img src="img/operaciones-flash.svg" alt="Operaciones" class="icon">
+                    <span class="text">Operaciones</span>
+                </div>
+                <div class="menu-item">
+                    <img src="img/descubre-flash.svg" alt="Descubre" class="icon">
+                    <span class="text">Descubre</span>
+                </div>
+                <a href="opciones.html" class="menu-item">
+                    <img src="img/configuracion-flash.svg" alt="Configuración" class="icon">
+                    <span class="text">Configuración</span>
+                </a>
+            </footer>
+
+        </div>
+    </div>
+
+<script>
+        // Variables globales para guardar el saldo real
+        let currentBalance = "1,200.00"; // Valor por defecto
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Cargar Nombre
+            const savedName = localStorage.getItem("userName");
+            if (savedName) {
+                // CAMBIO: Usamos innerHTML para ponerle color solo al nombre
+                document.querySelector(".greeting").innerHTML = "Hola, <span style='color: #ff7800; font-weight: 500;'>" + savedName + "</span>";
+            }
+
+            // 2. Cargar Saldo
+            const savedBalance = localStorage.getItem("userBalance");
+            if (savedBalance) {
+                // Formateamos el número para que tenga comas y decimales (ej: 1,500.50)
+                currentBalance = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+        });
+
+        function toggleBalance() {
+            var eye = document.getElementById('eye-icon');
+            var balance = document.getElementById('balance-text');
+            
+            if (eye.src.includes('ojo-abierto-g-icon.svg')) {
+                // ABRIR OJO: Mostrar saldo guardado
+                eye.src = 'img/ojo-cerrado-g-icon.svg';
+                
+                // Usamos la variable currentBalance que cargamos del localStorage
+                balance.innerHTML = 'S/ ' + currentBalance.split('.')[0] + '<span style="font-size: 0.8em; font-weight: 400;">.' + currentBalance.split('.')[1] + '</span>';
+                balance.style.fontWeight = '700';
+            } else {
+                // CERRAR OJO: Ocultar saldo
+                eye.src = 'img/ojo-abierto-g-icon.svg';
+                balance.innerText = 'S/ *****';
+                balance.style.fontWeight = '400';
+            }
+        }
+    </script>
+</body>
+</html>

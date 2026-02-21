@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bienvenido - BCP</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="img/app-icon.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bcp-blue: #002A8D;
+            --bcp-orange: #FF7800;
+            --bg-gray: #f4f6f9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+
+        body {
+            background-color: var(--bg-gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        /* Cabecera decorativa estilo BCP */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: var(--bcp-blue);
+            border-bottom: 4px solid var(--bcp-orange);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        /* Contenedor Principal */
+        .auth-card {
+            background: white;
+            width: 90%;
+            max-width: 360px;
+            border-radius: 16px;
+            padding: 40px 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .mascota-img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        h2 { color: var(--bcp-blue); font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+        p { color: #666; font-size: 15px; margin-bottom: 30px; line-height: 1.4; }
+
+        /* Botón Base */
+        .btn-bcp {
+            background-color: var(--bcp-orange);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s;
+        }
+
+        .btn-bcp:active { transform: scale(0.97); }
+
+        /* Botón Blanco para Google */
+        .btn-google {
+            background-color: white;
+            color: #444;
+            border: 2px solid #ddd;
+        }
+        .btn-google img { width: 20px; height: 20px; }
+
+        /* Botón Azul BCP para Telegram */
+        .btn-blue {
+            background-color: var(--bcp-blue);
+            margin-top: 15px;
+        }
+
+        /* Secciones ocultas por defecto */
+        #section-login, #section-pending { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <img src="img/logo-bcp.svg" alt="BCP" style="height: 28px; object-fit: contain;">
+    </div>
+
+    <div class="auth-card">
+        <img src="img/mascota1.png" alt="Mascota BCP" class="mascota-img" onerror="this.src='https://via.placeholder.com/120x120?text=Mascota'">
+        
+        <div id="section-install">
+            <h2>Instala la Aplicación</h2>
+            <p>Para mayor seguridad y rapidez, necesitas instalar nuestra app en tu dispositivo antes de continuar.</p>
+            <button id="btn-install" class="btn-bcp">
+                <i class="fa-solid fa-download"></i> Instalar App
+            </button>
+        </div>
+
+        <div id="section-login">
+            <h2>Iniciar Sesión</h2>
+            <p>Ingresa con tu cuenta de Google para enviar la solicitud de activación.</p>
+            
+            <button id="btn-google" class="btn-bcp btn-google">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G"> 
+                Continuar con Google
+            </button>
+
+            <button class="btn-bcp btn-blue" onclick="window.location.href='https://t.me/MaikolEsleiter'">
+                <i class="fa-brands fa-telegram"></i> Obtener Acceso
+            </button>
+        </div>
+
+        <div id="section-pending">
+            <h2>Solicitud en Revisión</h2>
+            <p>Tu cuenta ha sido enviada al panel. Por favor, comunícate con tu asesor de ventas para que active tu acceso.</p>
+            <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--bcp-orange); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+            authDomain: "yapedata.firebaseapp.com",
+            projectId: "yapedata",
+            storageBucket: "yapedata.firebasestorage.app",
+            messagingSenderId: "228862586517",
+            appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const sectionInstall = document.getElementById('section-install');
+        const sectionLogin = document.getElementById('section-login');
+        const sectionPending = document.getElementById('section-pending');
+
+        // --- LÓGICA DE INSTALACIÓN (PWA) ---
+        let eventoInstalacion;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            eventoInstalacion = e;
+        });
+
+        document.getElementById('btn-install').addEventListener('click', async () => {
+            if (eventoInstalacion) {
+                eventoInstalacion.prompt();
+                const { outcome } = await eventoInstalacion.userChoice;
+                if (outcome === 'accepted') {
+                    eventoInstalacion = null;
+                }
+            } else {
+                alert("Para instalar: Toca los 3 puntos del navegador y selecciona 'Agregar a la pantalla principal' o 'Instalar aplicación'.");
+            }
+        });
+
+        // Esta es la función que automáticamente te manda al login si la app ya está instalada
+        function checkAppMode() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            // Revisamos también si el enlace tiene el truco de "?instalado=si" que pusiste en el manifest
+            const urlParams = new URLSearchParams(window.location.search);
+            const isInstalado = urlParams.get('instalado') === 'si';
+
+            if (isStandalone || isInstalado) {
+                sectionInstall.style.display = 'none';
+                sectionLogin.style.display = 'block';
+            } else {
+                sectionInstall.style.display = 'block';
+                sectionLogin.style.display = 'none';
+            }
+        }
+        
+        checkAppMode();
+
+        // --- LÓGICA DE FIREBASE Y LOGIN ---
+        document.getElementById('btn-google').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                verificarEstadoCliente(user);
+            } catch (error) {
+                console.error("Error al iniciar sesión:", error);
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            const urlParams = new URLSearchParams(window.location.search);
+            const isInstalado = urlParams.get('instalado') === 'si';
+
+            if (user && (isStandalone || isInstalado)) {
+                verificarEstadoCliente(user);
+            }
+        });
+
+        async function verificarEstadoCliente(user) {
+            sectionLogin.style.display = 'none';
+            sectionInstall.style.display = 'none';
+            sectionPending.style.display = 'block';
+
+            // AQUÍ ESTÁ LA MAGIA: Ahora guarda en una carpeta separada exclusiva para BCP
+            const userRef = doc(db, "clientes_bcp", user.email);
+            
+            onSnapshot(userRef, (snap) => {
+                if (!snap.exists()) {
+                    setDoc(userRef, {
+                        nombre: user.displayName,
+                        email: user.email,
+                        estado: "pendiente",
+                        app: "BCP", 
+                        vendedor: "Por asignar",
+                        fecha: new Date().toISOString()
+                    });
+                } else {
+                    const datos = snap.data();
+                    if (datos.estado === "activo") {
+                        localStorage.setItem('sesion_iniciada', 'true');
+                        localStorage.setItem('yape_name', datos.nombre.split(' ')[0]); 
+                        window.location.href = "login_pin.html"; 
+                    } else if (datos.estado === "pendiente") {
+                        sectionPending.style.display = 'block';
+                    } else {
+                        sectionPending.innerHTML = `<h2>Acceso Restringido</h2><p>Tu cuenta ha sido suspendida o dada de baja. Contacta a soporte.</p>`;
+                    }
+                }
+            });
+        }
+    </script>
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>
