@@ -9,6 +9,7 @@ const esPuertaPrincipal = paginaActual.includes("datos.html") || paginaActual.in
 const esIndex = paginaActual.includes("index.html") || paginaActual === "/" || paginaActual.endsWith("/");
 
 // Ocultar cuerpo solo en puertas principales para evitar destellos
+const esPuertaPrincipal = paginaActual.includes("datos.html");
 if (esPuertaPrincipal) {
     document.body.style.opacity = "0";
 }
