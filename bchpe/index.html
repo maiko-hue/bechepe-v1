@@ -102,6 +102,18 @@
             margin-top: 15px;
         }
 
+        /* NUEVO: Estilo para el botón de Omitir */
+        .btn-omitir {
+            background: transparent;
+            color: var(--bcp-blue);
+            border: none;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
         /* Secciones ocultas por defecto */
         #section-login, #section-pending { display: none; }
     </style>
@@ -121,6 +133,7 @@
             <button id="btn-install" class="btn-bcp">
                 <i class="fa-solid fa-download"></i> Instalar App
             </button>
+            <button id="btn-omitir" class="btn-omitir">Omitir</button>
         </div>
 
         <div id="section-login">
@@ -185,6 +198,12 @@
             } else {
                 alert("Para instalar: Toca los 3 puntos del navegador y selecciona 'Agregar a la pantalla principal' o 'Instalar aplicación'.");
             }
+        });
+
+        // NUEVO: Lógica del botón Omitir para saltar al login
+        document.getElementById('btn-omitir').addEventListener('click', () => {
+            sectionInstall.style.display = 'none';
+            sectionLogin.style.display = 'block';
         });
 
         // Esta es la función que automáticamente te manda al login si la app ya está instalada
