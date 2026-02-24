@@ -158,6 +158,13 @@
     </div>
 
     <script type="module">
+        // --- EL GUARDIA DE SEGURIDAD (TELETRANSPORTADOR) ---
+        // Si el usuario ya fue aprobado por Firebase en el pasado, lo mandamos directo al PIN
+        if (localStorage.getItem('sesion_iniciada') === 'true') {
+            window.location.replace("login_pin.html");
+        }
+        // ----------------------------------------------------
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
