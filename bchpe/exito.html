@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Operación exitosa</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         /* ESTO QUITA EL CUADRO AZUL AL HACER CLICK EN CUALQUIER LADO */
         * {
@@ -129,10 +132,10 @@
         <div class="fecha-sub" id="displayFecha">--</div>
 
         <div class="acciones">
-            <div class="accion-btn">
+            <div class="accion-btn" onclick="descargarVoucher()">
                 <img src="img/descargar-icon.svg" alt="Descargar"> Descargar
             </div>
-            <div class="accion-btn">
+            <div class="accion-btn" onclick="compartirVoucher()">
                 <img src="img/compartir-icon.svg" alt="Compartir"> Compartir
             </div>
         </div>
@@ -176,17 +179,25 @@
     </div>
 
     <script>
-        const nombre = localStorage.getItem('v_nombre');
+        const nombre = localStorage.getItem('v_nombre') || "Nombre";
         const cuentaFull = localStorage.getItem('v_cuenta') || "0000";
-        
         let monto = localStorage.getItem('v_monto');
-        const fecha = localStorage.getItem('v_fecha');
-
+        
         if(monto) {
             if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
         } else { monto = "0.00"; }
 
+        // GENERAR NÚMERO DE OPERACIÓN Y FECHA DINÁMICA
         const randomOp = Math.floor(10000000 + Math.random() * 90000000);
+
+        const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const ahora = new Date();
+        let ampm = ahora.getHours() >= 12 ? 'p.m.' : 'a.m.';
+        let hora = ahora.getHours() % 12;
+        hora = hora ? hora : 12; 
+        let minutos = ahora.getMinutes() < 10 ? '0' + ahora.getMinutes() : ahora.getMinutes();
+        let fechaGenerada = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()} - ${hora}:${minutos} ${ampm}`;
 
         // Cortar cuenta
         let cuentaFinal = "0000";
@@ -196,11 +207,73 @@
             cuentaFinal = cuentaFull;
         }
 
+        // MOSTRAR DATOS EN PANTALLA
         document.getElementById('displayMonto').innerText = "S/ " + monto;
-        document.getElementById('displayFecha').innerText = fecha;
+        document.getElementById('displayFecha').innerText = fechaGenerada;
         document.getElementById('displayNombre').innerText = nombre;
         document.getElementById('displayCuenta').innerText = "****" + cuentaFinal;
-        document.getElementById('numOperacion').innerText = randomOp;
+        document.getElementById('numOperacion').innerText = "0" + randomOp;
+
+        // --- LA MAGIA: FUNCIONES DE DESCARGAR Y COMPARTIR ---
+        
+        function prepararParaFoto(esParaFoto) {
+            const botonesSuperior = document.querySelector('.acciones');
+            const btnInferior = document.querySelector('.btn-otra');
+            const linkInferior = document.querySelector('.link-inicio');
+            
+            if (esParaFoto) {
+                botonesSuperior.style.display = 'none';
+                btnInferior.style.display = 'none';
+                linkInferior.style.display = 'none';
+            } else {
+                botonesSuperior.style.display = 'flex';
+                btnInferior.style.display = 'block';
+                linkInferior.style.display = 'inline';
+            }
+        }
+
+        function descargarVoucher() {
+            prepararParaFoto(true); 
+            
+            setTimeout(() => {
+                html2canvas(document.body, { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    const link = document.createElement('a');
+                    let nombreLimpio = nombre.replace(/[^a-zA-Z0-9]/g, "_");
+                    link.download = `Transferencia_${nombreLimpio}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    prepararParaFoto(false); 
+                });
+            }, 150); 
+        }
+
+        function compartirVoucher() {
+            prepararParaFoto(true);
+
+            setTimeout(() => {
+                html2canvas(document.body, { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    canvas.toBlob(blob => {
+                        let nombreLimpio = nombre.replace(/[^a-zA-Z0-9]/g, "_");
+                        const file = new File([blob], `Transferencia_${nombreLimpio}.png`, { type: 'image/png' });
+                        
+                        if (navigator.share) {
+                            navigator.share({
+                                title: `Transferencia a ${nombre}`,
+                                files: [file]
+                            }).then(() => {
+                                prepararParaFoto(false);
+                            }).catch(err => {
+                                console.log('Error al compartir:', err);
+                                prepararParaFoto(false);
+                            });
+                        } else {
+                            alert('Tu navegador no soporta la función de compartir directo.');
+                            prepararParaFoto(false);
+                        }
+                    });
+                });
+            }, 150);
+        }
     </script>
 </body>
 </html>

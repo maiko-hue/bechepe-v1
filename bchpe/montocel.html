@@ -38,7 +38,7 @@
         .recipient-name-input { font-size: 22px; font-weight: 500; color: #000; margin-bottom: 5px; border: none; text-align: center; width: 90%; outline: none; background: transparent; font-family: inherit; }
         .recipient-name-input::placeholder { color: #aaa; }
         .recipient-account { font-size: 16px; color: #000; margin-bottom: 5px; letter-spacing: 1px; }
-        .yape-label { font-size: 15px; color: #888; }
+        .yape-label { font-size: 15px; color: #888; text-transform: capitalize; }
 
         .amount-section { padding: 30px 20px; }
         .label-blue { color: #002a80; font-weight: 600; font-size: 16px; margin-bottom: 15px; }
@@ -83,7 +83,8 @@
         <div class="avatar-circle" id="avatarInitial">N</div>
         <input type="text" class="recipient-name-input" id="destNameInput" value="Nombre editable" placeholder="Ingresa nombre">
         <div class="recipient-account" id="maskedNumber">*** **0 000</div>
-        <div class="yape-label">Yape</div>
+        
+        <div class="yape-label" id="entidadDestinoLabel">Yape</div>
     </div>
 
     <div class="amount-section">
@@ -109,7 +110,11 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Saldo
+            // 1. Mostrar la entidad seleccionada
+            const entidadGuardada = localStorage.getItem('v_entidad_destino') || 'Yape';
+            document.getElementById('entidadDestinoLabel').innerText = entidadGuardada;
+
+            // 2. Saldo dinámico (Igual al inicio.html)
             const savedBalance = localStorage.getItem("userBalance");
             let saldoMostrar = "1,200.00";
             if (savedBalance) {
@@ -119,7 +124,7 @@
             }
             document.getElementById('myBalanceDisplay').innerText = "S/ " + saldoMostrar;
 
-            // Número enmascarado
+            // 3. Número enmascarado
             const celularFull = localStorage.getItem('v_celular_destino') || "000000000";
             let numeroFormateado = "*** **0 000";
             if (celularFull.length === 9) {
@@ -128,7 +133,7 @@
             }
             document.getElementById('maskedNumber').innerText = numeroFormateado;
 
-            // Nombre y Avatar
+            // 4. Nombre y Avatar
             const nameInput = document.getElementById('destNameInput');
             const avatar = document.getElementById('avatarInitial');
             function updateAvatar() {
@@ -138,7 +143,7 @@
             updateAvatar();
             nameInput.addEventListener('input', updateAvatar);
 
-            // Monto y Botón
+            // 5. Monto y Botón
             const amountInput = document.getElementById('amountInput');
             const btn = document.getElementById('btnNext');
 
@@ -153,7 +158,7 @@
                 }
             });
             
-            // CLICK EN SIGUIENTE
+            // 6. CLICK EN SIGUIENTE
             btn.addEventListener('click', function() {
                 if (this.classList.contains('active')) {
                    localStorage.setItem('v_nombre_yape', nameInput.value);
