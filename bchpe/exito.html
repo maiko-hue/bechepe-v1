@@ -214,6 +214,30 @@
         document.getElementById('displayCuenta').innerText = "****" + cuentaFinal;
         document.getElementById('numOperacion').innerText = "0" + randomOp;
 
+        // --- GUARDAR EN HISTORIAL (NUEVO) ---
+        let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+        let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; // Ej: "28 febrero"
+
+        let nuevoMov = {
+            tipo: "transferencia", // Identificador para voucher.html
+            letra: "TR", 
+            titulo: "TRAN.CTAS.TERC.BM",
+            fecha: fechaCorta,
+            fechaCompleta: fechaGenerada, // Para el voucher detallado
+            monto: monto,
+            destinoNombre: nombre,
+            destinoNumero: cuentaFull, // Guardamos la cuenta completa, el voucher la cortará
+            numOperacion: "0" + randomOp
+        };
+
+        // Guardar solo si es una nueva carga (evita duplicados si el usuario recarga la página F5)
+        if(!sessionStorage.getItem('mov_guardado_trans_' + randomOp)){
+            movimientos.unshift(nuevoMov);
+            localStorage.setItem('bcp_movimientos', JSON.stringify(movimientos));
+            sessionStorage.setItem('mov_guardado_trans_' + randomOp, 'true'); 
+        }
+        // -------------------------------------
+
         // --- LA MAGIA: FUNCIONES DE DESCARGAR Y COMPARTIR ---
         
         function prepararParaFoto(esParaFoto) {

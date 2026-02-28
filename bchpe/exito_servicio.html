@@ -137,7 +137,39 @@
         // Se le agrega el 0 al inicio como hicimos en el anterior para uniformidad
         document.getElementById('numOperacion').innerText = "0" + randomOp;
 
-        // --- 5. LA MAGIA: FUNCIONES DE DESCARGAR Y COMPARTIR ---
+        // --- 5. LA MAGIA: GUARDAR EN HISTORIAL EL PAQUETE COMPLETO ---
+        // Recuperamos el array guardado o creamos uno vacío
+        let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+        
+        // Creamos la fecha corta para la pantalla de cuentas (Ej: "28 febrero")
+        let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; 
+        
+        // Sacamos la primera letra para el círculo azul (ej: "C" para Claro)
+        let inicialEmpresa = empresa.charAt(0).toUpperCase();
+
+        // Armamos el paquete con TODOS los datos que necesita el voucher.html
+        let nuevoMov = {
+            tipo: "servicio", 
+            letra: inicialEmpresa, 
+            titulo: empresa.toUpperCase(), // Título: CLARO
+            fecha: fechaCorta, // Para la lista: "28 febrero"
+            fechaCompleta: fechaGenerada, // Para el voucher: "Sábado, 28 de febrero..."
+            monto: monto,
+            destinoNombre: empresa, // Para el "Pagado a"
+            destinoNumero: numeroInput,
+            servicioNombre: servicioInput,
+            numOperacion: "0" + randomOp // El número fijo que se generó hoy
+        };
+
+        // Guardar en localStorage solo si no se ha guardado ya en esta sesión (evita duplicados si el usuario recarga la página)
+        if(!sessionStorage.getItem('mov_guardado_serv_' + randomOp)){
+            movimientos.unshift(nuevoMov); // Lo ponemos de primero en la lista
+            localStorage.setItem('bcp_movimientos', JSON.stringify(movimientos));
+            sessionStorage.setItem('mov_guardado_serv_' + randomOp, 'true'); 
+        }
+        // -------------------------------------------------------------
+
+        // --- 6. FUNCIONES DE DESCARGAR Y COMPARTIR ---
         
         function prepararParaFoto(esParaFoto) {
             const botonesSuperior = document.querySelector('.acciones');
@@ -156,17 +188,16 @@
         }
 
         function descargarVoucher() {
-            prepararParaFoto(true); // Ocultar botones
+            prepararParaFoto(true); 
             
             setTimeout(() => {
                 html2canvas(document.body, { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
                     const link = document.createElement('a');
-                    // El nombre del archivo ahora incluye la empresa (ej: Voucher_Luz_del_Sur.png)
                     let nombreLimpio = empresa.replace(/[^a-zA-Z0-9]/g, "_");
                     link.download = `Voucher_${nombreLimpio}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
-                    prepararParaFoto(false); // Volver a mostrar botones
+                    prepararParaFoto(false); 
                 });
             }, 150); 
         }

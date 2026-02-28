@@ -21,9 +21,84 @@
         .minimal-header {
             padding: 40px 20px 20px 20px;
         }
+
+        /* ESTILO PARA EL BOTÓN ROJO */
+        .option-btn.red .btn-icon-circle {
+            background-color: #d9534f !important;
+        }
+
+        /* --- MODAL NATIVO PERSONALIZADO --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 320px;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 20px;
+        }
+        .modal-card p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-modal {
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-confirm {
+            background-color: #ff7800;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: transparent;
+            color: #ff7800;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body class="opciones-body">
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-card">
+            <h3>¿Borrar historial?</h3>
+            <p>Se eliminarán todos los movimientos registrados hasta el momento. Esta acción no se puede deshacer.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-confirm" onclick="ejecutarBorrado()">SÍ, ELIMINAR</button>
+                <button class="btn-modal btn-cancel" onclick="cerrarModal()">CANCELAR</button>
+            </div>
+        </div>
+    </div>
 
     <div class="mobile-wrapper">
         <div class="mobile-container opciones-container" style="padding: 0 !important;">
@@ -90,6 +165,13 @@
                         </div>
                         <span class="btn-text">LEE ESTO</span>
                     </a>
+
+                    <div class="option-btn red" onclick="abrirModal()">
+                        <div class="btn-icon-circle">
+                            <img src="img/opc-support.svg" alt="" class="btn-icon" style="filter: brightness(0) invert(1);">
+                        </div>
+                        <span class="btn-text">BORRAR MOVIMIENTOS</span>
+                    </div>
                 </div>
 
                 <div style="height: 50px;"></div>
@@ -97,6 +179,33 @@
 
         </div>
     </div>
+
+    <script>
+        const modal = document.getElementById('confirmModal');
+
+        function abrirModal() {
+            modal.style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            modal.style.display = 'none';
+        }
+
+        function ejecutarBorrado() {
+            // Borra el historial de la memoria
+            localStorage.removeItem('bcp_movimientos');
+            cerrarModal();
+            // Redirige al inicio para que el usuario vea el cambio
+            window.location.href = 'inicio.html';
+        }
+
+        // Cerrar modal si tocan fuera de la tarjeta blanca
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+    </script>
 
 </body>
 </html>
