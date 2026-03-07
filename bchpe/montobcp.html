@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Enviar a</title>
     <style>
+        /* --- NUEVO: EVITAR CUADROS AZULES DE SELECCIÓN EN MÓVILES --- */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        input:focus, button:focus, a:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -252,13 +261,13 @@
         </header>
 
         <div class="recipient-section">
-            <div class="avatar-circle" id="avatarInitial">M</div>
+            <div class="avatar-circle" id="avatarInitial"></div>
             
-            <input type="text" class="recipient-name-input" id="destNameInput" value="Maikol" placeholder="Ingresa nombre">
+            <input type="text" class="recipient-name-input" id="destNameInput" value="" placeholder="Ingresa nombre">
             
             <div class="recipient-account" id="destAccount">****0000</div>
             
-            <div class="recipient-currency">Moneda soles</div>
+            <div class="recipient-currency" id="destCurrency">Moneda soles</div>
         </div>
 
         <div class="amount-section">
@@ -291,10 +300,25 @@
 
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+            authDomain: "yapedata.firebaseapp.com",
+            projectId: "yapedata",
+            storageBucket: "yapedata.firebasestorage.app",
+            messagingSenderId: "228862586517",
+            appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", async function() {
             
-            // 1. CARGA (LOADING)
+            // 1. CARGA (LOADING) MANTENIDA IGUAL
             setTimeout(function() {
                 document.getElementById('loader-screen').style.opacity = '0';
                 setTimeout(() => {
@@ -304,21 +328,19 @@
                 }, 500);
             }, 1500); 
 
-            // 2. RECUPERAR SALDO (LÓGICA AGREGADA)
+            // 2. RECUPERAR SALDO
             const savedBalance = localStorage.getItem("userBalance");
-            let saldoMostrar = "1,200.00"; // Valor por defecto igual al index
+            let saldoMostrar = "1,200.00"; 
 
             if (savedBalance) {
                  const val = parseFloat(savedBalance);
                  if (!isNaN(val)) {
-                     // Formato 1,200.00
                      saldoMostrar = val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                  } else {
                      saldoMostrar = savedBalance;
                  }
             }
             document.getElementById('myBalance').innerText = "S/ " + saldoMostrar;
-
 
             // 3. RECUPERAR CUENTA Y MASCARA
             const cuentaGuardada = localStorage.getItem('v_cuenta'); 
@@ -333,9 +355,11 @@
             }
             document.getElementById('destAccount').innerText = "****" + ultimosDigitos;
 
-            // 4. NOMBRE Y AVATAR
+            // 4. LÓGICA DEL AVATAR Y FIREBASE
             const nameInput = document.getElementById('destNameInput');
             const avatar = document.getElementById('avatarInitial');
+            const destAccountElement = document.getElementById('destAccount');
+            const destCurrencyElement = document.getElementById('destCurrency');
 
             function updateAvatar() {
                 const val = nameInput.value.trim();
@@ -345,8 +369,36 @@
                     avatar.innerText = "";
                 }
             }
-            // Inicializar y escuchar cambios
+
+            // --- LÓGICA COMBINADA: BUSCA EN CUENTAS Y EN QR ---
+            if (cuentaGuardada && cuentaGuardada.length > 0) {
+                try {
+                    // Primero busca en codigos_qr por si viene de un escaneo
+                    const qrDocRef = doc(db, "codigos_qr", cuentaGuardada);
+                    const qrDocSnap = await getDoc(qrDocRef);
+                    
+                    if (qrDocSnap.exists()) {
+                        const qrData = qrDocSnap.data();
+                        // ¡Viene de un QR! Actualizamos nombre, destino y limpiamos moneda
+                        nameInput.value = qrData.nombre;
+                        destAccountElement.innerText = qrData.destino || "Yape"; // Muestra "Yape" si no hay destino definido
+                        destCurrencyElement.innerText = ""; // Limpia "Moneda soles"
+                    } else {
+                        // Si no es un QR, buscamos en cuentas_colaborativas por si viene de transferencia manual
+                        const q = query(collection(db, "cuentas_colaborativas"), where("numero_cuenta", "==", cuentaGuardada));
+                        const querySnapshot = await getDocs(q);
+                        
+                        if (!querySnapshot.empty) {
+                            nameInput.value = querySnapshot.docs[0].data().titular;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error consultando las bases de datos:", error);
+                }
+            }
+            
             updateAvatar();
+            
             nameInput.addEventListener('input', updateAvatar);
 
             // 5. LÓGICA DE MONTO
@@ -368,17 +420,14 @@
             // 6. CLICK EN SIGUIENTE
             btn.addEventListener('click', function() {
                 if (this.classList.contains('active')) {
-                    // Guardar el nombre final
                     localStorage.setItem('v_nombre_destino', nameInput.value);
                     
-                    // Mostrar pantalla de carga nuevamente
                     const loader = document.getElementById('loader-screen');
                     loader.style.display = 'flex';
                     setTimeout(() => {
                         loader.style.opacity = '1';
                     }, 10);
 
-                    // Esperar 1.5 seg y redirigir
                     setTimeout(() => {
                         window.location.href = 'confirmar.html';
                     }, 1500);

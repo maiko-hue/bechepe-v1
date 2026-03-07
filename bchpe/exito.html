@@ -146,7 +146,7 @@
                 <div class="valor" style="width: 60%">
                     <strong id="displayNombre">Nombre</strong>
                     <span id="displayCuenta">****0000</span>
-                    <span>Moneda soles</span>
+                    <span id="displayMoneda">Moneda soles</span>
                 </div>
             </div>
             <div class="fila">
@@ -211,10 +211,20 @@
         document.getElementById('displayMonto').innerText = "S/ " + monto;
         document.getElementById('displayFecha').innerText = fechaGenerada;
         document.getElementById('displayNombre').innerText = nombre;
-        document.getElementById('displayCuenta').innerText = "****" + cuentaFinal;
         document.getElementById('numOperacion').innerText = "0" + randomOp;
 
-        // --- GUARDAR EN HISTORIAL (NUEVO) ---
+        // --- LÓGICA QR (MODIFICADO) ---
+        const destinoQR = localStorage.getItem('v_destino_qr');
+        if (destinoQR) {
+            // Si viene de QR, cambia el texto al destino (Yape) y oculta "Moneda soles"
+            document.getElementById('displayCuenta').innerText = destinoQR;
+            document.getElementById('displayMoneda').style.display = "none";
+        } else {
+            // Si es transferencia normal, pone la cuenta con los ****
+            document.getElementById('displayCuenta').innerText = "****" + cuentaFinal;
+        }
+
+        // --- GUARDAR EN HISTORIAL ---
         let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
         let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; // Ej: "28 febrero"
 

@@ -85,6 +85,58 @@
             color: #ff7800;
             font-weight: 600;
         }
+
+        /* --- NUEVO: ESTILOS MODAL AGREGAR CUENTA --- */
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        .form-group input:focus {
+            border-color: #ff7800;
+        }
+
+        /* --- NOTIFICACIÓN TOAST NATIVA --- */
+        #toast-msg {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 10001;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+        }
+        #toast-msg.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.3s 2.7s;
+        }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body class="opciones-body">
@@ -96,6 +148,28 @@
             <div class="modal-buttons">
                 <button class="btn-modal btn-confirm" onclick="ejecutarBorrado()">SÍ, ELIMINAR</button>
                 <button class="btn-modal btn-cancel" onclick="cerrarModal()">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addAccountModal">
+        <div class="modal-card">
+            <h3>Agregar Banco</h3>
+            <p style="font-size: 14px; margin-bottom: 20px;">Registra una cuenta para que esté disponible para todos los usuarios.</p>
+            
+            <div class="form-group">
+                <label>Nro</label>
+                <input type="tel" id="newAccountNum" placeholder="Ej: 19100000000000" autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label>Nombre del Titular</label>
+                <input type="text" id="newAccountName" placeholder="Ej: Juan Perez" autocomplete="off">
+            </div>
+
+            <div class="modal-buttons" style="margin-top: 25px;">
+                <button class="btn-modal btn-confirm" onclick="guardarCuenta()">GUARDAR CUENTA</button>
+                <button class="btn-modal btn-cancel" onclick="cerrarAddModal()">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -120,26 +194,26 @@
                         <span class="btn-text">DATOS DE MI CUENTA</span>
                     </a>
 
-                    <div class="option-btn purple">
+                    <div class="option-btn purple" onclick="abrirAddModal()" style="cursor: pointer;">
                         <div class="btn-icon-circle">
                             <img src="img/opc-bank.svg" alt="" class="btn-icon">
                         </div>
                         <span class="btn-text">AGREGAR BANCO</span>
                     </div>
 
-                    <div class="option-btn purple">
+                    <a href="agregarct.html" class="option-btn purple" style="text-decoration: none;">
                         <div class="btn-icon-circle">
                             <img src="img/opc-contact.svg" alt="" class="btn-icon">
                         </div>
                         <span class="btn-text">AGREGAR CONTACTO</span>
-                    </div>
+                    </a>
 
-                    <div class="option-btn purple">
+                    <a href="qradd.html" class="option-btn purple" style="text-decoration: none;">
                         <div class="btn-icon-circle">
                             <img src="img/opc-qr.svg" alt="" class="btn-icon">
                         </div>
                         <span class="btn-text">AGREGAR QR</span>
-                    </div>
+                    </a>
 
                     <a href="editable.html" class="option-btn purple" style="text-decoration: none;">
                         <div class="btn-icon-circle">
@@ -166,7 +240,7 @@
                         <span class="btn-text">LEE ESTO</span>
                     </a>
 
-                    <div class="option-btn red" onclick="abrirModal()">
+                    <div class="option-btn red" onclick="abrirModal()" style="cursor: pointer;">
                         <div class="btn-icon-circle">
                             <img src="img/opc-support.svg" alt="" class="btn-icon" style="filter: brightness(0) invert(1);">
                         </div>
@@ -180,30 +254,95 @@
         </div>
     </div>
 
-    <script>
+    <div id="toast-msg"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Tus credenciales de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+            authDomain: "yapedata.firebaseapp.com",
+            projectId: "yapedata",
+            storageBucket: "yapedata.firebasestorage.app",
+            messagingSenderId: "228862586517",
+            appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- SISTEMA DE TOAST (Reemplaza al Alert) ---
+        window.mostrarToast = function(mensaje, color) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = mensaje;
+            toast.style.backgroundColor = color || '#333';
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // --- LÓGICA MODAL BORRADO ---
         const modal = document.getElementById('confirmModal');
-
-        function abrirModal() {
-            modal.style.display = 'flex';
-        }
-
-        function cerrarModal() {
-            modal.style.display = 'none';
-        }
-
-        function ejecutarBorrado() {
-            // Borra el historial de la memoria
+        window.abrirModal = function() { modal.style.display = 'flex'; }
+        window.cerrarModal = function() { modal.style.display = 'none'; }
+        window.ejecutarBorrado = function() {
             localStorage.removeItem('bcp_movimientos');
-            cerrarModal();
-            // Redirige al inicio para que el usuario vea el cambio
+            window.cerrarModal();
             window.location.href = 'inicio.html';
         }
 
-        // Cerrar modal si tocan fuera de la tarjeta blanca
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                cerrarModal();
+        // --- LÓGICA MODAL AGREGAR CUENTA (FIREBASE) ---
+        const addModal = document.getElementById('addAccountModal');
+        window.abrirAddModal = function() { 
+            addModal.style.display = 'flex'; 
+        }
+        window.cerrarAddModal = function() { 
+            addModal.style.display = 'none'; 
+            document.getElementById('newAccountNum').value = '';
+            document.getElementById('newAccountName').value = '';
+        }
+
+        window.guardarCuenta = async function() {
+            const numInput = document.getElementById('newAccountNum');
+            const nomInput = document.getElementById('newAccountName');
+            const num = numInput.value.trim();
+            const nom = nomInput.value.trim();
+            const btn = document.querySelector('#addAccountModal .btn-confirm');
+            
+            if(!num || !nom) {
+                window.mostrarToast("Por favor, completa ambos campos.", "#d9534f"); // Rojo
+                return;
             }
+            
+            // Estado de carga
+            btn.innerText = "GUARDANDO...";
+            btn.disabled = true;
+
+            try {
+                // Inyectando a Firebase
+                await addDoc(collection(db, "cuentas_colaborativas"), {
+                    numero_cuenta: num,
+                    titular: nom,
+                    fecha_registro: new Date().toISOString()
+                });
+                
+                window.mostrarToast("¡Cuenta agregada exitosamente!", "#22c55e"); // Verde
+                window.cerrarAddModal();
+            } catch (e) {
+                console.error("Error Firebase:", e);
+                window.mostrarToast("Hubo un error de conexión.", "#d9534f");
+            } finally {
+                // Restaurar botón
+                btn.innerText = "GUARDAR CUENTA";
+                btn.disabled = false;
+            }
+        }
+
+        // Cerrar modales si tocan fuera de la tarjeta blanca
+        window.onclick = function(event) {
+            if (event.target == modal) { window.cerrarModal(); }
+            if (event.target == addModal) { window.cerrarAddModal(); }
         }
     </script>
 

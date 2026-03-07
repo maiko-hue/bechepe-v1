@@ -6,7 +6,7 @@
     <title>Enviar a</title>
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #333; display: flex; flex-direction: column; height: 100vh; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #333; display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
 
         /* --- PANTALLA DE CARGA BLANCA --- */
         #white-loader-screen {
@@ -17,9 +17,10 @@
             height: 100%;
             background-color: white;
             z-index: 9999;
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.5s ease;
         }
         .loader-container { position: relative; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
         .loader-icon { width: 40px; height: 40px; z-index: 2; }
@@ -33,6 +34,14 @@
         .icon-btn svg { width: 28px; height: 28px; fill: #555; }
 
         /* CONTENIDO */
+        #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
         .recipient-section { text-align: center; padding: 25px 0; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; align-items: center; }
         .avatar-circle { width: 55px; height: 55px; background-color: #4a90e2; color: white; border-radius: 50%; font-size: 24px; font-weight: 600; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; text-transform: uppercase; }
         .recipient-name-input { font-size: 22px; font-weight: 500; color: #000; margin-bottom: 5px; border: none; text-align: center; width: 90%; outline: none; background: transparent; font-family: inherit; }
@@ -55,7 +64,15 @@
         .source-info span { font-size: 15px; color: #666; }
         .source-balance { font-size: 18px; font-weight: 600; color: #000; }
 
-        .footer-container { margin-top: auto; padding: 20px; text-align: center; }
+        /* BOTON SIGUIENTE FIJO */
+        .footer-container { 
+            position: absolute;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            left: 0;
+            right: 0;
+            padding: 0 20px; 
+            text-align: center; 
+        }
         .btn-siguiente { width: 100%; background-color: #d8d8d8; color: white; border: none; border-radius: 35px; padding: 18px 0; font-size: 20px; font-weight: 500; cursor: default; transition: background-color 0.3s; }
         .btn-siguiente.active { background-color: #ff7800; cursor: pointer; }
     </style>
@@ -79,28 +96,30 @@
         </button>
     </header>
 
-    <div class="recipient-section">
-        <div class="avatar-circle" id="avatarInitial">N</div>
-        <input type="text" class="recipient-name-input" id="destNameInput" value="Nombre editable" placeholder="Ingresa nombre">
-        <div class="recipient-account" id="maskedNumber">*** **0 000</div>
-        
-        <div class="yape-label" id="entidadDestinoLabel">Yape</div>
-    </div>
-
-    <div class="amount-section">
-        <div class="label-blue">Moneda y monto</div>
-        <div class="currency-toggle"><img src="img/tipo-moneda.svg" alt="Soles/Dólares"></div>
-        <div class="input-amount-container">
-            <span class="currency-symbol">S/</span>
-            <input type="number" id="amountInput" class="amount-input" placeholder="0.00" inputmode="decimal">
+    <div id="main-content">
+        <div class="recipient-section">
+            <div class="avatar-circle" id="avatarInitial"></div>
+            <input type="text" class="recipient-name-input" id="destNameInput" value="" placeholder="Ingresa nombre">
+            <div class="recipient-account" id="maskedNumber">*** **0 000</div>
+            
+            <div class="yape-label" id="entidadDestinoLabel">Yape</div>
         </div>
-    </div>
 
-    <div class="source-section">
-        <div class="label-blue">Desde</div>
-        <div class="source-card">
-            <div class="source-info"><strong>Cuenta Digital Soles</strong><span>7809</span></div>
-            <div class="source-balance" id="myBalanceDisplay">S/ 0.00</div>
+        <div class="amount-section">
+            <div class="label-blue">Moneda y monto</div>
+            <div class="currency-toggle"><img src="img/tipo-moneda.svg" alt="Soles/Dólares"></div>
+            <div class="input-amount-container">
+                <span class="currency-symbol">S/</span>
+                <input type="tel" id="amountInput" class="amount-input" placeholder="0.00">
+            </div>
+        </div>
+
+        <div class="source-section">
+            <div class="label-blue">Desde</div>
+            <div class="source-card">
+                <div class="source-info"><strong>Cuenta Digital Soles</strong><span>7809</span></div>
+                <div class="source-balance" id="myBalanceDisplay">S/ 0.00</div>
+            </div>
         </div>
     </div>
 
@@ -108,13 +127,38 @@
         <button id="btnNext" class="btn-siguiente">Siguiente</button>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // 1. Mostrar la entidad seleccionada
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+            authDomain: "yapedata.firebaseapp.com",
+            projectId: "yapedata",
+            storageBucket: "yapedata.firebasestorage.app",
+            messagingSenderId: "228862586517",
+            appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            
+            // 1. CARGA (LOADING)
+            setTimeout(function() {
+                document.getElementById('white-loader-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('white-loader-screen').style.display = 'none';
+                    document.getElementById('main-content').style.opacity = '1';
+                }, 500);
+            }, 1500);
+
+            // 2. Mostrar la entidad seleccionada
             const entidadGuardada = localStorage.getItem('v_entidad_destino') || 'Yape';
             document.getElementById('entidadDestinoLabel').innerText = entidadGuardada;
 
-            // 2. Saldo dinámico (Igual al inicio.html)
+            // 3. Saldo dinámico
             const savedBalance = localStorage.getItem("userBalance");
             let saldoMostrar = "1,200.00";
             if (savedBalance) {
@@ -124,7 +168,7 @@
             }
             document.getElementById('myBalanceDisplay').innerText = "S/ " + saldoMostrar;
 
-            // 3. Número enmascarado
+            // 4. Número enmascarado
             const celularFull = localStorage.getItem('v_celular_destino') || "000000000";
             let numeroFormateado = "*** **0 000";
             if (celularFull.length === 9) {
@@ -133,23 +177,50 @@
             }
             document.getElementById('maskedNumber').innerText = numeroFormateado;
 
-            // 4. Nombre y Avatar
+            // 5. Nombre, Avatar y FIREBASE AUTOCOMPLETADO
             const nameInput = document.getElementById('destNameInput');
             const avatar = document.getElementById('avatarInitial');
+            
             function updateAvatar() {
                 const val = nameInput.value.trim();
                 avatar.innerText = val.length > 0 ? val.charAt(0).toUpperCase() : "";
             }
+
+            if (celularFull && celularFull.length === 9) {
+                try {
+                    const docRef = doc(db, "usuarios_yape", celularFull);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        nameInput.value = docSnap.data().nombre;
+                    }
+                } catch (error) {
+                    console.error("Error buscando contacto:", error);
+                }
+            }
+
             updateAvatar();
             nameInput.addEventListener('input', updateAvatar);
 
-            // 5. Monto y Botón
+            // 6. Monto y Botón (MODIFICADO PARA AUTO-DECIMALES)
             const amountInput = document.getElementById('amountInput');
             const btn = document.getElementById('btnNext');
 
-            amountInput.addEventListener('input', function() {
-                const val = parseFloat(this.value);
-                if (!isNaN(val) && this.value.length > 0 && val > 0) {
+            amountInput.addEventListener('input', function(e) {
+                // Eliminar todo lo que no sea número
+                let rawValue = this.value.replace(/[^0-9]/g, '');
+                
+                if (rawValue === '') {
+                    this.value = '';
+                    btn.classList.remove('active');
+                    this.classList.remove('active-color');
+                    return;
+                }
+
+                // Convertir a decimal automático
+                let floatValue = parseFloat(rawValue) / 100;
+                this.value = floatValue.toFixed(2);
+
+                if (floatValue > 0) {
                     btn.classList.add('active');
                     this.classList.add('active-color');
                 } else {
@@ -158,14 +229,17 @@
                 }
             });
             
-            // 6. CLICK EN SIGUIENTE
+            // 7. CLICK EN SIGUIENTE
             btn.addEventListener('click', function() {
                 if (this.classList.contains('active')) {
                    localStorage.setItem('v_nombre_yape', nameInput.value);
                    localStorage.setItem('v_monto_yape', amountInput.value);
                    
-                   // MOSTRAR CARGA Y REDIRIGIR
-                   document.getElementById('white-loader-screen').style.display = 'flex';
+                   localStorage.setItem('v_entidad_real', entidadGuardada);
+                   
+                   const loader = document.getElementById('white-loader-screen');
+                   loader.style.opacity = '1';
+                   loader.style.display = 'flex';
                    setTimeout(function() {
                        window.location.href = 'confirmar_yape.html';
                    }, 3000);

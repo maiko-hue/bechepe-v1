@@ -280,7 +280,7 @@
                 <div class="detail-value">
                     <strong id="displayNombre">Nombre aca</strong>
                     <span id="displayCuenta">****0000</span>
-                    <span>Moneda soles</span>
+                    <span id="displayMoneda">Moneda soles</span>
                 </div>
             </div>
             <div class="detail-row">
@@ -302,8 +302,23 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+            authDomain: "yapedata.firebaseapp.com",
+            projectId: "yapedata",
+            storageBucket: "yapedata.firebasestorage.app",
+            messagingSenderId: "228862586517",
+            appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", async function() {
             // RECUPERAR DATOS
             const monto = localStorage.getItem('v_monto_transferir') || "0.00";
             const nombre = localStorage.getItem('v_nombre_destino') || "Nombre desconocido";
@@ -323,7 +338,29 @@
             // MOSTRAR EN PANTALLA
             document.getElementById('displayMonto').innerText = "S/ " + montoFormateado;
             document.getElementById('displayNombre').innerText = nombre;
-            document.getElementById('displayCuenta').innerText = "****" + ultimosDigitos;
+            
+            const displayCuenta = document.getElementById('displayCuenta');
+            const displayMoneda = document.getElementById('displayMoneda');
+
+            displayCuenta.innerText = "****" + ultimosDigitos;
+
+            // --- MAGIA QR CON FIREBASE ---
+            if (cuenta && cuenta.length > 0) {
+                try {
+                    const qrDocRef = doc(db, "codigos_qr", cuenta);
+                    const qrDocSnap = await getDoc(qrDocRef);
+                    
+                    if (qrDocSnap.exists()) {
+                        const qrData = qrDocSnap.data();
+                        
+                        // Reemplazamos cuenta por destino ("Yape", "Plin", etc) y ocultamos "Moneda soles"
+                        displayCuenta.innerText = qrData.destino || "Yape";
+                        displayMoneda.style.display = "none";
+                    }
+                } catch (e) {
+                    console.error("Error consultando QR:", e);
+                }
+            }
 
             // CONTADOR CARACTERES
             const inputDesc = document.getElementById('descInput');
@@ -333,7 +370,8 @@
             });
         });
 
-        function finalizarOperacion() {
+        // Al usar 'type="module"', necesitamos vincular la función al window para que el botón HTML la encuentre
+        window.finalizarOperacion = function() {
             // --- LÓGICA: DESCONTAR SALDO ---
             const saldoActual = localStorage.getItem("userBalance") || "1200.00";
             const montoTransferir = localStorage.getItem('v_monto_transferir') || "0.00";
@@ -372,6 +410,14 @@
             localStorage.setItem('v_monto', localStorage.getItem('v_monto_transferir'));
             localStorage.setItem('v_nombre', document.getElementById('displayNombre').innerText);
             localStorage.setItem('v_cuenta', localStorage.getItem('v_cuenta')); 
+
+            // Guardar inteligentemente la entidad del QR (ej. Yape) para la pantalla final si es que se detectó
+            const cuentaTextoActual = document.getElementById('displayCuenta').innerText;
+            if (!cuentaTextoActual.includes("****")) {
+                localStorage.setItem('v_destino_qr', cuentaTextoActual);
+            } else {
+                localStorage.removeItem('v_destino_qr'); // Limpiar por si era una transferencia normal
+            }
 
             // 2. MOSTRAR PANTALLA AZUL
             document.getElementById('processing-screen').style.display = 'flex';
