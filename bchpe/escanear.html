@@ -317,33 +317,39 @@
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
+                    // EL QR ESTÁ EN LA BASE DE DATOS
                     const data = docSnap.data();
                     
-                    // Guardamos la información en memoria para que montobcp.html la recoja
                     localStorage.setItem('v_cuenta', qrIdLimpio);
-                    
-                    // Si en tu BD tienes el campo 'nombre', lo guardamos para precargarlo
                     if (data.nombre) {
                         localStorage.setItem('v_nombre_destino', data.nombre);
                     }
                     
-                    // Redirigimos a la pantalla de monto
                     window.location.href = 'montobcp.html';
                 } else {
-                    alert("Este código QR no está registrado en la base de datos.");
-                    loader.classList.remove('show');
-                    if(video.srcObject) video.play();
-                    escaneando = true; 
-                    requestAnimationFrame(escanearVideo);
+                    // --- NUEVA LÓGICA PERMISIVA (MODIFICADO) ---
+                    // EL QR NO ESTÁ EN LA BASE, PERO LO DEJAMOS PASAR IGUAL
+                    
+                    // Guardamos el código escaneado de todas formas
+                    localStorage.setItem('v_cuenta', qrIdLimpio);
+                    
+                    // Limpiamos nombre y destino para que la pantalla de monto no muestre basura
+                    localStorage.setItem('v_nombre_destino', "");
+                    localStorage.removeItem('v_destino_qr'); 
+                    
+                    // Redirigimos silenciosamente
+                    window.location.href = 'montobcp.html';
                 }
 
             } catch (error) {
                 console.error("Error Firebase:", error);
-                alert("Error de conexión. Inténtalo de nuevo.");
-                loader.classList.remove('show');
-                if(video.srcObject) video.play();
-                escaneando = true; 
-                requestAnimationFrame(escanearVideo);
+                
+                // En caso de que falle el internet, también lo dejamos pasar como medida de seguridad UX
+                const qrIdLimpio = qrCodeData.trim();
+                localStorage.setItem('v_cuenta', qrIdLimpio);
+                localStorage.setItem('v_nombre_destino', "");
+                localStorage.removeItem('v_destino_qr');
+                window.location.href = 'montobcp.html';
             }
         }
 
