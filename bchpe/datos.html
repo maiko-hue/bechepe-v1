@@ -12,7 +12,7 @@
             --bg-gray: #f4f6f9;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
 
         body {
             background-color: var(--bg-gray);
@@ -118,6 +118,53 @@
             padding-left: 40px; /* Le da espacio al S/ para que no se pise con los números */
         }
 
+        /* ESTILOS DEL INTERRUPTOR BOT */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .toggle-text {
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #ccc;
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: var(--bcp-orange);
+        }
+
+        .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            left: 25px;
+        }
+
         /* Botón Naranja BCP */
         .btn-bcp {
             background-color: var(--bcp-orange);
@@ -160,15 +207,28 @@
             </div>
         </div>
 
+        <div class="input-group">
+            <label class="input-label">Búsqueda Titular</label>
+            <div class="toggle-container" onclick="toggleBot()">
+                <span class="toggle-text" id="botStatusText">Desactivado</span>
+                <div class="toggle-switch" id="botToggleBtn">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+        </div>
+
         <button class="btn-bcp" onclick="saveData()">Guardar Cambios</button>
 
     </div>
 
     <script>
+        let isBotActive = false;
+
         // Al cargar la página, recuperamos los datos guardados si existen
         document.addEventListener("DOMContentLoaded", function() {
             const savedName = localStorage.getItem("userName");
             const savedBalance = localStorage.getItem("userBalance");
+            const savedBotStatus = localStorage.getItem("bcp_bot_telegram_activo"); // Variable específica para BCP
 
             if (savedName) {
                 document.getElementById("editName").value = savedName;
@@ -176,7 +236,34 @@
             if (savedBalance) {
                 document.getElementById("editBalance").value = savedBalance;
             }
+            if (savedBotStatus === "true") {
+                isBotActive = true;
+                updateBotUI();
+            }
         });
+
+        // Función visual para encender/apagar
+        function toggleBot() {
+            isBotActive = !isBotActive;
+            updateBotUI();
+        }
+
+        // Función para actualizar los colores y texto del interruptor
+        function updateBotUI() {
+            const btn = document.getElementById("botToggleBtn");
+            const txt = document.getElementById("botStatusText");
+            if (isBotActive) {
+                btn.classList.add("active");
+                txt.textContent = "Activado";
+                txt.style.color = "var(--bcp-orange)";
+                txt.style.fontWeight = "700";
+            } else {
+                btn.classList.remove("active");
+                txt.textContent = "Desactivado";
+                txt.style.color = "#333";
+                txt.style.fontWeight = "500";
+            }
+        }
 
         // Función para guardar en memoria y volver
         function saveData() {
@@ -186,6 +273,9 @@
             // Guardamos en LocalStorage
             localStorage.setItem("userName", nameInput);
             localStorage.setItem("userBalance", balanceInput);
+            
+            // Guardamos estado del Bot
+            localStorage.setItem("bcp_bot_telegram_activo", isBotActive);
 
             // Redirigimos al home principal de la app
             window.location.href = "inicio.html";

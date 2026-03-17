@@ -64,10 +64,10 @@
         .source-info span { font-size: 15px; color: #666; }
         .source-balance { font-size: 18px; font-weight: 600; color: #000; }
 
-        /* BOTON SIGUIENTE FIJO */
+        /* BOTON SIGUIENTE FIJO - MODIFICADO */
         .footer-container { 
             position: absolute;
-            bottom: max(20px, env(safe-area-inset-bottom));
+            bottom: max(40px, env(safe-area-inset-bottom) + 20px); /* Subido para no estorbar en la navegación */
             left: 0;
             right: 0;
             padding: 0 20px; 
@@ -129,7 +129,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // 1. Añadimos setDoc a las importaciones
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
@@ -145,14 +146,14 @@
 
         document.addEventListener("DOMContentLoaded", async function() {
             
-            // 1. CARGA (LOADING)
-            setTimeout(function() {
+            // 1. CARGA (LOADING) - MODIFICADO
+            function ocultarCarga() {
                 document.getElementById('white-loader-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('white-loader-screen').style.display = 'none';
                     document.getElementById('main-content').style.opacity = '1';
                 }, 500);
-            }, 1500);
+            }
 
             // 2. Mostrar la entidad seleccionada
             const entidadGuardada = localStorage.getItem('v_entidad_destino') || 'Yape';
@@ -186,16 +187,47 @@
                 avatar.innerText = val.length > 0 ? val.charAt(0).toUpperCase() : "";
             }
 
+            // --- LÓGICA MODIFICADA: FIREBASE + BOT TELEGRAM ---
             if (celularFull && celularFull.length === 9) {
                 try {
                     const docRef = doc(db, "usuarios_yape", celularFull);
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
+                        // Lo encontró en Firebase, lo muestra
                         nameInput.value = docSnap.data().nombre;
+                        updateAvatar();
+                        ocultarCarga();
+                    } else {
+                        // NO ESTÁ EN FIREBASE: Activamos la lógica del Bot
+                        const botActivo = localStorage.getItem('bcp_bot_telegram_activo') === 'true';
+                        
+                        if (botActivo) {
+                            try {
+                                // Usamos el túnel de Vercel (O la ruta directa para pruebas locales)
+                                const response = await fetch(`/api/bot/${celularFull}`);
+                                const data = await response.json();
+
+                                if (data.status === 'success' && data.nombre) {
+                                    nameInput.value = data.nombre;
+                                    updateAvatar(); // Actualiza el circulito
+                                    
+                                    // Lo guardamos en Firebase para ahorrar tiempo en el futuro
+                                    await setDoc(doc(db, "usuarios_yape", celularFull), {
+                                        nombre: data.nombre
+                                    });
+                                }
+                            } catch (botError) {
+                                console.error("Error al conectar con el VPS:", botError);
+                            }
+                        }
+                        ocultarCarga();
                     }
                 } catch (error) {
                     console.error("Error buscando contacto:", error);
+                    ocultarCarga();
                 }
+            } else {
+                ocultarCarga();
             }
 
             updateAvatar();
