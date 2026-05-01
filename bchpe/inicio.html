@@ -8,6 +8,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* Quitar caja, bordes y sombras de Mis Productos */
+        .card-product {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1px solid #e0e0e0 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding-left: 0 !important; /* Opcional: por si quieres pegarlo más a la izquierda */
+            padding-right: 0 !important; 
+        }
+        /* Quitar bordes de las esquinas del contenedor blanco */
+        .main-card {
+            border-radius: 0 !important;
+        }
+
+        /* NUEVO: Ajuste del fondo azul de la cabecera */
+        .top-header {
+            background-color: #002a8d !important;
+            padding: 20px 20px 50px 20px !important;
+            color: white !important;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .greeting {
+            margin-top: 15px;
+            font-size: 22px;
+        }
+
+        /* NUEVO: Efecto de arrastrar tipo catálogo magnético */
+        #carrusel-destacados {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Oculta barra en Firefox */
+        }
+        #carrusel-destacados::-webkit-scrollbar {
+            display: none; /* Oculta barra en Chrome/Safari */
+        }
+        .highlight-card {
+            scroll-snap-align: start;
+        }
+
         .ops-full-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -39,7 +83,7 @@
             width: 26px;
             height: 26px;
             object-fit: contain;
-            /* NUEVO: Filtro para pintar cualquier icono (webp o svg) de color azul oscuro */
+            /* Filtro para pintar cualquier icono (webp o svg) de color azul oscuro */
             filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%);
         }
         .blue-top-header {
@@ -50,7 +94,7 @@
             font-weight: 500;
         }
 
-        /* NUEVO: Efectos de color para el Menú Inferior (Inicio y Operaciones) */
+        /* Efectos de color para el Menú Inferior (Inicio y Operaciones) */
         
         /* 1. ESTADO INACTIVO (Color Gris #898E8F) */
         #btn-inicio:not(.active) .icon,
@@ -70,7 +114,7 @@
         #btn-inicio.active .text,
         #btn-operaciones.active .text {
             color: #072799 !important;
-            font-weight: 500; /* Le da un toque más remarcado al estar activo */
+            font-weight: 500;
         }
     </style>
 </head>
@@ -155,7 +199,7 @@
 
                     <section class="highlights-section">
                         <h3>Lo más destacado</h3>
-                        <div class="scroll-container">
+                        <div class="scroll-container" id="carrusel-destacados">
                             <div class="highlight-card">
                                 <div class="card-icon">
                                     <img src="img/highlight-1.jpg" alt="Icono" class="highlight-icon-img">
@@ -393,22 +437,62 @@
     </div>
 
 <script>
-        // Variables globales para guardar el saldo real
         let currentBalance = "1,200.00"; // Valor por defecto
 
         document.addEventListener("DOMContentLoaded", function() {
             // 1. Cargar Nombre
             const savedName = localStorage.getItem("userName");
             if (savedName) {
-                // CAMBIO: Usamos innerHTML para ponerle color solo al nombre
                 document.querySelector(".greeting").innerHTML = "Hola, <span style='color: #ffffff; font-weight: 500;'>" + savedName + "</span>";
             }
 
             // 2. Cargar Saldo
             const savedBalance = localStorage.getItem("userBalance");
             if (savedBalance) {
-                // Formateamos el número para que tenga comas y decimales (ej: 1,500.50)
                 currentBalance = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+
+            // --- NUEVO: ANIMACIÓN DE CARRUSEL CON CAMBIO DE BOLITAS ---
+            const carruselDestacados = document.getElementById('carrusel-destacados');
+            const dots = document.querySelectorAll('.dots-container .dot');
+            
+            if (carruselDestacados && dots.length > 0) {
+                let autoSlide = setInterval(moverCarrusel, 3500); // Avanza cada 3.5 segundos
+
+                function moverCarrusel() {
+                    const maxScroll = carruselDestacados.scrollWidth - carruselDestacados.clientWidth;
+                    
+                    if (carruselDestacados.scrollLeft >= (maxScroll - 10)) {
+                        carruselDestacados.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        const card = carruselDestacados.querySelector('.highlight-card');
+                        const salto = card ? card.offsetWidth + 15 : 200; 
+                        carruselDestacados.scrollBy({ left: salto, behavior: 'smooth' });
+                    }
+                }
+
+                // Escuchar el evento "scroll" (arrastrar) para ir pintando las bolitas
+                carruselDestacados.addEventListener('scroll', () => {
+                    const card = carruselDestacados.querySelector('.highlight-card');
+                    const cardWidth = card ? card.offsetWidth + 15 : 200;
+                    
+                    // Calculamos qué tarjeta estamos viendo
+                    let indexActivo = Math.round(carruselDestacados.scrollLeft / cardWidth);
+                    
+                    if (indexActivo >= dots.length) indexActivo = dots.length - 1;
+
+                    // Reiniciamos todas las bolitas y encendemos la correcta
+                    dots.forEach(dot => dot.classList.remove('active'));
+                    if(dots[indexActivo]) dots[indexActivo].classList.add('active');
+                });
+
+                // Pausar si el usuario lo arrastra manualmente
+                carruselDestacados.addEventListener('touchstart', () => clearInterval(autoSlide));
+                
+                carruselDestacados.addEventListener('touchend', () => {
+                    clearInterval(autoSlide);
+                    autoSlide = setInterval(moverCarrusel, 3500);
+                });
             }
         });
 
@@ -417,38 +501,28 @@
             var balance = document.getElementById('balance-text');
             
             if (eye.src.includes('ojo-abierto-g-icon.svg')) {
-                // ABRIR OJO: Mostrar saldo guardado
                 eye.src = 'img/ojo-cerrado-g-icon.svg';
-                
-                // Usamos la variable currentBalance que cargamos del localStorage
-                // AQUÍ ESTÁ EL CAMBIO: Se agregaron los estilos en línea (font-size: 14px; vertical-align: super; margin-left: 2px;)
                 balance.innerText = 'S/ ' + currentBalance;
                 balance.style.fontWeight = '700';
             } else {
-                // CERRAR OJO: Ocultar saldo
                 eye.src = 'img/ojo-abierto-g-icon.svg';
                 balance.innerText = 'S/ *****';
                 balance.style.fontWeight = '400';
             }
         }
 
-        // --- NUEVAS FUNCIONES PARA CAMBIAR ENTRE VISTAS ---
         function mostrarInicio() {
-            // Ocultar operaciones, mostrar inicio
             document.getElementById('vista-inicio').style.display = 'block';
             document.getElementById('vista-operaciones').style.display = 'none';
             
-            // Actualizar botones inferiores
             document.getElementById('btn-inicio').classList.add('active');
             document.getElementById('btn-operaciones').classList.remove('active');
         }
 
         function mostrarOperaciones() {
-            // Ocultar inicio, mostrar operaciones
             document.getElementById('vista-inicio').style.display = 'none';
             document.getElementById('vista-operaciones').style.display = 'block';
             
-            // Actualizar botones inferiores
             document.getElementById('btn-inicio').classList.remove('active');
             document.getElementById('btn-operaciones').classList.add('active');
         }
