@@ -2,108 +2,210 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Contacto</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Agregar Contacto - BCP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            box-sizing: border-box;
+        }
 
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        :root {
-            /* Colores Oficiales Yape */
-            --bg-color: #f4f5f7;
-            --card-color: #ffffff;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --accent-purple: #742284;
-            --accent-teal: #00BFA5;
-            --border-color: #e0e0e0;
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea, select {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-primary); }
-        .container { max-width: 480px; margin: 0 auto; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; background-color: var(--bg-color); }
-        
-        /* --- Header Estilo Yape --- */
-        .header-container { 
-            margin: -20px -20px 20px -20px; 
-            padding: 20px; 
-            background-color: var(--accent-purple); 
-            color: white; 
-            display: flex; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        .back-icon { font-size: 20px; color: white; padding: 10px; cursor: pointer; transition: 0.2s; }
-        .back-icon:active { opacity: 0.7; }
-        .header-title { font-size: 18px; font-weight: 600; margin-left: 10px; color: white; }
 
-        .form-group { margin-bottom: 25px; }
-        .label { font-size: 13px; color: var(--accent-purple); text-transform: uppercase; font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
-        
-        /* Input con diseño Yape */
-        .input-card {
-            background-color: var(--card-color); border-radius: 12px; padding: 16px 20px;
-            border: 1px solid var(--border-color); display: flex; align-items: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.3s ease;
+        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
         }
-        .input-card:focus-within { border-color: var(--accent-teal); box-shadow: 0 2px 8px rgba(0, 191, 165, 0.2); }
-        
-        .input-field {
-            background: transparent; border: none; color: var(--text-primary); width: 100%;
-            font-size: 16px; font-weight: 500; outline: none; font-family: inherit;
+
+        body {
+            background-color: #f2f4f7;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+            height: 100vh;
         }
-        .input-field::placeholder { color: #999; font-weight: 400; }
+
+        /* --- FONDO SUPERIOR AZUL BCP --- */
+        .blue-bg-curve {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background-color: #002A8D;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            z-index: 1;
+        }
+
+        /* --- CABECERA --- */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            height: 120px;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            position: absolute;
+            left: 20px;
+            top: 30px;
+        }
+        .logo-center {
+            height: 100px;
+            object-fit: contain;
+            position: absolute;
+            left: 50%;
+            top: 15px;
+            transform: translateX(-50%);
+        }
+
+        /* --- TARJETA BLANCA PRINCIPAL --- */
+        .main-card {
+            position: relative;
+            z-index: 3;
+            background: white;
+            margin: 10px 20px 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #002A8D;
+            text-align: center;
+            margin: 0 0 5px 0;
+        }
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
+
+        /* --- FORMULARIO Y ESTILOS DE CASILLAS --- */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9fb;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 14px 15px;
+            transition: border-color 0.3s;
+        }
+        .input-wrapper:focus-within {
+            border-color: #FF7800; /* Naranja BCP en el focus */
+            background-color: #ffffff;
+        }
+        .input-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            color: #002A8D;
+        }
+        .custom-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        .custom-input::placeholder {
+            color: #aaa;
+            font-weight: 400;
+        }
         
         /* Estilos específicos para el Select */
-        select.input-field {
-            -webkit-appearance: none; appearance: none; background-color: transparent; cursor: pointer;
+        select.custom-input {
+            -webkit-appearance: none; 
+            appearance: none; 
+            cursor: pointer;
         }
-        select.input-field option {
-            background-color: var(--card-color); color: var(--text-primary);
+        select.custom-input option {
+            background-color: white; 
+            color: #333;
         }
 
-        .input-icon { color: var(--accent-purple); font-size: 20px; margin-right: 15px; width: 24px; text-align: center; opacity: 0.9; }
-
-        /* Botón Guardar Yape */
+        /* --- BOTÓN GUARDAR --- */
         .btn-save {
-            margin-top: auto; background-color: var(--accent-teal);
-            color: white; padding: 18px; border-radius: 30px; border: none; width: 100%;
-            font-size: 17px; font-weight: 700; cursor: pointer; margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 191, 165, 0.3); transition: transform 0.1s, background-color 0.2s;
+            width: 100%;
+            background-color: #002A8D;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 5px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: transform 0.1s, background-color 0.3s;
         }
-        .btn-save:active { transform: scale(0.97); background-color: #00a892; }
+        .btn-save:active {
+            transform: scale(0.97);
+        }
 
-        /* --- ESTILOS DE TU ANIMACIÓN (PACMAN) --- */
+        /* --- ESTILOS DE LA ANIMACIÓN (PACMAN) --- */
         .custom-loader-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 9999;
             display: none; justify-content: center; align-items: center;
             flex-direction: column; backdrop-filter: blur(4px);
         }
-
         .loader { width: 8em; height: 8em; }
         .loader__eye1, .loader__eye2, .loader__mouth1, .loader__mouth2 { animation: eye1 3s ease-in-out infinite; }
         .loader__eye1, .loader__eye2 { transform-origin: 64px 64px; }
         .loader__eye2 { animation-name: eye2; }
         .loader__mouth1 { animation-name: mouth1; }
         .loader__mouth2 { animation-name: mouth2; visibility: hidden; }
-
         @keyframes eye1 {
             from { transform: rotate(-260deg) translate(0, -56px); }
             50%, 60% { animation-timing-function: cubic-bezier(0.17, 0, 0.58, 1); transform: rotate(-40deg) translate(0, -56px) scale(1); }
@@ -137,14 +239,14 @@ input, textarea {
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: 0;
             transition: opacity 0.3s, bottom 0.3s;
         }
-
         .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-        .toast.success { background-color: var(--accent-teal); color: white; }
-        .toast.error { background-color: #ff5252; color: white; }
-
+        .toast.success { background-color: #2BD071; color: white; }
+        .toast.error { background-color: #d32f2f; color: white; }
     </style>
 </head>
 <body>
+
+    <!-- Animación Pacman de Carga -->
     <div class="custom-loader-overlay" id="pacmanLoader">
         <svg height="108px" width="108px" viewBox="0 0 128 128" class="loader">
             <defs>
@@ -180,35 +282,56 @@ input, textarea {
         <p style="margin-top:20px; font-weight:600; color:white;">Guardando en la Nube...</p>
     </div>
 
+    <!-- Toast Notification -->
     <div id="toast" class="toast">Mensaje aquí</div>
 
-    <div class="container">
-        <div class="header-container">
-            <i class="fa-solid fa-arrow-left back-icon" onclick="window.location.href='opciones.html'"></i>
-            <span class="header-title">Nuevo Contacto</span>
-        </div>
+    <!-- FONDO Y CABECERA -->
+    <div class="blue-bg-curve"></div>
+    
+    <header class="header">
+        <a href="opciones.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <img src="img/secondlogo.png" alt="Logo" class="logo-center">
+    </header>
+
+    <main class="main-card">
+        <h1 class="card-title">Nuevo Contacto</h1>
+        <p class="card-subtitle">Registra los datos para autocompletado</p>
 
         <div class="form-group">
-            <label class="label">Número de Celular</label>
-            <div class="input-card">
-                <i class="fa-solid fa-mobile-screen input-icon"></i>
-                <input type="tel" id="contactNumber" class="input-field" placeholder="999 999 999" maxlength="9" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            <span class="input-label">NÚMERO DE CELULAR</span>
+            <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                <input type="tel" id="contactNumber" class="custom-input" placeholder="999 999 999" maxlength="9" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" autocomplete="off">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="label">Nombre y Apellido</label>
-            <div class="input-card">
-                <i class="fa-regular fa-user input-icon"></i>
-                <input type="text" id="contactName" class="input-field" placeholder="Ej. Juan Pérez">
+            <span class="input-label">NOMBRE Y APELLIDO</span>
+            <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input type="text" id="contactName" class="custom-input" placeholder="Ej. Juan Pérez" autocomplete="off">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="label">Destino</label>
-            <div class="input-card">
-                <i class="fa-solid fa-building-columns input-icon"></i>
-                <select id="contactDestino" class="input-field">
+            <span class="input-label">DESTINO</span>
+            <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+                    <circle cx="12" cy="5" r="2"></circle>
+                    <path d="M12 7v4"></path>
+                    <line x1="8" y1="16" x2="8.01" y2="16"></line>
+                    <line x1="16" y1="16" x2="16.01" y2="16"></line>
+                </svg>
+                <select id="contactDestino" class="custom-input">
                     <option value="Yape">Yape</option>
                     <option value="Plin">Plin</option>
                     <option value="Bim">Bim</option>
@@ -224,11 +347,12 @@ input, textarea {
             </div>
         </div>
 
-        <button class="btn-save" id="btnGuardar">Guardar</button>
-    </div>
+        <button class="btn-save" id="btnGuardar">GUARDAR CONTACTO</button>
+
+    </main>
 
     <script type="module">
-        // 1. IMPORTAMOS TU CONEXIÓN A FIREBASE DE FORMA DIRECTA
+        // IMPORTAMOS TU CONEXIÓN A FIREBASE DE FORMA DIRECTA
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -243,7 +367,7 @@ input, textarea {
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Función para mostrar el mensaje personalizado (Se mantiene igual)
+        // Función para mostrar el mensaje personalizado
         window.showToast = function(message, type) {
             var x = document.getElementById("toast");
             x.textContent = message;
@@ -254,12 +378,12 @@ input, textarea {
         document.getElementById('btnGuardar').addEventListener('click', async () => {
             const numero = document.getElementById('contactNumber').value;
             const nombre = document.getElementById('contactName').value;
-            const destino = document.getElementById('contactDestino').value; // CAPTURAMOS EL DESTINO
+            const destino = document.getElementById('contactDestino').value;
             const loader = document.getElementById('pacmanLoader');
 
             // VALIDACIÓN ESTRICTA
             if(numero.length !== 9 || nombre.trim() === "") {
-                showToast("Datos Erroneos", "error"); 
+                showToast("Datos Erróneos", "error"); 
                 return;
             }
 
@@ -267,17 +391,16 @@ input, textarea {
             loader.style.display = 'flex';
 
             try {
-                // --- AQUÍ OCURRE LA MAGIA DE LA NUBE ---
                 // Guardamos en la colección "usuarios_yape". 
                 // El ID del documento será el número de teléfono.
                 await setDoc(doc(db, "usuarios_yape", numero), {
                     nombre: nombre,
-                    destino: destino // GUARDAMOS EL DESTINO EN LA BASE DE DATOS
+                    destino: destino
                 });
 
-                // Esperamos un poquito para que se aprecie la animación (estética)
+                // Esperamos un poquito para que se aprecie la animación
                 setTimeout(() => {
-                    loader.style.display = 'none'; // Ocultar animación
+                    loader.style.display = 'none';
                     
                     showToast("¡Guardado en la Nube!", "success");
 
