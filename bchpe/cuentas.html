@@ -27,6 +27,13 @@ input, textarea {
     -ms-user-select: auto;
     user-select: auto;
 }
+
+/* Bloquea el menú de descarga al mantener presionadas las imágenes */
+img {
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+}
+
         body {
             background-color: #e5e7eb;
             display: flex;
@@ -35,6 +42,8 @@ input, textarea {
             overflow: hidden;
             margin: 0;
             font-family: 'Roboto', sans-serif;
+            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            overscroll-behavior-y: none;
         }
 
         .mobile-wrapper {
@@ -87,6 +96,8 @@ input, textarea {
             overflow-y: auto;
             padding: 25px 20px;
             background-color: #ffffff;
+            /* Bloquea el pull-to-refresh también en el contenedor con scroll */
+            overscroll-behavior-y: none;
         }
         .scroll-content::-webkit-scrollbar { width: 0px; background: transparent; }
 

@@ -28,6 +28,13 @@ input, textarea {
     -ms-user-select: auto;
     user-select: auto;
 }
+
+/* Bloquea el menú de descarga al mantener presionadas las imágenes */
+img {
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+}
+
         * {
             -webkit-tap-highlight-color: transparent;
             outline: none;
@@ -266,7 +273,8 @@ input, textarea {
             </div>
 
             <div class="password-container">
-                <input type="tel" id="passInput" class="password-input" placeholder="Clave de internet de 6 dígitos" maxlength="6" inputmode="numeric">
+                <!-- Se agregó autocomplete="off" para evitar que el navegador sugiera el historial de claves -->
+                <input type="tel" id="passInput" class="password-input" placeholder="Clave de internet de 6 dígitos" maxlength="6" inputmode="numeric" autocomplete="off">
                 <img src="img/ojo-abierto-g-icon.svg" id="eyeIcon" alt="Ver" class="eye-icon" onclick="togglePassword()">
             </div>
 
