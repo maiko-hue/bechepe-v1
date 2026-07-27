@@ -3,70 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pagar servicios</title>
+    <title>Pagar Servicios - BCP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            box-sizing: border-box;
+        }
 
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #333; display: flex; flex-direction: column; height: 100vh; }
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea, select {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
+        }
 
-        /* HEADER */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background-color: #fff; border-bottom: 1px solid #e0e0e0; }
-        .header-title { font-size: 24px; font-weight: 400; color: #444; flex-grow: 1; margin-left: 15px; }
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; }
-        .icon-btn svg { width: 30px; height: 30px; fill: #444; }
+        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+        }
 
-        /* CONTENIDO */
-        .main-content { padding: 20px 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        body {
+            background-color: #f2f4f7;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+            height: 100vh;
+        }
 
-        /* PANTALLA 1 */
-        #screen-1 { display: flex; flex-direction: column; flex-grow: 1; }
-        .input-container { border: 1px solid #ccc; border-radius: 8px; padding: 14px 15px; margin-top: 10px; display: flex; align-items: center; }
-        .input-field { width: 100%; border: none; outline: none; font-size: 18px; color: #333; font-family: inherit; }
-        .input-field::placeholder { color: #666; font-weight: 400; font-size: 18px; }
+        /* --- FONDO SUPERIOR AZUL BCP --- */
+        .blue-bg-curve {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background-color: #002A8D;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            z-index: 1;
+        }
 
-        /* PANTALLA 2 */
-        #screen-2 { display: none; flex-direction: column; flex-grow: 1; align-items: center; }
-        .company-info { text-align: center; margin-bottom: 30px; width: 100%; border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; }
-        .avatar-circle { width: 55px; height: 55px; background-color: #4a90e2; color: white; border-radius: 50%; font-size: 24px; font-weight: 500; display: flex; justify-content: center; align-items: center; margin: 0 auto 10px auto; text-transform: uppercase; }
-        .company-name { font-size: 20px; font-weight: 600; color: #000; margin-bottom: 5px; }
-        .company-type { font-size: 16px; color: #666; }
-        .service-input-container { width: 100%; margin-bottom: 20px; }
-        .service-input { width: 100%; padding: 16px; border: 1px solid #e0e0e0; background-color: #f9f9f9; border-radius: 8px; font-size: 18px; font-family: inherit; box-sizing: border-box; color: #333; outline: none; }
-        .service-input::placeholder { color: #999; font-weight: 400; }
+        /* --- CABECERA --- */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            height: 120px;
+        }
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .logo-center {
+            height: 100px;
+            object-fit: contain;
+            position: absolute;
+            left: 50%;
+            top: 15px;
+            transform: translateX(-50%);
+        }
 
-        /* BOTÓN */
-        .footer-container { margin-top: auto; padding-bottom: 25px; text-align: center; }
-        .btn-siguiente { width: 100%; background-color: #ff7800; color: white; border: none; border-radius: 40px; padding: 18px 0; font-size: 20px; font-weight: 500; cursor: pointer; }
-        .btn-siguiente:active { background-color: #e06900; }
+        /* --- TARJETA BLANCA PRINCIPAL --- */
+        .main-card {
+            position: relative;
+            z-index: 3;
+            background: white;
+            margin: 10px 20px 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #002A8D;
+            text-align: center;
+            margin: 0 0 5px 0;
+        }
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
 
-        /* CARGA BLANCA */
-        #white-loader-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; z-index: 9999; display: none; justify-content: center; align-items: center; }
-        .loader-container { position: relative; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
-        .loader-icon { width: 40px; height: 40px; z-index: 2; }
-        .spinner-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 4px solid transparent; border-top-color: #ff7800; animation: spin 1s linear infinite; z-index: 1; }
+        /* --- FORMULARIO Y ESTILOS DE CASILLAS --- */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9fb;
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 14px 15px;
+            transition: border-color 0.3s;
+        }
+        .input-wrapper:focus-within {
+            border-color: #FF7800; /* Naranja BCP */
+            background-color: #ffffff;
+        }
+        .input-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            color: #002A8D;
+        }
+        .custom-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        .custom-input::placeholder {
+            color: #aaa;
+            font-weight: 400;
+        }
+
+        /* --- PANTALLA 2 (INFO EMPRESA) --- */
+        .company-info {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+            border-bottom: 1px dashed #eaeaea;
+            padding-bottom: 20px;
+        }
+        .avatar-circle {
+            width: 60px;
+            height: 60px;
+            background-color: #002A8D;
+            color: white;
+            border-radius: 50%;
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 12px auto;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0, 42, 141, 0.2);
+        }
+        .company-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .company-type {
+            font-size: 14px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        /* --- BOTÓN GUARDAR --- */
+        .btn-save {
+            width: 100%;
+            background-color: #002A8D;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: transform 0.1s, background-color 0.3s;
+        }
+        .btn-save:active {
+            transform: scale(0.97);
+        }
+
+        /* --- CARGA BLANCA --- */
+        #white-loader-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: white;
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .loader-container {
+            position: relative;
+            width: 80px; height: 80px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .loader-icon {
+            width: 40px; height: 40px; z-index: 2;
+        }
+        .spinner-ring {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: #FF7800; /* Naranja BCP */
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
+    <!-- Pantalla de carga blanca oculta -->
     <div id="white-loader-screen">
         <div class="loader-container">
             <div class="spinner-ring"></div>
@@ -74,45 +255,89 @@ input, textarea {
         </div>
     </div>
 
+    <!-- FONDO Y CABECERA -->
+    <div class="blue-bg-curve"></div>
+    
     <header class="header">
+        <!-- Volver atrás -->
         <button class="icon-btn" onclick="window.history.back()">
-            <svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <div class="header-title">Pagar servicios</div>
+        
+        <!-- Logo Central -->
+        <img src="img/secondlogo.png" alt="Logo" class="logo-center">
+        
+        <!-- Ir al Inicio -->
         <button class="icon-btn" onclick="window.location.href='inicio.html'">
-            <svg viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
         </button>
     </header>
 
-    <div class="main-content">
+    <main class="main-card">
+        
+        <!-- PANTALLA 1: Búsqueda -->
         <div id="screen-1">
-            <div class="input-container">
-                <input type="text" id="searchInput" class="input-field" placeholder="Buscar empresa">
+            <h1 class="card-title">Pagar Servicios</h1>
+            <p class="card-subtitle">Busca la empresa o servicio a pagar</p>
+
+            <div class="form-group">
+                <span class="input-label">BUSCAR EMPRESA</span>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="searchInput" class="custom-input" placeholder="Ej: Luz del Sur, Sedapal..." autocomplete="off">
+                </div>
             </div>
-            <div class="footer-container">
-                <button class="btn-siguiente" onclick="mostrarPantalla2()">Siguiente</button>
-            </div>
+
+            <button class="btn-save" onclick="mostrarPantalla2()">SIGUIENTE</button>
         </div>
 
-        <div id="screen-2">
+        <!-- PANTALLA 2: Detalles del servicio (Oculto al inicio) -->
+        <div id="screen-2" style="display: none;">
+            
             <div class="company-info">
                 <div class="avatar-circle" id="companyAvatar">P</div>
                 <div class="company-name" id="companyNameDisplay">PagoEfectivo</div>
-                <div class="company-type">Empresa</div>
+                <div class="company-type">Empresa de Servicios</div>
             </div>
 
-            <div class="service-input-container">
-                <input type="text" id="serviceInput" class="service-input" placeholder="Ingresar servicio">
-            </div>
-            <div class="service-input-container">
-                <input type="text" id="numberInput" class="service-input" placeholder="Número">
+            <div class="form-group">
+                <span class="input-label">TIPO DE SERVICIO</span>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    <input type="text" id="serviceInput" class="custom-input" placeholder="Ingresar descripción" autocomplete="off">
+                </div>
             </div>
 
-            <div class="footer-container" style="width: 100%;">
-                <button class="btn-siguiente" onclick="irAConfirmacion()">Siguiente</button>
+            <div class="form-group">
+                <span class="input-label">NÚMERO DE SUMINISTRO / PAGO</span>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <input type="text" id="numberInput" class="custom-input" placeholder="Ej: 1234567" autocomplete="off">
+                </div>
             </div>
+
+            <button class="btn-save" onclick="irAConfirmacion()">SIGUIENTE</button>
         </div>
-    </div>
+
+    </main>
 
     <script>
         let selectedCompanyName = "PagoEfectivo"; 
@@ -124,8 +349,10 @@ input, textarea {
                 document.getElementById('companyNameDisplay').innerText = selectedCompanyName;
                 document.getElementById('companyAvatar').innerText = selectedCompanyName.charAt(0);
             }
+            
+            // Ocultar pantalla 1, mostrar pantalla 2
             document.getElementById('screen-1').style.display = 'none';
-            document.getElementById('screen-2').style.display = 'flex';
+            document.getElementById('screen-2').style.display = 'block';
         }
 
         function irAConfirmacion() {
@@ -135,10 +362,10 @@ input, textarea {
 
             // 2. Guardamos en localStorage
             localStorage.setItem('v_empresa_nombre', selectedCompanyName);
-            localStorage.setItem('v_servicio_input', serviceValue); // Lo que escribió en "Ingresar servicio"
-            localStorage.setItem('v_numero_input', numberValue);   // Lo que escribió en "Número"
+            localStorage.setItem('v_servicio_input', serviceValue); 
+            localStorage.setItem('v_numero_input', numberValue);  
 
-            // 3. Animación
+            // 3. Animación de carga blanca
             document.getElementById('white-loader-screen').style.display = 'flex';
             setTimeout(function() {
                 window.location.href = 'comfir_serv.html';
