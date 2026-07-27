@@ -5,48 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Opciones</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        /* Asegura que el body de opciones sea oscuro */
-        body.opciones-body {
-            background-color: #1a1a1a;
-        }
-        /* Ajuste clave: Quitar padding lateral para que la tarjeta toque los bordes */
-        .opciones-container {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            background-color: #1a1a1a;
-        }
-        /* Como quitamos el padding del contenedor, se lo damos al header */
-        .minimal-header {
-            padding: 40px 20px 20px 20px;
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            box-sizing: border-box;
         }
 
-        /* ESTILO PARA EL BOTÓN ROJO */
-        .option-btn.red .btn-icon-circle {
-            background-color: #d9534f !important;
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
         }
 
-        /* --- MODAL NATIVO PERSONALIZADO --- */
+        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+        }
+
+        body {
+            background-color: #f2f4f7;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+        }
+
+        /* --- FONDO SUPERIOR AZUL BCP --- */
+        .blue-bg-curve {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 240px;
+            background-color: #002A8D;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            z-index: 1;
+        }
+
+        /* --- CABECERA --- */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            height: 80px;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .logo-center {
+            height: 100px;
+            object-fit: contain;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- TARJETA BLANCA PRINCIPAL --- */
+        .main-card {
+            position: relative;
+            z-index: 3;
+            background: white;
+            margin: 10px 20px 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #002A8D;
+            text-align: center;
+            margin: 0 0 5px 0;
+        }
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
+
+        /* --- LISTA DE OPCIONES --- */
+        .menu-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .menu-row:last-child {
+            border-bottom: none;
+        }
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .menu-text {
+            flex-grow: 1;
+            color: #333;
+            font-size: 15.5px;
+            font-weight: 600;
+        }
+        .menu-arrow {
+            color: #ccc;
+        }
+
+        /* Colores de los íconos */
+        .bg-blue { background-color: #e6f0ff; color: #002A8D; }
+        .bg-cyan { background-color: #e0f7fa; color: #00838f; }
+        .bg-red { background-color: #ffebee; color: #d32f2f; }
+
+        /* --- MODALES NATIVOS --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -59,7 +160,6 @@ input, textarea {
             justify-content: center;
             align-items: center;
             padding: 30px;
-            box-sizing: border-box;
         }
         .modal-card {
             background: white;
@@ -68,7 +168,6 @@ input, textarea {
             border-radius: 15px;
             padding: 25px;
             text-align: center;
-            font-family: 'Roboto', sans-serif;
         }
         .modal-card h3 {
             margin: 0 0 15px 0;
@@ -77,7 +176,7 @@ input, textarea {
         }
         .modal-card p {
             color: #666;
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1.4;
             margin-bottom: 25px;
         }
@@ -87,51 +186,25 @@ input, textarea {
             gap: 12px;
         }
         .btn-modal {
-            padding: 12px;
+            padding: 14px;
             border-radius: 25px;
             border: none;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             width: 100%;
+            letter-spacing: 0.5px;
         }
-        .btn-confirm {
-            background-color: #ff7800;
-            color: white;
-        }
-        .btn-cancel {
-            background-color: transparent;
-            color: #ff7800;
-            font-weight: 600;
-        }
+        .btn-confirm { background-color: #002A8D; color: white; }
+        .btn-cancel { background-color: #f2f2f2; color: #666; }
+        .btn-danger { background-color: #d32f2f; color: white; }
 
-        /* --- NUEVO: ESTILOS MODAL AGREGAR CUENTA --- */
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            box-sizing: border-box;
-            outline: none;
-            font-family: 'Roboto', sans-serif;
-        }
-        .form-group input:focus {
-            border-color: #ff7800;
-        }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; color: #555; font-size: 13px; margin-bottom: 6px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; font-family: inherit;}
+        .form-group input:focus { border-color: #002A8D; }
 
-        /* --- NOTIFICACIÓN TOAST NATIVA --- */
+        /* --- TOAST --- */
         #toast-msg {
             visibility: hidden;
             min-width: 250px;
@@ -146,7 +219,6 @@ input, textarea {
             bottom: 30px;
             transform: translateX(-50%);
             font-size: 14px;
-            font-family: 'Roboto', sans-serif;
             font-weight: 500;
             box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
         }
@@ -158,23 +230,35 @@ input, textarea {
         @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
-<body class="opciones-body">
+<body>
 
+    <!-- FONDO Y CABECERA -->
+    <div class="blue-bg-curve"></div>
+    
+    <header class="header">
+        <a href="inicio.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <img src="img/secondlogo.png" alt="Logo" class="logo-center">
+    </header>
+
+    <!-- MODAL BORRAR HISTORIAL -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-card">
             <h3>¿Borrar historial?</h3>
             <p>Se eliminarán todos los movimientos registrados hasta el momento. Esta acción no se puede deshacer.</p>
             <div class="modal-buttons">
-                <button class="btn-modal btn-confirm" onclick="ejecutarBorrado()">SÍ, ELIMINAR</button>
+                <button class="btn-modal btn-danger" onclick="ejecutarBorrado()">SÍ, ELIMINAR</button>
                 <button class="btn-modal btn-cancel" onclick="cerrarModal()">CANCELAR</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL AGREGAR CUENTA -->
     <div class="modal-overlay" id="addAccountModal">
         <div class="modal-card">
             <h3>Agregar Banco</h3>
-            <p style="font-size: 14px; margin-bottom: 20px;">Registra una cuenta para que esté disponible para todos los usuarios.</p>
+            <p style="margin-bottom: 20px;">Registra una cuenta para que esté disponible para todos los usuarios.</p>
             
             <div class="form-group">
                 <label>Nro</label>
@@ -193,85 +277,80 @@ input, textarea {
         </div>
     </div>
 
-    <div class="mobile-wrapper">
-        <div class="mobile-container opciones-container" style="padding: 0 !important;">
-            
-            <div class="minimal-header">
-                <a href="inicio.html" class="back-btn">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                </a>
-                <h2>OPCIONES</h2>
+    <!-- TARJETA DE OPCIONES -->
+    <main class="main-card">
+        <h1 class="card-title">Configuración</h1>
+        <p class="card-subtitle">Modifica los datos y ajustes de tu app</p>
+
+        <!-- Bloque 1 -->
+        <a href="datos.html" class="menu-row">
+            <div class="icon-box bg-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
+            <span class="menu-text">Datos de mi cuenta</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
 
-            <div class="options-card">
-                
-                <div class="buttons-group">
-                    <a href="datos.html" class="option-btn purple" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-user.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">DATOS DE MI CUENTA</span>
-                    </a>
-
-                    <div class="option-btn purple" onclick="abrirAddModal()" style="cursor: pointer;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-bank.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">AGREGAR BANCO</span>
-                    </div>
-
-                    <a href="agregarct.html" class="option-btn purple" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-contact.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">AGREGAR CONTACTO</span>
-                    </a>
-
-                    <a href="qradd.html" class="option-btn purple" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-qr.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">AGREGAR QR</span>
-                    </a>
-
-                    <a href="editable.html" class="option-btn purple" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-voucher.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">EDITAR VOUCHER</span>
-                    </a>
-                </div>
-
-                <p class="section-label">Otras opciones</p>
-
-                <div class="buttons-group">
-                    <a href="https://t.me/+6weA5d0fVzFlYTcx" target="_blank" class="option-btn cyan" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-support.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">CONTACTAR SOPORTE</span>
-                    </a>
-
-                    <a href="sobre.html" class="option-btn cyan" style="text-decoration: none;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-voucher.svg" alt="" class="btn-icon">
-                        </div>
-                        <span class="btn-text">LEE ESTO</span>
-                    </a>
-
-                    <div class="option-btn red" onclick="abrirModal()" style="cursor: pointer;">
-                        <div class="btn-icon-circle">
-                            <img src="img/opc-support.svg" alt="" class="btn-icon" style="filter: brightness(0) invert(1);">
-                        </div>
-                        <span class="btn-text">BORRAR MOVIMIENTOS</span>
-                    </div>
-                </div>
-
-                <div style="height: 50px;"></div>
+        <div class="menu-row" onclick="abrirAddModal()">
+            <div class="icon-box bg-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
             </div>
-
+            <span class="menu-text">Agregar banco</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
-    </div>
+
+        <a href="agregarct.html" class="menu-row">
+            <div class="icon-box bg-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <span class="menu-text">Agregar contacto</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <a href="qradd.html" class="menu-row">
+            <div class="icon-box bg-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </div>
+            <span class="menu-text">Agregar QR</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <a href="editable.html" class="menu-row">
+            <div class="icon-box bg-blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </div>
+            <span class="menu-text">Editar voucher</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <div style="height: 15px; border-bottom: 1px dashed #eee; margin-bottom: 15px;"></div>
+
+        <!-- Bloque 2 -->
+        <a href="https://t.me/+6weA5d0fVzFlYTcx" target="_blank" class="menu-row">
+            <div class="icon-box bg-cyan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </div>
+            <span class="menu-text">Contactar soporte</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <a href="sobre.html" class="menu-row">
+            <div class="icon-box bg-cyan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </div>
+            <span class="menu-text">Lee esto</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <div class="menu-row" onclick="abrirModal()">
+            <div class="icon-box bg-red">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </div>
+            <span class="menu-text" style="color: #d32f2f;">Borrar movimientos</span>
+            <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+    </main>
 
     <div id="toast-msg"></div>
 
