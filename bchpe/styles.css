@@ -11,12 +11,19 @@
 }
 
 /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
+input, textarea, select {
     -webkit-user-select: auto;
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
 }
+
+/* --- NUEVO: Bloquea el menú de descarga al mantener presionadas las imágenes --- */
+img {
+    -webkit-touch-callout: none !important;
+    -webkit-user-drag: none !important;
+}
+
 /* --- RESET Y BASES --- */
 * {
     margin: 0;
@@ -31,6 +38,8 @@ body {
     background-color: #f4f6f9; 
     min-height: 100vh;
     overflow-x: hidden;
+    /* --- NUEVO: Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) --- */
+    overscroll-behavior-y: none;
 }
 
 .mobile-wrapper {
