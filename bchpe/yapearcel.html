@@ -6,28 +6,27 @@
     <title>Enviar a</title>
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        /* Optimización para móviles */
-        * {
             -webkit-tap-highlight-color: transparent;
-            outline: none;
+            outline: none !important;
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            box-sizing: border-box;
+        }
+
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+        /* --- SOLUCIÓN: Bloqueo estricto contra descargas de imágenes --- */
+        img {
+            -webkit-touch-callout: none !important; 
+            -webkit-user-drag: none !important;     
+            pointer-events: none !important;        
         }
 
         body {
@@ -50,7 +49,7 @@ input, textarea {
             height: 100%;
             background-color: white;
             z-index: 9999;
-            display: none; /* Oculto por defecto */
+            display: none; 
             justify-content: center;
             align-items: center;
         }
@@ -120,7 +119,7 @@ input, textarea {
             display: flex;
             flex-direction: column;
             padding: 20px 20px;
-            overflow: hidden; /* Evita que el fondo crezca más de la pantalla */
+            overflow: hidden; 
         }
 
         /* PASO 1: BUSCADOR */
@@ -128,7 +127,15 @@ input, textarea {
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: hidden; /* Permite que la lista interna haga scroll */
+            overflow: hidden; 
+        }
+
+        /* NUEVO: Contenedor compartido de búsqueda y QR */
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
         }
 
         .search-bar {
@@ -137,7 +144,7 @@ input, textarea {
             background-color: #f5f5f5;
             border-radius: 8px;
             padding: 12px 15px;
-            flex-shrink: 0;
+            flex-grow: 1;
         }
 
         .search-icon svg {
@@ -161,15 +168,76 @@ input, textarea {
             font-weight: 400;
         }
 
-        /* --- NUEVO: LISTA DE CONTACTOS --- */
+        /* NUEVO: Botón QR a la derecha */
+        .qr-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid #dcdcdc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .qr-icon-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            /* Filtro CSS para convertir el blanco en #0F2B59 */
+            filter: brightness(0) saturate(100%) invert(14%) sepia(34%) saturate(4062%) hue-rotate(208deg) brightness(93%) contrast(99%);
+        }
+
+        /* --- NUEVO: SECCIÓN "A NUEVO CELULAR" --- */
+        #new-contact-section {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        #new-contact-section:active {
+            background-color: #f9f9f9;
+        }
+
+        .nc-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nc-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .nc-phone {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .nc-arrow {
+            color: #ff7800; /* Naranja BCP */
+            font-size: 22px;
+            font-weight: 400;
+            margin-right: 5px;
+        }
+
+        /* LISTA DE CONTACTOS */
         .contacts-list {
-            margin-top: 15px;
+            margin-top: 10px;
             overflow-y: auto;
             flex-grow: 1;
             padding-bottom: 20px;
         }
         
-        /* Ocultar la barra de scroll para que se vea más limpio en Android/iOS */
         .contacts-list::-webkit-scrollbar {
             width: 0px;
             background: transparent;
@@ -209,38 +277,13 @@ input, textarea {
             color: #888;
         }
 
-        /* FOOTER / BOTÓN SIGUIENTE */
-        .footer-container {
-            margin-top: auto;
-            padding-top: 15px;
-            padding-bottom: 40px;
-            background: white;
-            display: none; 
-            flex-shrink: 0;
-        }
-
-        .btn-siguiente {
-            width: 100%;
-            background-color: #ff7800;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 16px 0;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-siguiente:active { background-color: #e06900; }
-
-        /* --- NUEVO ESTILO: PASO 2 (Oculto al inicio) --- */
+        /* PASO 2 (Oculto al inicio) */
         #step-2 {
             display: none;
             flex-direction: column;
             overflow-y: auto;
             padding-bottom: 20px;
-            margin: 0 -5px; /* Compensa un poco el padding lateral */
+            margin: 0 -5px; 
         }
         
         #step-2::-webkit-scrollbar {
@@ -323,13 +366,29 @@ input, textarea {
     <div class="main-content">
         
         <div id="step-1">
-            <div class="search-bar">
-                <div class="search-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
+            
+            <div class="search-wrapper">
+                <div class="search-bar">
+                    <div class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </div>
+                    <input type="tel" id="contactInput" class="search-input" placeholder="Buscar contacto o ingresa el celular" maxlength="9">
                 </div>
-                <input type="tel" id="contactInput" class="search-input" placeholder="Buscar contacto o ingresa el celular" maxlength="9">
+                
+                <div class="qr-icon-btn" onclick="window.location.href='escanear.html'">
+                    <img src="img/qr.webp" alt="QR">
+                </div>
+            </div>
+
+            <!-- SECCIÓN NUEVA: Reemplaza al botón siguiente -->
+            <div id="new-contact-section" onclick="irAlSiguiente()">
+                <div class="nc-content">
+                    <span class="nc-title">A nuevo celular</span>
+                    <span class="nc-phone" id="displayNewPhone"></span>
+                </div>
+                <div class="nc-arrow">›</div>
             </div>
 
             <div class="contacts-list">
@@ -408,10 +467,6 @@ input, textarea {
                     <div class="contact-phone">911 222 333</div>
                 </div>
                 
-            </div>
-
-            <div class="footer-container" id="footerBtn">
-                <button class="btn-siguiente" onclick="irAlSiguiente()">Siguiente</button>
             </div>
         </div>
 
@@ -494,40 +549,57 @@ input, textarea {
 
     <script>
         const input = document.getElementById('contactInput');
-        const footer = document.getElementById('footerBtn');
+        const contactsList = document.querySelector('.contacts-list');
+        const newContactSection = document.getElementById('new-contact-section');
+        const displayNewPhone = document.getElementById('displayNewPhone');
 
-        // Validación de 9 dígitos al escribir
+        // Escuchador dinámico al escribir
         input.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Solo números
-            if (this.value.length === 9) {
-                footer.style.display = 'block';
+            this.value = this.value.replace(/[^0-9]/g, ''); 
+            const val = this.value;
+
+            if (val.length === 9) {
+                // Ocultar lista y mostrar "A nuevo celular"
+                contactsList.style.display = 'none';
+                newContactSection.style.display = 'flex';
+                
+                // Formatear el teléfono de a 3 (Ej: 928 061 182)
+                const formattedPhone = `${val.slice(0,3)} ${val.slice(3,6)} ${val.slice(6,9)}`;
+                displayNewPhone.textContent = formattedPhone;
             } else {
-                footer.style.display = 'none';
+                // Mostrar lista y ocultar "A nuevo celular"
+                contactsList.style.display = 'block';
+                newContactSection.style.display = 'none';
+                
+                // Filtrado visual de contactos
+                document.querySelectorAll('.contact-item').forEach(item => {
+                    const phone = item.querySelector('.contact-phone').textContent.replace(/\s/g, '');
+                    item.style.display = phone.includes(val) ? 'block' : 'none';
+                });
+                document.querySelectorAll('.letter-header').forEach(header => {
+                    header.style.display = val.length > 0 ? 'none' : 'block';
+                });
             }
         });
 
+        // Si el usuario toca un contacto de la agenda, pasa de frente sin preguntar
         function seleccionarContacto(numero) {
             input.value = numero;
-            // Disparamos manualmente el evento 'input' para que aparezca el botón Siguiente
-            input.dispatchEvent(new Event('input'));
+            irAlSiguiente(); 
         }
 
+        // Lógica de avance original
         function irAlSiguiente() {
-            // 1. Guardar el celular
             localStorage.setItem('v_celular_destino', input.value);
-
-            // 2. Mostrar pantalla de carga blanca
             document.getElementById('white-loader-screen').style.display = 'flex';
 
-            // 3. Esperar 1.5 segundos y cambiar de pantalla
             setTimeout(function() {
                 document.getElementById('white-loader-screen').style.display = 'none';
-                document.getElementById('step-1').style.display = 'none'; // Ocultar buscador
-                document.getElementById('step-2').style.display = 'flex'; // Mostrar opción Yape
+                document.getElementById('step-1').style.display = 'none'; 
+                document.getElementById('step-2').style.display = 'flex'; 
             }, 1500);
         }
 
-        // NOTA: Nueva función para guardar la entidad seleccionada
         function irAMonto(entidad) {
             localStorage.setItem('v_entidad_destino', entidad);
             window.location.href = 'montocel.html';
