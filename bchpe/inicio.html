@@ -9,31 +9,63 @@
     
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-    overscroll-behavior-y: none;
-}
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            overscroll-behavior-y: none;
+        }
 
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
 
-/* Bloquea el menú de descarga al mantener presionadas las imágenes */
-img {
-    -webkit-touch-callout: none !important;
-    -webkit-user-drag: none !important;
-}
+        /* --- SOLUCIÓN: Bloquea el menú de descarga al mantener presionadas las imágenes --- */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+            pointer-events: none !important; /* Bloqueo estricto */
+        }
+        /* Restauramos el clic exclusivamente para los íconos interactivos como el ojito */
+        img.action-icon {
+            pointer-events: auto !important;
+        }
+
+        /* ==================================================
+           SKELETON ANIMATION
+           ================================================== */
+        .skeleton {
+            position: relative !important;
+            overflow: hidden !important;
+            background-color: #dbe1e8 !important;
+            color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+        .skeleton * {
+            opacity: 0 !important;
+        }
+        .skeleton::after {
+            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: skeleton-shimmer 1s infinite;
+        }
+        @keyframes skeleton-shimmer { 100% { left: 100%; } }
+
+        .sk-text { border-radius: 4px; display: inline-block; min-width: 50px; }
+        .sk-text-block { border-radius: 4px; display: block; width: fit-content; margin-bottom: 4px; min-height: 14px;}
+        .sk-text-center { margin-left: auto; margin-right: auto; }
+        .icon-circle.skeleton { border-radius: 50%; }
+        .card-icon.skeleton { border-radius: 50%; }
 
         /* Quitar caja, bordes y sombras de Mis Productos */
         .card-product {
@@ -42,7 +74,7 @@ img {
             border-bottom: 1px solid #e0e0e0 !important;
             box-shadow: none !important;
             border-radius: 0 !important;
-            padding-left: 0 !important; /* Opcional: por si quieres pegarlo más a la izquierda */
+            padding-left: 0 !important; 
             padding-right: 0 !important; 
         }
         /* Quitar bordes de las esquinas del contenedor blanco */
@@ -50,7 +82,7 @@ img {
             border-radius: 0 !important;
         }
 
-        /* NUEVO: Ajuste del fondo azul de la cabecera */
+        /* Ajuste del fondo azul de la cabecera */
         .top-header {
             background-color: #002a8d !important;
             padding: 20px 20px 50px 20px !important;
@@ -66,14 +98,14 @@ img {
             font-size: 22px;
         }
 
-        /* NUEVO: Efecto de arrastrar tipo catálogo magnético */
+        /* Efecto de arrastrar tipo catálogo magnético */
         #carrusel-destacados {
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Oculta barra en Firefox */
+            scrollbar-width: none; 
         }
         #carrusel-destacados::-webkit-scrollbar {
-            display: none; /* Oculta barra en Chrome/Safari */
+            display: none; 
         }
         .highlight-card {
             scroll-snap-align: start;
@@ -99,7 +131,7 @@ img {
         .op-grid-icon-box {
             width: 55px;
             height: 55px;
-            background-color: #f4f6f9; /* Color de fondo sutil parecido a la app */
+            background-color: #f4f6f9; 
             border-radius: 14px;
             display: flex;
             justify-content: center;
@@ -110,7 +142,6 @@ img {
             width: 26px;
             height: 26px;
             object-fit: contain;
-            /* Filtro para pintar cualquier icono (webp o svg) de color azul oscuro */
             filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%);
         }
         .blue-top-header {
@@ -122,8 +153,6 @@ img {
         }
 
         /* Efectos de color para el Menú Inferior (Inicio y Operaciones) */
-        
-        /* 1. ESTADO INACTIVO (Color Gris #898E8F) */
         #btn-inicio:not(.active) .icon,
         #btn-operaciones:not(.active) .icon {
             filter: brightness(0) saturate(100%) invert(64%) sepia(4%) saturate(702%) hue-rotate(143deg) brightness(89%) contrast(85%) !important;
@@ -133,7 +162,6 @@ img {
             color: #898E8F !important;
         }
 
-        /* 2. ESTADO ACTIVO (Color Azul #072799) */
         #btn-inicio.active .icon,
         #btn-operaciones.active .icon {
             filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%) !important;
@@ -180,11 +208,11 @@ img {
                                 <img src="img/lg_favicon_light.svg" alt="Cuenta" class="account-img-icon"> 
                             </div>
                             <div class="product-info-col">
-                                <p class="product-label">CUENTAS DE AHORRO</p>
-                                <p class="product-number">7809</p>
+                                <p class="product-label skeleton sk-text">CUENTAS DE AHORRO</p>
+                                <p class="product-number skeleton sk-text">**** 7809</p>
                             </div>
                             <div class="product-balance-col">
-                                <p class="balance" id="balance-text">S/ *****</p>
+                                <p class="balance skeleton sk-text" id="balance-text">S/ *****</p>
                             </div>
                             <div class="product-arrow-col">›</div>
                         </div>
@@ -196,100 +224,108 @@ img {
 
                     <section class="operations-grid">
                         <a href="yapearcel.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle">
+                            <div class="icon-circle skeleton">
                                 <img src="img/yapear-a-celular.svg" alt="" class="op-img">
                             </div>
-                            <p>Yapear a<br>celular</p>
+                            <p class="skeleton sk-text sk-text-center">Yapear a<br>celular</p>
                         </a>
 
                         <a href="escanear.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle">
+                            <div class="icon-circle skeleton">
                                 <img src="img/qricono.svg" alt="" class="op-img">
                             </div>
-                            <p>Pagar con<br>QR</p>
+                            <p class="skeleton sk-text sk-text-center">Pagar con<br>QR</p>
                         </a>
 
                         <a href="servicio.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle">
+                            <div class="icon-circle skeleton">
                                 <img src="img/pagar-servicios.svg" alt="" class="op-img">
                             </div>
-                            <p>Pagar<br>servicios</p>
+                            <p class="skeleton sk-text sk-text-center">Pagar<br>servicios</p>
                         </a>
 
                         <a href="trans.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle">
+                            <div class="icon-circle skeleton">
                                 <img src="img/transf-dinero.svg" alt="" class="op-img">
                             </div>
-                            <p>Transferir<br>dinero</p>
+                            <p class="skeleton sk-text sk-text-center">Transferir<br>dinero</p>
                         </a>
                     </section>
 
                     <section class="highlights-section">
                         <h3>Lo más destacado</h3>
                         <div class="scroll-container" id="carrusel-destacados">
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/highlight-1.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Descubre Qore</h4>
-                                    <p>Tu nueva zona de beneficios</p>
+                                    <h4 class="skeleton sk-text-block">Descubre Qore</h4>
+                                    <p class="skeleton sk-text-block">Tu nueva zona de beneficios</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-2.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Cambia soles y dólares</h4>
-                                    <p>¡Con el mejor tipo de cambio!</p>
+                                    <h4 class="skeleton sk-text-block">Cambia soles y dólares</h4>
+                                    <p class="skeleton sk-text-block">¡Con el mejor tipo de cambio!</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-3.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Seguro de Tarjetas</h4>
-                                    <p>Protégete contra robos</p>
+                                    <h4 class="skeleton sk-text-block">Seguro de Tarjetas</h4>
+                                    <p class="skeleton sk-text-block">Protégete contra robos</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-4.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Actualiza tus datos</h4>
-                                    <p>Mejora tu nivel de seguridad</p>
+                                    <h4 class="skeleton sk-text-block">Actualiza tus datos</h4>
+                                    <p class="skeleton sk-text-block">Mejora tu nivel de seguridad</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-5.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Adelanto de Sueldo</h4>
-                                    <p>¡Obtenlo al instante!</p>
+                                    <h4 class="skeleton sk-text-block">Adelanto de Sueldo</h4>
+                                    <p class="skeleton sk-text-block">¡Obtenlo al instante!</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-6.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Tarjeta de Crédito</h4>
-                                    <p>Solicítala 100% online</p>
+                                    <h4 class="skeleton sk-text-block">Tarjeta de Crédito</h4>
+                                    <p class="skeleton sk-text-block">Solicítala 100% online</p>
                                 </div>
                             </div>
+                            
                             <div class="highlight-card">
-                                <div class="card-icon">
+                                <div class="card-icon skeleton">
                                     <img src="img/destacado-7.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4>Dónaciones</h4>
-                                    <p>Sé parte del cambio</p>
+                                    <h4 class="skeleton sk-text-block">Dónaciones</h4>
+                                    <p class="skeleton sk-text-block">Sé parte del cambio</p>
                                 </div>
                             </div>
+
                         </div>
                         
                         <div class="dots-container">
@@ -479,7 +515,14 @@ img {
                 currentBalance = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
 
-            // --- NUEVO: ANIMACIÓN DE CARRUSEL CON CAMBIO DE BOLITAS ---
+            // --- LÓGICA SKELETON (3 SEGUNDOS) ---
+            setTimeout(() => {
+                document.querySelectorAll('.skeleton').forEach(el => {
+                    el.classList.remove('skeleton', 'sk-text', 'sk-text-block', 'sk-text-center');
+                });
+            }, 3000);
+
+            // --- ANIMACIÓN DE CARRUSEL CON CAMBIO DE BOLITAS ---
             const carruselDestacados = document.getElementById('carrusel-destacados');
             const dots = document.querySelectorAll('.dots-container .dot');
             

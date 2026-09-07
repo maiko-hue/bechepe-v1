@@ -2,40 +2,47 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mi Cuenta - Banca Móvil</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+        }
 
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
 
-/* Bloquea el menú de descarga al mantener presionadas las imágenes */
-img {
-    -webkit-touch-callout: none !important;
-    -webkit-user-drag: none !important;
-}
+        /* --- SOLUCIÓN: Bloqueo estricto contra descargas de imágenes --- */
+        img {
+            -webkit-touch-callout: none !important; /* Bloquea el menú de iOS */
+            -webkit-user-drag: none !important;     /* Bloquea arrastrar en Chrome */
+            pointer-events: none !important;        /* Hace la imagen intocable */
+        }
+        /* Restauramos el toque solo si la imagen es un ícono de acción interactivo */
+        img.icon-orange-small, img.search-icon {
+            pointer-events: auto !important;
+        }
 
+        /* --- SOLUCIÓN: Ajuste al fondo para evitar bordes blancos por el zoom --- */
         body {
-            background-color: #e5e7eb;
+            /* Usamos el color blanco de fondo para que si el zoom reduce, no se vea un fondo gris a los lados */
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             height: 100vh;
@@ -47,11 +54,10 @@ img {
         }
 
         .mobile-wrapper {
+            /* Se quitó el max-width restrictivo. Ahora se adapta al ancho de la ventana pero conservando proporción */
             width: 100%;
-            max-width: 480px;
             background-color: #ffffff;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -212,6 +218,7 @@ img {
             object-fit: cover;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             cursor: pointer;
+            pointer-events: auto !important; /* Si el banner se clickea */
         }
 
         /* MOVIMIENTOS */
