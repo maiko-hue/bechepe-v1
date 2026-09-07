@@ -130,7 +130,6 @@
             overflow: hidden; 
         }
 
-        /* NUEVO: Contenedor compartido de búsqueda y QR */
         .search-wrapper {
             display: flex;
             align-items: center;
@@ -168,7 +167,6 @@
             font-weight: 400;
         }
 
-        /* NUEVO: Botón QR a la derecha */
         .qr-icon-btn {
             width: 44px;
             height: 44px;
@@ -186,11 +184,10 @@
             width: 24px;
             height: 24px;
             object-fit: contain;
-            /* Filtro CSS para convertir el blanco en #0F2B59 */
             filter: brightness(0) saturate(100%) invert(14%) sepia(34%) saturate(4062%) hue-rotate(208deg) brightness(93%) contrast(99%);
         }
 
-        /* --- NUEVO: SECCIÓN "A NUEVO CELULAR" --- */
+        /* SECCIÓN "A NUEVO CELULAR" */
         #new-contact-section {
             display: none;
             justify-content: space-between;
@@ -275,71 +272,6 @@
         .contact-phone {
             font-size: 13px;
             color: #888;
-        }
-
-        /* PASO 2 (Oculto al inicio) */
-        #step-2 {
-            display: none;
-            flex-direction: column;
-            overflow-y: auto;
-            padding-bottom: 20px;
-            margin: 0 -5px; 
-        }
-        
-        #step-2::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
-        }
-
-        .entity-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 10px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background-color 0.1s;
-        }
-
-        .entity-item:active {
-            background-color: #f9f9f9;
-        }
-
-        .entity-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .entity-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: block;
-            margin-right: 15px;
-            object-fit: cover;
-        }
-
-        .entity-name {
-            font-size: 14.5px;
-            font-weight: 400;
-            color: #000;
-        }
-
-        .entity-name.text-only {
-            margin-left: 10px;
-        }
-
-        .entity-arrow {
-            color: #888;
-            font-size: 18px;
-            margin-right: 5px;
-        }
-
-        .other-entities-title {
-            color: #001f7a;
-            font-size: 13.5px;
-            font-weight: 500;
-            padding: 25px 10px 10px 10px;
         }
 
     </style>
@@ -470,81 +402,6 @@
             </div>
         </div>
 
-        <div id="step-2">
-            <div class="entity-item" onclick="irAMonto('BCP')">
-                <div class="entity-left">
-                    <img src="img/yaarbc.png" alt="BCP" class="entity-icon">
-                    <div class="entity-name">BCP</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            
-            <div class="entity-item" onclick="irAMonto('Yape')">
-                <div class="entity-left">
-                    <img src="img/LogoYapeCirculo.svg" alt="YAPE" class="entity-icon">
-                    <div class="entity-name">YAPE</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-
-            <div class="other-entities-title">Otras entidades</div>
-
-            <div class="entity-item" onclick="irAMonto('Plin')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Plin</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Bim')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Bim</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Tunki')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Tunki</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Agora / Oh!')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Agora / Oh!</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('BBVA')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">BBVA</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Interbank')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Interbank</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Financiera Efectiva')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Financiera Efectiva</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Dale')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Dale</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-            <div class="entity-item" onclick="irAMonto('Izipay')">
-                <div class="entity-left">
-                    <div class="entity-name text-only">Izipay</div>
-                </div>
-                <div class="entity-arrow">›</div>
-            </div>
-        </div>
-
     </div>
 
     <script>
@@ -582,27 +439,22 @@
             }
         });
 
-        // Si el usuario toca un contacto de la agenda, pasa de frente sin preguntar
+        // Si el usuario toca un contacto de la agenda, pasa de frente a Monto
         function seleccionarContacto(numero) {
             input.value = numero;
             irAlSiguiente(); 
         }
 
-        // Lógica de avance original
+        // Lógica de avance directo a montocel.html
         function irAlSiguiente() {
             localStorage.setItem('v_celular_destino', input.value);
+            localStorage.setItem('v_entidad_destino', 'YAPE'); // Valor por defecto
+            
             document.getElementById('white-loader-screen').style.display = 'flex';
 
             setTimeout(function() {
-                document.getElementById('white-loader-screen').style.display = 'none';
-                document.getElementById('step-1').style.display = 'none'; 
-                document.getElementById('step-2').style.display = 'flex'; 
+                window.location.href = 'montocel.html';
             }, 1500);
-        }
-
-        function irAMonto(entidad) {
-            localStorage.setItem('v_entidad_destino', entidad);
-            window.location.href = 'montocel.html';
         }
     </script>
 
