@@ -6,319 +6,509 @@
     <title>Enviar a</title>
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        /* --- NUEVO: EVITAR CUADROS AZULES DE SELECCIÓN EN MÓVILES --- */
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
-        input:focus, button:focus, a:focus {
+            -webkit-tap-highlight-color: transparent !important;
             outline: none !important;
-            box-shadow: none !important;
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
         }
 
-        /* --- PANTALLA DE CARGA --- */
-        #loader-screen {
+        /* Bloqueo estricto contra descargas de imágenes */
+        img {
+            -webkit-touch-callout: none !important; 
+            -webkit-user-drag: none !important;     
+            pointer-events: none !important;        
+        }
+        
+        /* Restaurar clics solo en íconos interactivos */
+        img.eye-icon {
+            pointer-events: auto !important;
+            cursor: pointer;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        /* --- PANTALLA DE CARGA INICIAL (BLANCA) --- */
+        #white-loader-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: white;
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: opacity 0.5s ease;
         }
 
-        .loader-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loader-icon { width: 40px; height: 40px; z-index: 2; }
-
-        .spinner-ring {
-            position: absolute;
+        /* --- PANTALLA DE CARGA FINAL (AZUL) --- */
+        #blue-loader-screen {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            border: 4px solid transparent;
-            border-top-color: #ff7800;
-            animation: spin 1s linear infinite;
-            z-index: 1;
+            background-color: #002A8D; /* Azul BCP */
+            z-index: 99999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
         }
 
+        .loader-container { position: relative; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
+        .loader-icon { width: 40px; height: 40px; z-index: 2; }
+        .spinner-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 4px solid transparent; border-top-color: #ff7800; animation: spin 1s linear infinite; z-index: 1; }
+        .loader-text { color: #ffffff; font-size: 16px; font-weight: 500; margin-top: 20px; }
+        
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- CONTENIDO PRINCIPAL --- */
+        /* HEADER */
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; }
+        .header-title { font-size: 18px; color: #444; flex-grow: 1; text-align: center; font-weight: 500; }
+        .icon-btn { background: none; border: none; cursor: pointer; padding: 5px; display: flex; justify-content: center; align-items: center; }
+        .icon-btn svg { width: 24px; height: 24px; fill: #444; }
+
+        /* CONTENIDO PRINCIPAL */
         #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 90px; /* Espacio para el botón */
             opacity: 0;
             transition: opacity 0.5s ease;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
         }
+        #main-content::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* HEADER */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .header-title {
-            font-size: 24px;
-            color: #444;
-            flex-grow: 1;
-            margin-left: 15px;
-            font-weight: 400;
-        }
-
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 5px; }
-        .icon-btn svg { width: 30px; height: 30px; fill: #555; }
-
-        /* DATOS DEL DESTINATARIO */
-        .recipient-section {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid #f0f0f0;
+        /* PERFIL CENTRADO */
+        .profile-section {
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 10px 20px 25px 20px;
         }
-
         .avatar-circle {
-            width: 65px;
-            height: 65px;
-            background-color: #4a90e2;
+            width: 50px;
+            height: 50px;
+            background-color: #4a90e2; /* Azul claro */
             color: white;
             border-radius: 50%;
-            font-size: 28px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 500;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-transform: uppercase;
         }
-
-        /* NOMBRE EDITABLE */
-        .recipient-name-input {
-            font-size: 26px;
+        .profile-name-input {
+            font-size: 18px;
             font-weight: 500;
-            color: #000;
-            margin-bottom: 8px;
+            color: #001e60;
             border: none;
             text-align: center;
-            width: 90%;
-            outline: none;
-            background: transparent;
-            font-family: inherit;
-        }
-        .recipient-name-input::placeholder { color: #aaa; }
-
-        /* CUENTA */
-        .recipient-account {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px; 
-        }
-
-        .recipient-currency {
-            font-size: 16px;
-            color: #888;
-        }
-
-        /* SECCIÓN MONTO */
-        .amount-section { padding: 35px 25px; }
-
-        .label-blue {
-            color: #002a80;
-            font-weight: 600;
-            font-size: 19px;
-            margin-bottom: 20px;
-        }
-
-        .currency-toggle { margin-bottom: 15px; }
-        .currency-toggle img { height: 40px; width: auto; }
-
-        .input-amount-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 35px;
-        }
-
-        .currency-symbol {
-            font-size: 60px;
-            color: #002a80;
-            margin-right: 10px;
-            font-weight: 400;
-        }
-
-        .amount-input {
-            border: none;
-            font-size: 60px;
-            color: #ccc;
             width: 100%;
             outline: none;
-            font-weight: 300;
             background: transparent;
             font-family: inherit;
+            margin-bottom: 4px;
         }
-        .amount-input.active-color { color: #002a80; }
+        .profile-phone {
+            font-size: 14px;
+            color: #666;
+        }
 
-        /* SECCIÓN DESDE */
-        .source-section { padding: 0 25px; }
+        /* SECCIONES COMUNES */
+        .section-container {
+            padding: 15px 25px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #002A8D;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .info-circle {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid #ff7800;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 15px;
+            font-size: 12px;
+            color: #ff7800;
+            font-weight: 600;
+            margin-left: 8px;
+        }
 
-        .source-card {
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 20px;
+        /* MONTO */
+        .monto-input-wrapper {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        .currency {
+            font-size: 42px;
+            font-weight: 400;
+            margin-right: 8px;
+        }
+        .amount-input {
+            border: none;
+            font-size: 42px;
+            width: 100%;
+            outline: none;
+            font-weight: 400;
+            background: transparent;
+            font-family: inherit;
+            padding: 0;
+        }
+        .monto-cero { color: #d32f2f; }
+        .monto-valido { color: #002a80; }
+
+        .envio-gratis { font-size: 14px; color: #555; }
+        .error-monto { font-size: 14px; color: #d32f2f; display: none; }
+
+        /* DESTINO (CON BORDE SUPERIOR) */
+        .dropdown-box {
+            position: relative;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            padding: 18px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            background-color: #fcfcfc;
+        }
+        .dropdown-label {
+            position: absolute;
+            top: -9px;
+            left: 12px;
+            background: #ffffff;
+            padding: 0 5px;
+            font-size: 13px;
+            color: #666;
+        }
+        .dropdown-value {
+            font-size: 16px;
+            color: #111;
+            font-weight: 400;
         }
 
-        .source-info strong {
-            display: block;
-            font-size: 18px;
-            color: #000;
-            margin-bottom: 5px;
+        /* DESDE */
+        .desde-box {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 16px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fcfcfc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .source-info span { font-size: 16px; color: #666; }
-        .source-balance {
-            font-size: 20px;
-            font-weight: 600;
-            color: #000;
+        .desde-name { font-size: 15px; color: #111; font-weight: 400; margin-bottom: 4px; }
+        .desde-num { font-size: 13px; color: #888; }
+        .desde-saldo { font-size: 16px; font-weight: 600; color: #111; }
+        .eye-icon { width: 22px; height: 22px; }
+
+        /* MENSAJE */
+        .mensaje-box {
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            padding: 16px 15px;
+        }
+        .mensaje-box input {
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+        }
+        .mensaje-box input::placeholder { color: #888; }
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+            padding-right: 5px;
         }
 
         /* BOTÓN INFERIOR */
-        .footer-container {
-            margin-top: auto;
-            padding: 25px;
-            text-align: center;
+        .footer-container { 
+            position: absolute;
+            bottom: 65px;
+            left: 0;
+            right: 0;
+            padding: 0 20px; 
+            text-align: center; 
+            background: white;
+        }
+        .btn-realizar { 
+            width: 100%; 
+            background-color: #f0f0f0; 
+            color: #a0a0a0; 
+            border: none; 
+            border-radius: 35px; 
+            padding: 18px 0; 
+            font-size: 18px; 
+            font-weight: 500; 
+            cursor: default; 
+            transition: background-color 0.3s; 
+        }
+        .btn-realizar.active { 
+            background-color: #ff7800; 
+            color: white;
+            cursor: pointer; 
         }
 
-        .btn-siguiente {
-            width: 100%;
-            background-color: #d8d8d8;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 20px 0;
-            font-size: 22px;
-            font-weight: 500;
-            cursor: default;
-            transition: background-color 0.3s;
+        /* --- BOTTOM SHEET DESTINOS --- */
+        .modal-destinos {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-end;
         }
-        .btn-siguiente.active {
-            background-color: #ff7800;
+        .sheet-content {
+            background: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUpSheet 0.3s ease-out forwards;
+        }
+        @keyframes slideUpSheet {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .sheet-handle {
+            width: 40px;
+            height: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 0 auto 20px auto;
+        }
+        .sheet-title {
+            font-size: 16px;
+            color: #002A8D;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .sheet-list {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .sheet-list::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        .entity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
         }
+        .entity-left { display: flex; align-items: center; }
+        .entity-icon { width: 32px; height: 32px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        .entity-name { font-size: 15px; color: #111; font-weight: 400; }
+        .entity-name.text-only { margin-left: 0; }
+        .entity-arrow { color: #888; font-size: 18px; margin-right: 5px; }
 
+        .other-entities-title {
+            color: #002A8D;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 25px 0 10px 0;
+        }
     </style>
 </head>
 <body>
 
-    <div id="loader-screen">
+    <!-- PANTALLA DE CARGA INICIAL (BLANCA) -->
+    <div id="white-loader-screen">
         <div class="loader-container">
             <div class="spinner-ring"></div>
             <img src="img/cargaicono.svg" alt="Cargando" class="loader-icon">
         </div>
     </div>
 
+    <!-- PANTALLA DE CARGA FINAL (AZUL) -->
+    <div id="blue-loader-screen">
+        <div class="loader-container">
+            <div class="spinner-ring"></div>
+            <img src="img/reload.svg" alt="Cargando" class="loader-icon">
+        </div>
+        <div class="loader-text">Validando token digital</div>
+    </div>
+
+    <!-- MODAL DESTINOS (BOTTOM SHEET) -->
+    <div id="modalDestinos" class="modal-destinos">
+        <div class="sheet-content">
+            <div class="sheet-handle" onclick="cerrarDestinos()"></div>
+            <div class="sheet-title">Seleccione una entidad financiera</div>
+            
+            <div class="sheet-list">
+                <!-- Con Íconos -->
+                <div class="entity-item" onclick="seleccionarEntidad('BCP')">
+                    <div class="entity-left">
+                        <img src="img/yaarbc.png" alt="BCP" class="entity-icon">
+                        <div class="entity-name">BCP</div>
+                    </div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('YAPE')">
+                    <div class="entity-left">
+                        <img src="img/LogoYapeCirculo.svg" alt="YAPE" class="entity-icon">
+                        <div class="entity-name">YAPE</div>
+                    </div>
+                    <div class="entity-arrow">›</div>
+                </div>
+
+                <div class="other-entities-title">Otras entidades</div>
+
+                <!-- Puro Texto -->
+                <div class="entity-item" onclick="seleccionarEntidad('Plin')">
+                    <div class="entity-left"><div class="entity-name text-only">Plin</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Bim')">
+                    <div class="entity-left"><div class="entity-name text-only">Bim</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Tunki')">
+                    <div class="entity-left"><div class="entity-name text-only">Tunki</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Agora / Oh!')">
+                    <div class="entity-left"><div class="entity-name text-only">Agora / Oh!</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('BBVA')">
+                    <div class="entity-left"><div class="entity-name text-only">BBVA</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Interbank')">
+                    <div class="entity-left"><div class="entity-name text-only">Interbank</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Financiera Efectiva')">
+                    <div class="entity-left"><div class="entity-name text-only">Financiera Efectiva</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Dale')">
+                    <div class="entity-left"><div class="entity-name text-only">Dale</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+                <div class="entity-item" onclick="seleccionarEntidad('Izipay')">
+                    <div class="entity-left"><div class="entity-name text-only">Izipay</div></div>
+                    <div class="entity-arrow">›</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERFAZ PRINCIPAL -->
+    <header class="header">
+        <button class="icon-btn" onclick="window.history.back()">
+            <svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/></svg>
+        </button>
+        <div class="header-title">Enviar a</div>
+        <button class="icon-btn" onclick="window.location.href='inicio.html'">
+            <svg viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+        </button>
+    </header>
+
     <div id="main-content">
         
-        <header class="header">
-            <button class="icon-btn" onclick="window.history.back()">
-                <svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/></svg>
-            </button>
-            <div class="header-title">Enviar a</div>
-            <button class="icon-btn" onclick="window.location.href='inicio.html'">
-                <svg viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
-            </button>
-        </header>
-
-        <div class="recipient-section">
-            <div class="avatar-circle" id="avatarInitial"></div>
-            
-            <input type="text" class="recipient-name-input" id="destNameInput" value="" placeholder="Ingresa nombre">
-            
-            <div class="recipient-account" id="destAccount">****0000</div>
-            
-            <div class="recipient-currency" id="destCurrency">Moneda soles</div>
+        <div class="profile-section">
+            <div class="avatar-circle" id="avatarInitial">U</div>
+            <input type="text" class="profile-name-input" id="destNameInput" value="" placeholder="Ingresa nombre">
+            <div class="profile-phone" id="displayDestPhone">****0000</div>
         </div>
 
-        <div class="amount-section">
-            <div class="label-blue">Moneda y monto</div>
-            
-            <div class="currency-toggle">
-                <img src="img/tipo-moneda.svg" alt="Soles/Dólares">
+        <div class="section-container">
+            <div class="section-title">
+                Monto <span class="info-circle">i</span>
             </div>
+            <div class="monto-input-wrapper">
+                <span class="currency monto-cero" id="currencySymbol">S/</span>
+                <input type="tel" id="amountInput" class="amount-input monto-cero" placeholder="0.00" value="0.00">
+            </div>
+            <div class="envio-gratis" id="envioGratisText" style="display:none;">Envío gratis</div>
+            <div class="error-monto" id="errorMonto" style="display:block;">Monto mínimo S/ 1.00</div>
+        </div>
 
-            <div class="input-amount-container">
-                <span class="currency-symbol">S/</span>
-                <input type="number" id="amountInput" class="amount-input" placeholder="0.00" inputmode="decimal">
+        <div class="section-container">
+            <div class="section-title">Destino</div>
+            <div class="dropdown-box" onclick="abrirDestinos()">
+                <span class="dropdown-label">Entidad financiera</span>
+                <div class="dropdown-value" id="entidadSeleccionada">BCP</div>
+                <div class="dropdown-arrow">▼</div>
             </div>
         </div>
 
-        <div class="source-section">
-            <div class="label-blue">Desde</div>
-            <div class="source-card">
-                <div class="source-info">
-                    <strong>Cuenta Digital Soles</strong>
-                    <span>7809</span>
+        <div class="section-container">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                Desde 
+                <img src="img/ojo-cerrado-g-icon.svg" class="eye-icon" id="eyeIcon" onclick="toggleSaldo()">
+            </div>
+            <div class="desde-box">
+                <div class="desde-left">
+                    <div class="desde-name">Cuenta Digital Soles</div>
+                    <div class="desde-num" id="sourceAccountText">**** 7004</div>
                 </div>
-                <div class="source-balance" id="myBalance">S/ 0.00</div>
+                <div class="desde-right">
+                    <span class="desde-saldo" id="displaySaldo">S/ *****</span>
+                </div>
             </div>
         </div>
 
-        <div class="footer-container">
-            <button id="btnNext" class="btn-siguiente">Siguiente</button>
+        <div class="section-container" style="margin-top: -10px;">
+            <div class="mensaje-box">
+                <input type="text" id="mensajeInput" placeholder="Mensaje (Opcional)" maxlength="100">
+            </div>
+            <div class="char-counter"><span id="charCount">0</span>/100</div>
         </div>
 
     </div>
 
+    <div class="footer-container">
+        <button id="btnRealizar" class="btn-realizar" disabled>Realizar transferencia</button>
+    </div>
+
+    <!-- SCRIPT DE FIREBASE ORIGINAL Y LECTURA DE DATOS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -337,73 +527,65 @@ input, textarea {
 
         document.addEventListener("DOMContentLoaded", async function() {
             
-            // 1. CARGA (LOADING) MANTENIDA IGUAL
+            // 1. CARGA INICIAL
             setTimeout(function() {
-                document.getElementById('loader-screen').style.opacity = '0';
+                document.getElementById('white-loader-screen').style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('loader-screen').style.display = 'none';
+                    document.getElementById('white-loader-screen').style.display = 'none';
                     document.getElementById('main-content').style.opacity = '1';
-                    document.body.style.overflow = 'auto'; 
                 }, 500);
-            }, 1500); 
+            }, 1000); 
 
-            // 2. RECUPERAR SALDO
-            const savedBalance = localStorage.getItem("userBalance");
-            let saldoMostrar = "1,200.00"; 
+            // 2. RECUPERAR DATOS DE LA CUENTA
+            const cuentaGuardada = localStorage.getItem('v_cuenta') || '0000000000000';
+            const entidadGuardada = localStorage.getItem('v_entidad_destino') || 'BCP';
+            const nombreGuardado = localStorage.getItem('v_nombre') || '';
 
-            if (savedBalance) {
-                 const val = parseFloat(savedBalance);
-                 if (!isNaN(val)) {
-                     saldoMostrar = val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                 } else {
-                     saldoMostrar = savedBalance;
-                 }
+            // Mostrar cuenta cortada
+            let cuentaMostrar = cuentaGuardada;
+            if(cuentaGuardada.length >= 4) {
+                cuentaMostrar = "****" + cuentaGuardada.slice(-4);
             }
-            document.getElementById('myBalance').innerText = "S/ " + saldoMostrar;
+            document.getElementById('displayDestPhone').innerText = cuentaMostrar;
+            
+            // Mostrar y configurar entidad seleccionada
+            document.getElementById('entidadSeleccionada').innerText = entidadGuardada;
+            actualizarTextoBoton(entidadGuardada);
 
-            // 3. RECUPERAR CUENTA Y MASCARA
-            const cuentaGuardada = localStorage.getItem('v_cuenta'); 
-            let ultimosDigitos = "0000";
-
-            if (cuentaGuardada && cuentaGuardada.length > 0) {
-                if (cuentaGuardada.length >= 4) {
-                    ultimosDigitos = cuentaGuardada.slice(-4);
-                } else {
-                    ultimosDigitos = cuentaGuardada;
-                }
-            }
-            document.getElementById('destAccount').innerText = "****" + ultimosDigitos;
-
-            // 4. LÓGICA DEL AVATAR Y FIREBASE
+            // Pre-llenar el input de nombre si viene de la pantalla anterior
             const nameInput = document.getElementById('destNameInput');
             const avatar = document.getElementById('avatarInitial');
-            const destAccountElement = document.getElementById('destAccount');
-            const destCurrencyElement = document.getElementById('destCurrency');
+            
+            if(nombreGuardado) {
+                nameInput.value = nombreGuardado;
+            }
 
             function updateAvatar() {
                 const val = nameInput.value.trim();
                 if (val.length > 0) {
                     avatar.innerText = val.charAt(0).toUpperCase();
                 } else {
-                    avatar.innerText = "";
+                    avatar.innerText = "U";
                 }
             }
 
-            // --- LÓGICA COMBINADA: BUSCA EN CUENTAS Y EN QR ---
+            // BUSCAR EN FIREBASE (QR O CUENTAS COLABORATIVAS)
             if (cuentaGuardada && cuentaGuardada.length > 0) {
                 try {
-                    // Primero busca en codigos_qr por si viene de un escaneo
                     const qrDocRef = doc(db, "codigos_qr", cuentaGuardada);
                     const qrDocSnap = await getDoc(qrDocRef);
                     
                     if (qrDocSnap.exists()) {
                         const qrData = qrDocSnap.data();
-                        // ¡Viene de un QR! Actualizamos nombre, destino y limpiamos moneda
                         nameInput.value = qrData.nombre;
-                        destAccountElement.innerText = qrData.destino || "Yape"; // Muestra "Yape" si no hay destino definido
-                        destCurrencyElement.innerText = ""; // Limpia "Moneda soles"
+                        document.getElementById('entidadSeleccionada').innerText = qrData.destino || "Yape";
+                        actualizarTextoBoton(qrData.destino || "Yape");
+                        
+                        // Guardar variable QR para el voucher de éxito
+                        localStorage.setItem('v_destino_qr', qrData.destino || "Yape");
                     } else {
-                        // Si no es un QR, buscamos en cuentas_colaborativas por si viene de transferencia manual
+                        localStorage.removeItem('v_destino_qr'); // Limpiar por si acaso
+                        
                         const q = query(collection(db, "cuentas_colaborativas"), where("numero_cuenta", "==", cuentaGuardada));
                         const querySnapshot = await getDocs(q);
                         
@@ -417,41 +599,148 @@ input, textarea {
             }
             
             updateAvatar();
-            
             nameInput.addEventListener('input', updateAvatar);
+        });
+    </script>
 
-            // 5. LÓGICA DE MONTO
-            const amountInput = document.getElementById('amountInput');
-            const btn = document.getElementById('btnNext');
+    <!-- LÓGICA DE LA INTERFAZ Y DESCUENTO DE SALDO -->
+    <script>
+        // --- GESTIÓN DEL SALDO (CON EL OJITO) ---
+        let realBalance = localStorage.getItem('userBalance') || '1200.00';
+        let formattedBalance = parseFloat(realBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        let isSaldoVisible = false;
 
-            amountInput.addEventListener('input', function() {
-                const val = parseFloat(this.value);
-                if (!isNaN(val) && this.value.length > 0) {
-                    btn.classList.add('active');
-                    this.classList.add('active-color');
-                    localStorage.setItem('v_monto_transferir', this.value);
-                } else {
-                    btn.classList.remove('active');
-                    this.classList.remove('active-color');
-                }
-            });
+        function toggleSaldo() {
+            isSaldoVisible = !isSaldoVisible;
+            const eye = document.getElementById('eyeIcon');
+            const saldoEl = document.getElementById('displaySaldo');
+            if(isSaldoVisible) {
+                eye.src = 'img/ojo-abierto-g-icon.svg';
+                saldoEl.innerText = 'S/ ' + formattedBalance;
+            } else {
+                eye.src = 'img/ojo-cerrado-g-icon.svg';
+                saldoEl.innerText = 'S/ *****';
+            }
+        }
+
+        // --- GESTIÓN DEL MONTO ---
+        const amountInput = document.getElementById('amountInput');
+        const currencySymbol = document.getElementById('currencySymbol');
+        const btnRealizar = document.getElementById('btnRealizar');
+        const errorMonto = document.getElementById('errorMonto');
+        const envioGratisText = document.getElementById('envioGratisText');
+
+        amountInput.addEventListener('input', function() {
+            let val = this.value.replace(/[^0-9]/g, '');
+            if(val === '') { val = '0'; }
             
-            // 6. CLICK EN SIGUIENTE
-            btn.addEventListener('click', function() {
-                if (this.classList.contains('active')) {
-                    localStorage.setItem('v_nombre_destino', nameInput.value);
-                    
-                    const loader = document.getElementById('loader-screen');
-                    loader.style.display = 'flex';
-                    setTimeout(() => {
-                        loader.style.opacity = '1';
-                    }, 10);
+            let floatVal = parseFloat(val) / 100;
+            this.value = floatVal.toFixed(2);
 
-                    setTimeout(() => {
-                        window.location.href = 'confirmar.html';
-                    }, 1500);
-                }
-            });
+            if(floatVal > 0 && floatVal < 1) {
+                this.classList.remove('monto-valido');
+                this.classList.add('monto-cero');
+                currencySymbol.classList.remove('monto-valido');
+                currencySymbol.classList.add('monto-cero');
+                
+                errorMonto.style.display = 'block';
+                envioGratisText.style.display = 'none';
+                
+                btnRealizar.classList.remove('active');
+                btnRealizar.disabled = true;
+            } else if (floatVal >= 1) {
+                this.classList.remove('monto-cero');
+                this.classList.add('monto-valido');
+                currencySymbol.classList.remove('monto-cero');
+                currencySymbol.classList.add('monto-valido');
+                
+                errorMonto.style.display = 'none';
+                envioGratisText.style.display = 'block';
+                
+                btnRealizar.classList.add('active');
+                btnRealizar.disabled = false;
+            } else {
+                this.classList.remove('monto-valido');
+                this.classList.add('monto-cero');
+                currencySymbol.classList.remove('monto-valido');
+                currencySymbol.classList.add('monto-cero');
+                
+                errorMonto.style.display = 'block';
+                envioGratisText.style.display = 'none';
+                
+                btnRealizar.classList.remove('active');
+                btnRealizar.disabled = true;
+            }
+        });
+
+        amountInput.addEventListener('focus', function() {
+            if (this.value === '0.00') { this.value = ''; }
+        });
+        amountInput.addEventListener('blur', function() {
+            if (this.value === '') { this.value = '0.00'; }
+        });
+
+        // --- CONTADOR DE MENSAJE ---
+        document.getElementById('mensajeInput').addEventListener('input', function() {
+            document.getElementById('charCount').innerText = this.value.length;
+        });
+
+        // --- GESTIÓN DEL MENÚ DESTINOS ---
+        function abrirDestinos() {
+            document.getElementById('modalDestinos').style.display = 'flex';
+        }
+
+        function cerrarDestinos() {
+            document.getElementById('modalDestinos').style.display = 'none';
+        }
+
+        function seleccionarEntidad(nombre) {
+            document.getElementById('entidadSeleccionada').innerText = nombre;
+            localStorage.setItem('v_entidad_destino', nombre);
+            actualizarTextoBoton(nombre);
+            cerrarDestinos();
+        }
+
+        function actualizarTextoBoton(entidad) {
+            if(entidad.toUpperCase() === 'YAPE') {
+                document.getElementById('btnRealizar').innerText = "Realizar yapeo";
+            } else {
+                document.getElementById('btnRealizar').innerText = "Realizar transferencia";
+            }
+        }
+
+        // --- CLICK EN BOTÓN FINAL (LÓGICA UNIFICADA) ---
+        btnRealizar.addEventListener('click', function() {
+            if (this.classList.contains('active')) {
+                const nameInput = document.getElementById('destNameInput');
+                const monto = amountInput.value;
+
+                // 1. Guardamos el nombre y monto
+                localStorage.setItem('v_nombre', nameInput.value || "Usuario Destino");
+                localStorage.setItem('v_monto', monto);
+                
+                // 2. DESCONTAR SALDO DE FORMA REALISTA
+                const saldoActual = localStorage.getItem("userBalance") || "1200.00";
+                const saldoNumerico = parseFloat(saldoActual.replace(/,/g, ''));
+                const montoNumerico = parseFloat(monto);
+                
+                let nuevoSaldo = saldoNumerico - montoNumerico;
+                if (nuevoSaldo < 0) nuevoSaldo = 0; // Evitamos saldo negativo visual
+                
+                localStorage.setItem("userBalance", nuevoSaldo.toFixed(2));
+                
+                // 3. Mostrar pantalla de carga Azul ("Validando token digital")
+                const loader = document.getElementById('blue-loader-screen');
+                loader.style.display = 'flex';
+                setTimeout(() => {
+                    loader.style.opacity = '1';
+                }, 10);
+                
+                // 4. Pasar directo al comprobante final de éxito
+                setTimeout(function() {
+                    window.location.href = 'exito.html';
+                }, 2500);
+            }
         });
     </script>
 </body>

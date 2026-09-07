@@ -6,31 +6,27 @@
     <title>Transferir dinero</title>
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        /* --- NUEVO: EVITAR CUADROS AZULES DE SELECCIÓN EN MÓVILES --- */
-        * {
             -webkit-tap-highlight-color: transparent;
-        }
-        input:focus, button:focus, a:focus {
             outline: none !important;
-            box-shadow: none !important;
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            box-sizing: border-box;
+        }
+
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+        /* --- SOLUCIÓN: Bloqueo estricto contra descargas de imágenes --- */
+        img {
+            -webkit-touch-callout: none !important; 
+            -webkit-user-drag: none !important;     
+            pointer-events: none !important;        
         }
 
         body {
@@ -42,9 +38,49 @@ input, textarea {
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden; /* Evita scroll innecesario */
-            position: relative; /* Clave para el botón fijo abajo */
+            overflow: hidden; 
+            position: relative; 
         }
+
+        /* --- PANTALLA DE CARGA BLANCA --- */
+        #white-loader-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 9999;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-icon { width: 40px; height: 40px; z-index: 2; }
+
+        .spinner-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: #ff7800;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* HEADER */
         .header {
@@ -56,7 +92,6 @@ input, textarea {
         }
 
         .header-title {
-            /* Aumentado a 24px */
             font-size: 24px;
             font-weight: 400;
             color: #444;
@@ -85,70 +120,154 @@ input, textarea {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
 
         /* INPUT CONTAINER */
         .input-container {
             border: 1px solid #ccc;
             border-radius: 8px;
-            padding: 12px 15px; /* Un poco más de padding */
+            padding: 12px 15px; 
             margin-top: 0; 
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .input-field {
             width: 100%;
             border: none;
             outline: none;
-            /* Aumentado a 18px */
             font-size: 18px; 
             color: #333;
             font-family: inherit;
         }
 
-        /* Estilo del texto cuando se escribe */
         .input-field:not(:placeholder-shown) {
             font-weight: 600;
-            font-size: 19px; /* Ligeramente más grande al escribir */
+            font-size: 19px; 
         }
 
         .input-field::placeholder {
             color: #888;
             font-weight: 400;
-            font-size: 18px; /* Placeholder más grande */
+            font-size: 18px; 
         }
 
-        /* BOTÓN SIGUIENTE (MODIFICADO PARA SER FIJO Y RESPETAR BARRA NAVEGACIÓN) */
-        .btn-container {
-            display: none; 
-            position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: max(30px, env(safe-area-inset-bottom));
-        }
-
-        .btn-siguiente {
-            width: 100%;
-            background-color: #ff7800;
-            color: white;
-            border: none;
-            border-radius: 30px; /* Un poco más redondeado */
-            padding: 15px 0;
-            /* Aumentado a 20px */
-            font-size: 20px; 
-            font-weight: 500;
+        /* --- NUEVA SECCIÓN: A NUEVA CUENTA --- */
+        #new-account-section {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-top: 10px;
             cursor: pointer;
-            text-align: center;
+            transition: background-color 0.1s;
         }
 
-        .btn-siguiente:active {
-            background-color: #e56b00;
+        #new-account-section:active {
+            background-color: #f9f9f9;
+        }
+
+        .nc-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nc-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #111;
+        }
+
+        .nc-account {
+            font-size: 14px;
+            color: #666;
+            letter-spacing: 0.5px;
+        }
+
+        .nc-arrow {
+            color: #ff7800; /* Naranja BCP */
+            font-size: 22px;
+            font-weight: 400;
+            margin-right: 5px;
+        }
+
+        /* --- CUENTAS RECIENTES --- */
+        .recent-section {
+            margin-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .recent-title {
+            font-size: 15px;
+            color: #002a80;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .recent-item:active {
+            background-color: #f9f9f9;
+        }
+
+        .recent-avatar {
+            width: 45px;
+            height: 45px;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .recent-info {
+            flex-grow: 1;
+        }
+
+        .recent-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .recent-bank {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .recent-arrow {
+            color: #ccc;
+            font-size: 20px;
         }
 
     </style>
 </head>
 <body>
+
+    <div id="white-loader-screen">
+        <div class="loader-container">
+            <div class="spinner-ring"></div>
+            <img src="img/cargaicono.svg" alt="Cargando" class="loader-icon">
+        </div>
+    </div>
 
     <header class="header">
         <button class="icon-btn" onclick="window.history.back()">
@@ -172,30 +291,172 @@ input, textarea {
             <input type="tel" id="cuentaInput" class="input-field" placeholder="Ingresa cuenta BCP o interbancaria" autocomplete="off">
         </div>
 
-    </div>
+        <!-- SECCIÓN A NUEVA CUENTA (OCULTA POR DEFECTO) -->
+        <div id="new-account-section" onclick="procesarAvanceManual()">
+            <div class="nc-content">
+                <span class="nc-title">A nueva cuenta</span>
+                <span class="nc-account" id="displayNewAccount"></span>
+            </div>
+            <div class="nc-arrow">›</div>
+        </div>
 
-    <div class="btn-container" id="btnContainer">
-        <button class="btn-siguiente" onclick="irAlSiguientePaso()">Siguiente</button>
+        <div class="recent-section" id="recentAccountsList">
+            <div class="recent-title">Cuentas recientes</div>
+            
+            <div class="recent-item" onclick="seleccionarCuenta('1919876543210', 'Shalom Empresarial S.A.C.', 'BCP')">
+                <div class="recent-avatar" style="background-color: #e21b22;">S</div>
+                <div class="recent-info">
+                    <div class="recent-name">Shalom Empresarial S.A.C.</div>
+                    <div class="recent-bank">BCP •••• 3210</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('00219100205895108812', 'El Sabor Caja', 'Interbank')">
+                <div class="recent-avatar" style="background-color: #ff7800;">E</div>
+                <div class="recent-info">
+                    <div class="recent-name">El Sabor Caja</div>
+                    <div class="recent-bank">Interbank •••• 8812</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('011012000012345678', 'Maikol Esleiter', 'BBVA')">
+                <div class="recent-avatar" style="background-color: #002a80;">M</div>
+                <div class="recent-info">
+                    <div class="recent-name">Maikol Esleiter</div>
+                    <div class="recent-bank">BBVA •••• 5678</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('1911122334455', 'Universidad Tecnologica del Peru', 'BCP')">
+                <div class="recent-avatar" style="background-color: #D32F2F;">U</div>
+                <div class="recent-info">
+                    <div class="recent-name">Universidad Tecnologica del Peru</div>
+                    <div class="recent-bank">BCP •••• 4455</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('00911223344556677889', 'Plaza Vea Supermercados', 'Scotiabank')">
+                <div class="recent-avatar" style="background-color: #E64A19;">P</div>
+                <div class="recent-info">
+                    <div class="recent-name">Plaza Vea Supermercados</div>
+                    <div class="recent-bank">Scotiabank •••• 7889</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('1919988776655', 'Inversiones Generales EIRL', 'BCP')">
+                <div class="recent-avatar" style="background-color: #4CAF50;">I</div>
+                <div class="recent-info">
+                    <div class="recent-name">Inversiones Generales EIRL</div>
+                    <div class="recent-bank">BCP •••• 6655</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('00311223344556677889', 'Constructora Horizonte', 'Banco Pichincha')">
+                <div class="recent-avatar" style="background-color: #1976D2;">C</div>
+                <div class="recent-info">
+                    <div class="recent-name">Constructora Horizonte</div>
+                    <div class="recent-bank">Banco Pichincha •••• 7889</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('1915544332211', 'Libreria y Comercial San Juan', 'BCP')">
+                <div class="recent-avatar" style="background-color: #7B1FA2;">L</div>
+                <div class="recent-info">
+                    <div class="recent-name">Libreria y Comercial San Juan</div>
+                    <div class="recent-bank">BCP •••• 2211</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('00211223344556677889', 'Comercializadora del Sur', 'Interbank')">
+                <div class="recent-avatar" style="background-color: #009688;">C</div>
+                <div class="recent-info">
+                    <div class="recent-name">Comercializadora del Sur</div>
+                    <div class="recent-bank">Interbank •••• 7889</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+            <div class="recent-item" onclick="seleccionarCuenta('1912233445566', 'Importaciones Mega', 'BCP')">
+                <div class="recent-avatar" style="background-color: #F57C00;">I</div>
+                <div class="recent-info">
+                    <div class="recent-name">Importaciones Mega</div>
+                    <div class="recent-bank">BCP •••• 5566</div>
+                </div>
+                <div class="recent-arrow">›</div>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
         const input = document.getElementById('cuentaInput');
-        const btnContainer = document.getElementById('btnContainer');
+        const recentAccountsList = document.getElementById('recentAccountsList');
+        const newAccountSection = document.getElementById('new-account-section');
+        const displayNewAccount = document.getElementById('displayNewAccount');
+        let typingTimer;
 
+        // Auto-avance y mostrar/ocultar secciones al escribir
         input.addEventListener('input', function() {
-            if (this.value.trim().length > 0) {
-                btnContainer.style.display = 'block'; 
+            // Filtrar para que solo acepte números
+            this.value = this.value.replace(/[^0-9]/g, ''); 
+            const valLen = this.value.length;
+
+            clearTimeout(typingTimer);
+
+            if (valLen > 0) {
+                // Ocultar Cuentas Recientes y mostrar "A nueva cuenta"
+                recentAccountsList.style.display = 'none';
+                newAccountSection.style.display = 'flex';
+                
+                // Darle formato a la cuenta para que se vea bonita (de 4 en 4)
+                displayNewAccount.textContent = this.value.match(/.{1,4}/g)?.join(' ') || this.value;
+
+                // Si detecta 13, 14 o 20 dígitos, auto-avanza
+                if (valLen === 13 || valLen === 14 || valLen === 20) {
+                    typingTimer = setTimeout(() => {
+                        procesarAvance(this.value, "", "BCP");
+                    }, 500);
+                }
             } else {
-                btnContainer.style.display = 'none'; 
+                // Si borró todo, volver a mostrar las cuentas recientes
+                recentAccountsList.style.display = 'block';
+                newAccountSection.style.display = 'none';
             }
         });
 
-        function irAlSiguientePaso() {
-            // Guardamos la cuenta por si la necesitas en el comprobante final
-            localStorage.setItem('v_cuenta', input.value); 
+        // Botón manual por si el usuario quiere avanzar antes o después de la longitud exacta
+        function procesarAvanceManual() {
+            procesarAvance(input.value, "", "BCP");
+        }
+
+        // Avance directo al tocar un contacto reciente
+        function seleccionarCuenta(numeroCuenta, nombreDestino, banco) {
+            input.value = numeroCuenta;
+            procesarAvance(numeroCuenta, nombreDestino, banco);
+        }
+
+        function procesarAvance(cuenta, nombre, banco) {
+            // Guardamos la cuenta y el nombre
+            localStorage.setItem('v_cuenta', cuenta); 
+            localStorage.setItem('v_nombre', nombre); 
+            localStorage.setItem('v_entidad_destino', banco); 
             
-            // Redireccionamos a montobcp.html
-            window.location.href = 'montobcp.html';
+            // Pantalla de carga
+            document.getElementById('white-loader-screen').style.display = 'flex';
+
+            // Redireccionamos a montobcp.html tras 1.5s
+            setTimeout(function() {
+                window.location.href = 'montobcp.html';
+            }, 1500);
         }
     </script>
 </body>
