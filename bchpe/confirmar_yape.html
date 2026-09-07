@@ -3,199 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Confirmar</title>
+    <title>Operación exitosa</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         * {
-    /* Elimina el recuadro azul al hacer clic en celulares */
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
-    
-    /* Bloquea la selección de texto en toda la app */
-    -webkit-user-select: none; 
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-
-/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-input, textarea {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #333; display: flex; flex-direction: column; height: 100vh; }
-
-        /* --- PANTALLA DE CARGA AZUL --- */
-        #blue-loader-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #002a80; /* Azul BCP */
-            z-index: 9999;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            box-sizing: border-box;
         }
-        .processing-loader-container { position: relative; width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
-        .processing-track { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 5px solid rgba(0, 0, 0, 0.2); box-sizing: border-box; }
-        .processing-spinner { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 5px solid transparent; border-top-color: #ff7800; box-sizing: border-box; animation: spin 1s linear infinite; }
-        .processing-icon { width: 45px; height: 45px; z-index: 2; }
-        .processing-text { color: white; font-size: 18px; font-weight: 400; letter-spacing: 0.5px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* HEADER */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background-color: #fff; border-bottom: 1px solid #e0e0e0; }
-        .header-title { font-size: 24px; font-weight: 400; color: #444; flex-grow: 1; margin-left: 15px; }
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; }
-        .icon-btn svg { width: 30px; height: 30px; fill: #444; }
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
 
-        /* CONTENT */
-        .main-content { padding: 20px 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        /* --- SOLUCIÓN: Bloqueo estricto contra descargas de imágenes --- */
+        img {
+            -webkit-touch-callout: none !important; 
+            -webkit-user-drag: none !important;     
+            pointer-events: none !important;        
+        }
 
-        /* MONTO */
-        .amount-display { text-align: center; margin-top: 25px; margin-bottom: 45px; }
-        .amount-value { font-size: 56px; color: #002a80; font-weight: 500; margin: 0; line-height: 1; }
-        .amount-label { font-size: 19px; color: #888; margin-top: 8px; font-weight: 300; }
+        /* Restaurar clics en los botones interactivos */
+        .accion-btn, .btn-otra, .link-inicio {
+            pointer-events: auto !important;
+            cursor: pointer;
+        }
 
-        /* DETALLES */
-        .details-list { width: 100%; margin-bottom: 20px; }
-        .detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 22px 0; border-bottom: 1px solid #eee; }
-        .detail-row:last-child { border-bottom: none; margin-bottom: 10px; }
+        /* --- SOLUCIÓN: Fondo blanco global para evitar bordes azules en zoom --- */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; /* Si hay zoom, los laterales son blancos */
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
+
+        .mobile-wrapper {
+            width: 100%;
+            max-width: 450px;
+            background-color: #002a80; /* El azul vive solo dentro de este contenedor */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- ANIMACIÓN: Contenedor subiendo --- */
+        .container { 
+            width: 100%; 
+            background-color: #fff; 
+            padding: 40px 25px; 
+            margin-top: 12px; 
+            border-top-left-radius: 28px; 
+            border-top-right-radius: 28px; 
+            flex-grow: 1;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            
+            transform: translateY(100vh); /* Empieza abajo */
+            animation: slideUpCard 0.6s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        }
+
+        @keyframes slideUpCard {
+            to { transform: translateY(0); }
+        }
+
+        /* --- ANIMACIÓN: Contenido invisible por 2 segundos --- */
+        .content-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0; /* Empieza invisible */
+            animation: fadeInData 0.4s 2s forwards; /* Fades in tras 2 segundos */
+        }
+
+        @keyframes fadeInData {
+            to { opacity: 1; }
+        }
+
+        /* ANIMACIÓN CHECK (Retrasada para que coincida con la aparición del texto a los 2s) */
+        @keyframes dibujar-trazo { to { stroke-dashoffset: 0; } }
+        .check-icon svg { width: 75px; height: 75px; fill: none; stroke: #ff7e00; stroke-width: 2.5; margin-bottom: 20px; }
+        .circle-path { stroke-dasharray: 150; stroke-dashoffset: 150; transform: rotate(90deg) scaleX(-1); transform-origin: center; animation: dibujar-trazo 0.8s 2s ease-out forwards; }
+        .check-path { stroke-dasharray: 50; stroke-dashoffset: 50; animation: dibujar-trazo 0.5s 2.7s ease-out forwards; }
+
+        h2 { font-size: 24px; font-weight: 700; margin: 0 0 10px 0; color: #000; text-align: center; }
+        .monto-grande { font-size: 54px; font-weight: 500; color: #002a80; margin: 0; line-height: 1.1; text-align: center; }
+        .fecha-sub { color: #888; font-size: 18px; margin-top: 12px; margin-bottom: 35px; text-align: center; }
         
-        .detail-label { font-size: 19px; color: #000; font-weight: 400; width: 35%; }
-        .detail-value { text-align: right; width: 65%; font-size: 19px; color: #000; }
+        .acciones { display: flex; justify-content: center; gap: 50px; margin-bottom: 45px; }
+        .accion-btn { display: flex; align-items: center; gap: 8px; color: #ff7e00; font-weight: 600; font-size: 17px; cursor: pointer; text-decoration: none; }
+        .accion-btn img { width: 22px; height: 22px; }
         
-        .detail-value strong { display: block; font-weight: 600; font-size: 19px; margin-bottom: 5px; }
-        .detail-value span { display: block; font-size: 17px; color: #666; margin-bottom: 3px; }
+        .detalles-lista { width: 100%; text-align: left; margin-bottom: 10px; }
+        .fila { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid #b0b0b0; }
+        .fila:last-child { border-bottom: none; }
+        .label { font-size: 17px; color: #000; font-weight: 400; width: 40%; }
+        .valor { text-align: right; font-size: 17px; color: #000; width: 60%; }
+        .valor strong { display: block; font-weight: 700; font-size: 18px; margin-bottom: 3px; }
+        .valor span { display: block; color: #666; font-size: 15px; }
 
-        /* INPUT DESC */
-        .description-container { margin-top: 5px; }
-        .description-input { width: 100%; padding: 16px; border: 1px solid #ccc; border-radius: 8px; font-size: 18px; font-family: inherit; box-sizing: border-box; color: #333; outline: none; }
-        .description-input::placeholder { color: #888; }
-        .char-counter { text-align: right; font-size: 15px; color: #888; margin-top: 6px; }
-
-        /* BUTTON */
-        .footer-container { margin-top: auto; padding-bottom: 25px; text-align: center; }
-        .btn-confirmar { width: 100%; background-color: #ff7800; color: white; border: none; border-radius: 40px; padding: 18px 0; font-size: 22px; font-weight: 500; cursor: pointer; }
-        .btn-confirmar:active { background-color: #e06900; }
+        .separador-banner { width: 100%; height: 1px; background-color: #b0b0b0; margin-bottom: 30px; }
+        .banner { width: 100%; background-color: #0039a6; border-radius: 10px; padding: 12px; display: flex; align-items: center; position: relative; margin: 0 0 35px 0; color: white; overflow: hidden; height: 100px; }
+        .banner-img { position: absolute; left: 0; bottom: -5px; height: 100px; width: auto; }
+        .banner-text { margin-left: 85px; text-align: left; }
+        .banner-text h4 { margin: 0; font-size: 18px; font-weight: 700; }
+        .banner-text p { margin: 3px 0 0 0; font-size: 15px; opacity: 0.9; }
+        
+        .btn-otra { background-color: #ff7e00; color: white; border: none; border-radius: 35px; padding: 15px 0; width: 85%; display: block; margin: 0 auto 20px auto; font-size: 17px; font-weight: 500; cursor: pointer; }
+        .link-inicio { color: #ff7e00; text-decoration: none; font-size: 17px; font-weight: 500; text-align: center; display: block; }
     </style>
 </head>
 <body>
 
-    <div id="blue-loader-screen">
-        <div class="processing-loader-container">
-            <div class="processing-track"></div>
-            <div class="processing-spinner"></div>
-            <img src="img/lg_favicon_white.svg" alt="Icono" class="processing-icon">
-        </div>
-        <div class="processing-text">Procesando tu solicitud...</div>
-    </div>
-
-    <header class="header">
-        <button class="icon-btn" onclick="window.history.back()">
-            <svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
-        </button>
-        <div class="header-title">Confirmar</div>
-        <button class="icon-btn" onclick="window.location.href='inicio.html'">
-            <svg viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
-        </button>
-    </header>
-
-    <div class="main-content">
-        <div class="amount-display">
-            <div class="amount-value" id="displayMonto">S/ 0.00</div>
-            <div class="amount-label">Monto total</div>
-        </div>
-
-        <div class="details-list">
-            <div class="detail-row">
-                <div class="detail-label">Enviado a</div>
-                <div class="detail-value">
-                    <strong id="displayNombre">Nombre recuperado</strong>
-                    <span id="displayEntidad">Yape</span> </div>
-            </div>
-            <div class="detail-row">
-                <div class="detail-label">Desde</div>
-                <div class="detail-value">
-                    <strong>Cuenta Digital Soles</strong>
-                    <span>7809</span>
+    <div class="mobile-wrapper">
+        <div class="container" id="captureArea">
+            
+            <div class="content-wrapper">
+                <div class="check-icon">
+                    <svg viewBox="0 0 50 50">
+                        <circle class="circle-path" cx="25" cy="25" r="23" stroke="#ff7e00" stroke-width="2" fill="none"/>
+                        <path class="check-path" d="M15 25 L22 32 L35 18" stroke="#ff7e00" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
+
+                <h2>¡Operación exitosa!</h2>
+                <div class="monto-grande" id="displayMonto">S/ 0.00</div>
+                <div class="fecha-sub" id="displayFecha">--</div>
+
+                <div class="acciones" id="divAcciones">
+                    <div class="accion-btn" onclick="descargarVoucher()"><img src="img/descargar-icon.svg" alt="Descargar"> Descargar</div>
+                    <div class="accion-btn" onclick="compartirVoucher()"><img src="img/compartir-icon.svg" alt="Compartir"> Compartir</div>
+                </div>
+
+                <div class="detalles-lista">
+                    <div class="fila">
+                        <div class="label">Enviado a</div>
+                        <div class="valor">
+                            <strong id="displayNombre">Nombre Contacto</strong>
+                            <span id="displayNumero" style="letter-spacing: 1px;">*** **4 214</span>
+                            <span id="displayEntidad">Yape</span> 
+                        </div>
+                    </div>
+                    
+                    <div class="fila">
+                        <div class="label">Comisión</div>
+                        <div class="valor">
+                            <strong>Gratis</strong>
+                        </div>
+                    </div>
+
+                    <div class="fila">
+                        <div class="label">Desde</div>
+                        <div class="valor">
+                            <strong>Cuenta Digital Soles</strong>
+                            <span>7809</span>
+                        </div>
+                    </div>
+                    <div class="fila" style="border-bottom: none;"> 
+                        <div class="label">Número de operación</div>
+                        <div class="valor">
+                            <strong id="numOperacion">0000000</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="separador-banner" id="divSeparador"></div>
+
+                <div class="banner" id="divBanner">
+                    <img src="img/super-des.svg" alt="Personaje" class="banner-img">
+                    <div class="banner-text">
+                        <h4>Protege tus tarjetas</h4>
+                        <p>Por solo S/ 13.99 al mes inc. IGV</p>
+                    </div>
+                </div>
+
+                <button class="btn-otra" id="btnOtra" onclick="window.location.href='yapearcel.html'">Yapear a otro celular</button>
+                <a href="inicio.html" class="link-inicio" id="linkInicio">Ir al inicio</a>
             </div>
-        </div>
 
-        <div class="description-container">
-            <input type="text" class="description-input" id="descInput" placeholder="Descripción del pago (Opcional)" maxlength="100">
-            <div class="char-counter" id="charCounter">0 / 100</div>
-        </div>
-
-        <div class="footer-container">
-            <button class="btn-confirmar" onclick="finalizarOperacion()">Confirmar</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const monto = localStorage.getItem('v_monto_yape') || "0.00";
-            const nombre = localStorage.getItem('v_nombre_yape') || "Contacto";
-            // Jalar la entidad real elegida
-            const entidad = localStorage.getItem('v_entidad_destino') || "Yape";
+        // 1. RECUPERAR DATOS
+        const nombre = localStorage.getItem('v_nombre_yape') || "Nombre";
+        const celular = localStorage.getItem('v_celular_destino') || "000000000";
+        let monto = localStorage.getItem('v_monto_yape');
+        const entidad = localStorage.getItem('v_entidad_destino') || "Yape"; 
 
-            let montoFormateado = parseFloat(monto).toFixed(2);
+        // 2. FORMATEAR MONTO
+        if(monto) {
+            if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
+        } else { monto = "0.00"; }
 
-            document.getElementById('displayMonto').innerText = "S/ " + montoFormateado;
-            document.getElementById('displayNombre').innerText = nombre;
-            // Mostrar la entidad real (Agora, Bim, Oh, etc.)
-            document.getElementById('displayEntidad').innerText = entidad;
+        // 3. FORMATEAR NÚMERO (*** **4 214)
+        let numeroFinal = "*** **0 000";
+        let ultimosCuatro = "0000"; 
+        if (celular.length === 9) {
+            const last4 = celular.slice(-4);
+            ultimosCuatro = last4;
+            const part1 = last4.charAt(0);
+            const part2 = last4.slice(1);
+            numeroFinal = `*** **${part1} ${part2}`;
+        }
 
-            const inputDesc = document.getElementById('descInput');
-            const counter = document.getElementById('charCounter');
-            inputDesc.addEventListener('input', function() {
-                counter.innerText = this.value.length + " / 100";
-            });
-        });
+        // 4. GENERAR NÚMERO DE OPERACIÓN Y FECHA DINÁMICA
+        const randomOp = Math.floor(10000000 + Math.random() * 90000000);
+        
+        const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const ahora = new Date();
+        let ampm = ahora.getHours() >= 12 ? 'p.m.' : 'a.m.';
+        let hora = ahora.getHours() % 12;
+        hora = hora ? hora : 12; 
+        let minutos = ahora.getMinutes() < 10 ? '0' + ahora.getMinutes() : ahora.getMinutes();
+        let fechaGenerada = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()} - ${hora}:${minutos} ${ampm}`;
 
-        function finalizarOperacion() {
-            // --- LÓGICA DE SALDO ---
-            const saldoActual = localStorage.getItem("userBalance") || "1200.00";
-            const montoYapeado = localStorage.getItem('v_monto_yape') || "0.00";
-            
-            const saldoNumerico = parseFloat(saldoActual.replace(/,/g, ''));
-            const montoNumerico = parseFloat(montoYapeado);
-            
-            let nuevoSaldo = saldoNumerico - montoNumerico;
-            if (nuevoSaldo < 0) nuevoSaldo = 0;
-            
-            localStorage.setItem("userBalance", nuevoSaldo.toFixed(2));
+        // 5. MOSTRAR DATOS
+        document.getElementById('displayMonto').innerText = "S/ " + monto;
+        document.getElementById('displayFecha').innerText = fechaGenerada;
+        document.getElementById('displayNombre').innerText = nombre;
+        document.getElementById('displayNumero').innerText = numeroFinal;
+        document.getElementById('displayEntidad').innerText = entidad;
+        document.getElementById('numOperacion').innerText = "0" + randomOp; 
 
-            // Generar fecha y hora para el registro
-            const ahora = new Date();
-            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            let fechaTexto = ahora.toLocaleDateString('es-ES', opcionesFecha);
-            
-            let horas = ahora.getHours();
-            let minutos = ahora.getMinutes();
-            const ampm = horas >= 12 ? 'p.m.' : 'a.m.';
-            horas = horas % 12;
-            horas = horas ? horas : 12;
-            minutos = minutos < 10 ? '0'+minutos : minutos;
-            const horaTexto = horas + ':' + minutos + ' ' + ampm;
+        // --- 6. GUARDAR EN HISTORIAL ---
+        let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+        let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; 
 
-            let fechaFinal = fechaTexto + " - " + horaTexto;
-            fechaFinal = fechaFinal.charAt(0).toUpperCase() + fechaFinal.slice(1);
+        let tituloHistorial = "Pago YAPE de " + ultimosCuatro;
 
-            localStorage.setItem('v_fecha_yape', fechaFinal);
+        let nuevoMov = {
+            tipo: "yape", 
+            letra: "PA", 
+            titulo: tituloHistorial,
+            fecha: fechaCorta,
+            fechaCompleta: fechaGenerada, 
+            monto: monto,
+            destinoNombre: nombre,
+            destinoNumero: celular,
+            entidad: entidad, 
+            numOperacion: "0" + randomOp
+        };
 
-            // Mostrar pantalla de carga y redirigir
-            document.getElementById('blue-loader-screen').style.display = 'flex';
+        if(!sessionStorage.getItem('mov_guardado_yape_' + randomOp)){
+            movimientos.unshift(nuevoMov);
+            localStorage.setItem('bcp_movimientos', JSON.stringify(movimientos));
+            sessionStorage.setItem('mov_guardado_yape_' + randomOp, 'true'); 
+        }
 
-            setTimeout(function() {
-                window.location.href = 'exito_yape.html';
-            }, 3000);
+        // --- 7. FUNCIONES DE DESCARGAR Y COMPARTIR ---
+        function prepararParaFoto(esParaFoto) {
+            const botonesSuperior = document.getElementById('divAcciones');
+            const btnInferior = document.getElementById('btnOtra');
+            const linkInferior = document.getElementById('linkInicio');
+            if (esParaFoto) {
+                botonesSuperior.style.display = 'none';
+                btnInferior.style.display = 'none';
+                linkInferior.style.display = 'none';
+            } else {
+                botonesSuperior.style.display = 'flex';
+                btnInferior.style.display = 'block';
+                linkInferior.style.display = 'block';
+            }
+        }
+
+        function descargarVoucher() {
+            prepararParaFoto(true); 
+            setTimeout(() => {
+                html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `Voucher_${entidad}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    prepararParaFoto(false); 
+                });
+            }, 150); 
+        }
+
+        function compartirVoucher() {
+            prepararParaFoto(true);
+            setTimeout(() => {
+                html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    canvas.toBlob(blob => {
+                        const file = new File([blob], `Voucher_${entidad}.png`, { type: 'image/png' });
+                        if (navigator.share) {
+                            navigator.share({
+                                title: `Voucher de ${entidad}`,
+                                files: [file]
+                            }).then(() => {
+                                prepararParaFoto(false);
+                            }).catch(err => {
+                                console.log('Error al compartir:', err);
+                                prepararParaFoto(false);
+                            });
+                        } else {
+                            alert('Tu navegador no soporta la función de compartir directo.');
+                            prepararParaFoto(false);
+                        }
+                    });
+                });
+            }, 150);
         }
     </script>
 </body>
