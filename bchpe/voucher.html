@@ -127,7 +127,12 @@ input, textarea {
         </div>
 
         <div class="info-box">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <!-- SVG CORREGIDO: Icono de "i" (Punto arriba en cy=8, línea abajo de y1=12 a y2=16) -->
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="8" r="1" fill="#002a80" stroke="none"/>
+                <line x1="12" y1="12" x2="12" y2="16"/>
+            </svg>
             <p>Para ver mas detalles de esta operacion ingresa desde la opcion Ver mas en el listado de movimientos.</p>
         </div>
 
