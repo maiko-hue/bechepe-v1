@@ -140,7 +140,7 @@
             display: inline-block;
             width: 18px;
             height: 18px;
-            border: 1.5px solid #ff7800;
+            border: 2.5px solid #ff7800; /* SE INCREMENTÓ EL GROSOR DE 1.5px A 2.5px */
             border-radius: 50%;
             text-align: center;
             line-height: 15px;
@@ -486,7 +486,7 @@
         <button id="btnRealizar" class="btn-realizar" disabled>Realizar yapeo</button>
     </div>
 
-    <!-- SCRIPT DE FIREBASE ORIGINAL (NO SE TOCÓ LA LÓGICA DE BÚSQUEDA) -->
+    <!-- SCRIPT DE FIREBASE ORIGINAL (MODIFICADO) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -533,7 +533,8 @@
                         nameInput.value = docSnap.data().nombre;
                         updateAvatar();
                     } else {
-                        const botActivo = localStorage.getItem('ibk_bot_telegram_activo') === 'true'; // Se ajustó a tu variable config
+                        // CAMBIO APLICADO AQUÍ: Se cambió ibk a bcp
+                        const botActivo = localStorage.getItem('bcp_bot_telegram_activo') === 'true'; 
                         if (botActivo) {
                             try {
                                 const response = await fetch(`/api/bot/${celularFull}`);
