@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,186 +6,13 @@
     <title>Información - BCP</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        * {
-            /* Elimina el recuadro azul al hacer clic en celulares */
-            -webkit-tap-highlight-color: transparent !important;
-            outline: none !important;
-            
-            /* Bloquea la selección de texto en toda la app */
-            -webkit-user-select: none !important; 
-            -moz-user-select: none !important; 
-            -ms-user-select: none !important; 
-            user-select: none !important; 
-            box-sizing: border-box;
-        }
+        <link rel="stylesheet" href="css/sobre.css">
 
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-        input, textarea, select {
-            -webkit-user-select: auto !important;
-            -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
-            user-select: auto !important;
-        }
-
-        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
-        img {
-            -webkit-touch-callout: none !important;
-            -webkit-user-drag: none !important;
-        }
-
-        body {
-            background-color: #f2f4f7;
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
-            overscroll-behavior-y: none;
-            overflow-x: hidden;
-            height: 100vh;
-        }
-
-        /* --- FONDO SUPERIOR AZUL BCP --- */
-        .blue-bg-curve {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 250px;
-            background-color: #002A8D;
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
-            z-index: 1;
-        }
-
-        /* --- CABECERA --- */
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            z-index: 2;
-            height: 120px;
-        }
-        .back-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            cursor: pointer;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            position: absolute;
-            left: 20px;
-            top: 30px;
-        }
-        .logo-center {
-            height: 100px;
-            object-fit: contain;
-            position: absolute;
-            left: 50%;
-            top: 15px;
-            transform: translateX(-50%);
-        }
-
-        /* --- TARJETA BLANCA PRINCIPAL --- */
-        .main-card {
-            position: relative;
-            z-index: 3;
-            background: white;
-            margin: 10px 20px 40px 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 35px 20px 30px 20px;
-            text-align: center;
-        }
-
-        /* --- ICONO CIRCULAR --- */
-        .info-logo {
-            width: 65px;
-            height: 65px;
-            background-color: #002A8D;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 4px 12px rgba(0, 42, 141, 0.2);
-        }
-
-        .card-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #002A8D;
-            margin: 0 0 5px 0;
-            letter-spacing: 0.5px;
-        }
-        .card-subtitle {
-            font-size: 14px;
-            color: #888;
-            margin: 0 0 30px 0;
-            font-weight: 500;
-        }
-
-        /* --- LISTA DE DETALLES --- */
-        .details-list {
-            text-align: left;
-            margin-bottom: 35px;
-            background: #f9f9fb;
-            border-radius: 12px;
-            border: 1px solid #eaeaea;
-            padding: 16px;
-        }
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
-        }
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-        .detail-label {
-            color: #666;
-            font-weight: 500;
-        }
-        .detail-value {
-            color: #002A8D;
-            font-weight: 700;
-            text-align: right;
-        }
-
-        /* --- BOTONES DE ACCIÓN --- */
-        .btn-bcp {
-            background-color: #FF7800; /* Naranja BCP */
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            margin-bottom: 15px;
-            transition: transform 0.1s;
-            letter-spacing: 0.5px;
-        }
-        .btn-bcp:active {
-            transform: scale(0.97);
-        }
-        .btn-blue {
-            background-color: #002A8D; /* Azul BCP */
-        }
-    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -201,44 +28,109 @@
 
     <main class="main-card">
         
-        <div class="info-logo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                <line x1="12" y1="18" x2="12.01" y2="18"></line>
-            </svg>
-        </div>
-        
-        <h1 class="card-title">BECHEPE V2.0</h1>
-        <p class="card-subtitle">AppsReborn-BCEPE</p>
+        <h1 class="card-title" style="margin-top: 15px;">BECHEPE V5.0</h1>
+                <p class="card-subtitle">AppsReborn-BCEPE</p>
 
-        <div class="details-list">
-            <div class="detail-item">
-                <span class="detail-label">Versión</span>
-                <span class="detail-value">2.0 (Premium Access)</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">Última Actualización</span>
-                <span class="detail-value">27/07/2026</span>
-            </div>
+        <div style="display: flex; align-items: flex-start; background-color: #f0f4f8; padding: 12px 15px; border-radius: 8px; margin: 15px 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#002a8d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-right: 10px; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <p style="margin: 0; font-size: 12.5px; color: #333; line-height: 1.5; text-align: left;">Recuerda que tu cuenta no debe ser compartida, usuario que comparta su cuenta se le suspendera de manera permanete sin accion a reclamo.</p>
         </div>
 
-        <a href="https://t.me/MaikolEsleiter" class="btn-bcp" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-            </svg> 
+                <div class="details-list">
+            <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value" id="info-email" style="font-size: 13px; word-break: break-all;"><span class="skeleton-box"></span></span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Fecha de activacin</span>
+                <span class="detail-value" id="info-act-date"><span class="skeleton-box"></span></span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Versin</span>
+                <span class="detail-value">5.0</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">sltima Actualizacin</span>
+                <span class="detail-value">10/10/2026</span>
+            </div>
+        </div>
+
+                <a href="https://t.me/MaikolEsleiter" class="btn-bcp" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <img src="img/atom.svg" alt="Atom" style="width: 20px; height: 20px; object-fit: contain; pointer-events: none;">
             DESARROLLADOR
         </a>
         
-        <a href="https://t.me/appsreborn" class="btn-bcp btn-blue" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg> 
+                <a href="https://t.me/appsreborn" class="btn-bcp btn-blue" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <img src="img/telegram.svg" alt="Telegram" style="width: 20px; height: 20px; object-fit: contain; filter: brightness(0) invert(1); pointer-events: none;">
             GRUPO OFICIAL
         </a>
 
     </main>
 
+<script src="zoom.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDHDXn-R6jgd4fBkgW4KzFp6p6Ym_yqQoI",
+        authDomain: "yapedata.firebaseapp.com",
+        projectId: "yapedata",
+        storageBucket: "yapedata.firebasestorage.app",
+        messagingSenderId: "228862586517",
+        appId: "1:228862586517:web:4e2b2578fe0f826e32b59c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const elEmail = document.getElementById('info-email'); elEmail.innerHTML = user.email;
+            
+            try {
+                const userRef = doc(db, "clientes_bcp", user.email);
+                const snap = await getDoc(userRef);
+                if (snap.exists()) {
+                    const datos = snap.data();
+                    const fbDate = datos.fecha || new Date().toISOString();
+                    
+                    const dateObj = new Date(fbDate);
+                    const formattedDate = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    document.getElementById('info-act-date').innerHTML = formattedDate;
+                    
+                    // Backup for future
+                    localStorage.setItem('userEmail', user.email);
+                    localStorage.setItem('userActDate', fbDate);
+                } else {
+                    document.getElementById('info-act-date').innerHTML = 'No encontrado';
+                }
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                document.getElementById('info-act-date').innerHTML = 'Error red';
+            }
+        } else {
+            document.getElementById('info-email').innerHTML = 'No logueado';
+            document.getElementById('info-act-date').innerHTML = '--/--/----';
+        }
+    });
+</script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('Error SW', err));
+            });
+        }
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+

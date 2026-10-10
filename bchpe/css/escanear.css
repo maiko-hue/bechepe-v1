@@ -1,0 +1,178 @@
+
+        * {
+    /* Elimina el recuadro azul al hacer clic en celulares */
+    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+    
+    /* Bloquea la selección de texto en toda la app */
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+}
+
+/* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+input, textarea {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+}
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: black;
+            color: white;
+            height: calc(100vh / var(--app-zoom, 1));
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- CÁMARA DE FONDO --- */
+        #camera-stream {
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: calc(100vh / var(--app-zoom, 1));
+            object-fit: cover; 
+            z-index: 0;
+        }
+
+        /* --- CAPA SUPERPUESTA (UI) --- */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100vh / var(--app-zoom, 1));
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none; /* Para no bloquear la cámara accidentalmente */
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 20px;
+            pointer-events: all;
+        }
+        .header-title {
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .close-btn {
+            color: white;
+            font-size: 24px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* ÁREA DE ESCANEO (El Cuadrado) */
+        .scan-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* EL TRUCO MAGICO: Un cuadrado transparente con una sombra gigante que oscurece el resto */
+        .scan-frame {
+            width: 250px;
+            height: 250px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.65); /* Oscurece el exterior */
+            position: relative;
+        }
+
+        /* BOTÓN LINTERNA */
+        .flashlight-container {
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: all;
+            cursor: pointer;
+            z-index: 20;
+        }
+        .flash-icon {
+            width: 24px;
+            height: 24px;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .flash-icon i {
+            font-size: 12px;
+        }
+        .flash-text {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* BOTÓN INFERIOR (Galería) */
+        .footer {
+            padding: 20px;
+            padding-bottom: max(60px, env(safe-area-inset-bottom));
+            pointer-events: all;
+        }
+        .gallery-btn {
+            width: 100%;
+            background-color: transparent;
+            color: white;
+            border: 1.5px solid white;
+            border-radius: 30px;
+            padding: 16px 0;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+        }
+        .gallery-btn:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #fileInput { display: none; }
+
+        /* --- PANTALLA DE CARGA --- */
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: calc(100vh / var(--app-zoom, 1));
+            background-color: rgba(0,0,0,0.85); z-index: 3000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .loader-overlay.show { opacity: 1; pointer-events: all; }
+
+        .loader-card {
+            background: transparent;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
+        }
+        .custom-spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #ff7800; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        .loader-msg { font-size: 16px; font-weight: 500; color: white; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    
+
+
+

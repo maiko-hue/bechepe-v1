@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
             -webkit-tap-highlight-color: transparent !important;
             outline: none !important;
             
-            /* Bloquea la selección de texto en toda la app */
+            /* Bloquea la selecci+?n de texto en toda la app */
             -webkit-user-select: none !important; 
             -moz-user-select: none !important; 
             -ms-user-select: none !important; 
@@ -20,7 +20,7 @@
             box-sizing: border-box;
         }
 
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        /* Excepci+?n para que s+? se pueda seleccionar/escribir en los inputs */
         input, textarea {
             -webkit-user-select: auto !important;
             -moz-user-select: auto !important;
@@ -28,7 +28,7 @@
             user-select: auto !important;
         }
 
-        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
+        /* Bloquea el men+? de descarga al mantener presionadas las im+?genes */
         img {
             -webkit-touch-callout: none !important;
             -webkit-user-drag: none !important;
@@ -38,7 +38,7 @@
             background-color: #f2f4f7;
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            /* Evita que la p+?gina se recargue al deslizar hacia abajo (Pull-to-refresh) */
             overscroll-behavior-y: none;
             overflow-x: hidden;
         }
@@ -142,7 +142,7 @@
             color: #ccc;
         }
 
-        /* Colores de los íconos */
+        /* Colores de los +?conos */
         .bg-blue { background-color: #e6f0ff; color: #002A8D; }
         .bg-cyan { background-color: #e0f7fa; color: #00838f; }
         .bg-red { background-color: #ffebee; color: #d32f2f; }
@@ -228,7 +228,84 @@
         }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+            /* TOGGLE SWITCH IPHONE */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: #34C759;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* ZOOM CONTROLS */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .zoom-btn {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #002A8D;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .zoom-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            min-width: 40px;
+            text-align: center;
+        }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -245,10 +322,10 @@
     <!-- MODAL BORRAR HISTORIAL -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-card">
-            <h3>¿Borrar historial?</h3>
-            <p>Se eliminarán todos los movimientos registrados hasta el momento. Esta acción no se puede deshacer.</p>
+            <h3>-+Borrar historial?</h3>
+            <p>Se eliminar+?n todos los movimientos registrados hasta el momento. Esta acci+?n no se puede deshacer.</p>
             <div class="modal-buttons">
-                <button class="btn-modal btn-danger" onclick="ejecutarBorrado()">SÍ, ELIMINAR</button>
+                <button class="btn-modal btn-danger" onclick="ejecutarBorrado()">S+?, ELIMINAR</button>
                 <button class="btn-modal btn-cancel" onclick="cerrarModal()">CANCELAR</button>
             </div>
         </div>
@@ -258,7 +335,7 @@
     <div class="modal-overlay" id="addAccountModal">
         <div class="modal-card">
             <h3>Agregar Banco</h3>
-            <p style="margin-bottom: 20px;">Registra una cuenta para que esté disponible para todos los usuarios.</p>
+            <p style="margin-bottom: 20px;">Registra una cuenta para que est+? disponible para todos los usuarios.</p>
             
             <div class="form-group">
                 <label>Nro</label>
@@ -279,8 +356,49 @@
 
     <!-- TARJETA DE OPCIONES -->
     <main class="main-card">
-        <h1 class="card-title">Configuración</h1>
+        <h1 class="card-title">Configuraci&oacute;n</h1>
         <p class="card-subtitle">Modifica los datos y ajustes de tu app</p>
+
+                <div class="menu-section">
+            <h2 class="section-title">Accesibilidad</h2>
+            
+            <div class="menu-row" style="cursor: default;">
+                <div class="icon-box bg-blue">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                </div>
+                <span class="menu-text">Zoom de la pantalla</span>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="btn-zoom-out">-</button>
+                    <span class="zoom-value" id="zoom-text">100%</span>
+                    <button class="zoom-btn" id="btn-zoom-in">+</button>
+                </div>
+            </div>
+
+            <div class="menu-row" style="cursor: default;">
+                <div class="icon-box bg-blue">
+                    <img src="img/apple.svg" style="width: 22px; height: 22px; filter: brightness(0) saturate(100%) invert(14%) sepia(85%) saturate(3474%) hue-rotate(214deg) brightness(90%) contrast(107%); object-fit: contain;">
+                </div>
+                <span class="menu-text">Modo iPhone</span>
+                <div class="toggle-container" style="margin-left: auto;">
+                    <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                        <input type="checkbox" id="iphone-mode-toggle" style="opacity: 0; width: 0; height: 0;">
+                        <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px;"></span>
+                    </label>
+                </div>
+            </div>
+            <a href="configurar_pin.html" class="menu-row">
+                <div class="icon-box bg-blue">
+                    <img src="img/clave.svg" style="width: 22px; height: 22px; filter: brightness(0) saturate(100%) invert(14%) sepia(85%) saturate(3474%) hue-rotate(214deg) brightness(90%) contrast(107%); object-fit: contain;">
+                </div>
+                <span class="menu-text">Configurar pin</span>
+                <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+                        <div style="height: 15px; border-bottom: 1px dashed #eee; margin-bottom: 15px;"></div>
+        </div>
+
+                <div class="menu-section">
+            <h2 class="section-title">Ajustes</h2>
+        </div>
 
         <!-- Bloque 1 -->
         <a href="datos.html" class="menu-row">
@@ -293,7 +411,7 @@
 
         <div class="menu-row" onclick="abrirAddModal()">
             <div class="icon-box bg-blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="16" y1="16" x2="16.01" y2="16"></line></svg>
+                <img src="img/ban.svg" style="width: 22px; height: 22px; filter: brightness(0) saturate(100%) invert(14%) sepia(85%) saturate(3474%) hue-rotate(214deg) brightness(90%) contrast(107%); object-fit: contain;">
             </div>
             <span class="menu-text">Agregar banco</span>
             <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -301,7 +419,7 @@
 
         <a href="agregarct.html" class="menu-row">
             <div class="icon-box bg-blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <img src="img/agregar-usuario.svg" style="width: 22px; height: 22px; filter: brightness(0) saturate(100%) invert(14%) sepia(85%) saturate(3474%) hue-rotate(214deg) brightness(90%) contrast(107%); object-fit: contain;">
             </div>
             <span class="menu-text">Agregar contacto</span>
             <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -309,7 +427,7 @@
 
         <a href="qradd.html" class="menu-row">
             <div class="icon-box bg-blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <img src="img/qr.svg" style="width: 22px; height: 22px; filter: brightness(0) saturate(100%) invert(14%) sepia(85%) saturate(3474%) hue-rotate(214deg) brightness(90%) contrast(107%); object-fit: contain;">
             </div>
             <span class="menu-text">Agregar QR</span>
             <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -323,7 +441,7 @@
             <svg class="menu-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </a>
 
-        <div style="height: 15px; border-bottom: 1px dashed #eee; margin-bottom: 15px;"></div>
+                    <div style="height: 15px; border-bottom: 1px dashed #eee; margin-bottom: 15px;"></div>
 
         <!-- Bloque 2 -->
         <a href="https://t.me/+6weA5d0fVzFlYTcx" target="_blank" class="menu-row">
@@ -380,7 +498,7 @@
             setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
         }
 
-        // --- LÓGICA MODAL BORRADO ---
+        // --- L+?GICA MODAL BORRADO ---
         const modal = document.getElementById('confirmModal');
         window.abrirModal = function() { modal.style.display = 'flex'; }
         window.cerrarModal = function() { modal.style.display = 'none'; }
@@ -390,7 +508,7 @@
             window.location.href = 'inicio.html';
         }
 
-        // --- LÓGICA MODAL AGREGAR CUENTA (FIREBASE) ---
+        // --- L+?GICA MODAL AGREGAR CUENTA (FIREBASE) ---
         const addModal = document.getElementById('addAccountModal');
         window.abrirAddModal = function() { 
             addModal.style.display = 'flex'; 
@@ -425,13 +543,13 @@
                     fecha_registro: new Date().toISOString()
                 });
                 
-                window.mostrarToast("¡Cuenta agregada exitosamente!", "#22c55e"); // Verde
+                window.mostrarToast("-?Cuenta agregada exitosamente!", "#22c55e"); // Verde
                 window.cerrarAddModal();
             } catch (e) {
                 console.error("Error Firebase:", e);
-                window.mostrarToast("Hubo un error de conexión.", "#d9534f");
+                window.mostrarToast("Hubo un error de conexi+?n.", "#d9534f");
             } finally {
-                // Restaurar botón
+                // Restaurar bot+?n
                 btn.innerText = "GUARDAR CUENTA";
                 btn.disabled = false;
             }
@@ -444,5 +562,53 @@
         }
     </script>
 
+    <!-- BURBUJA FLOTANTE CUY -->
+    <div id="cuy-bubble" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; animation: floatUp 0.5s ease-out;">
+        <div style="background: white; border-radius: 15px; padding: 12px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); max-width: 250px; margin-bottom: 10px; position: relative; border-bottom-right-radius: 0;">
+            <p style="font-size: 13px; color: #333; line-height: 1.4; margin: 0; font-weight: 500;" id="cuy-text">Hola Usuario, tenemos nuevas funciones para ti, bienvenido a la v 5.0</p>
+            <div style="position: absolute; bottom: -8px; right: 0; width: 0; height: 0; border-top: 10px solid white; border-left: 10px solid transparent;"></div>
+        </div>
+        <img src="img/cuy.png" alt="Cuy" style="width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('yape_name') || localStorage.getItem('userName') || 'Usuario';
+            const cuyText = document.getElementById('cuy-text');
+            if(cuyText) {
+                cuyText.innerText = 'Hola ' + userName + ' tenemos nuevas funciones para ti, bienvenido a la v 5.0';
+            }
+            if (!document.getElementById('cuy-style')) {
+                const style = document.createElement('style');
+                style.id = 'cuy-style';
+                style.innerHTML = '@keyframes floatUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }';
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+    <script src="zoom.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('Error SW', err));
+            });
+        }
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

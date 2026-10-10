@@ -1,218 +1,30 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <link rel="icon" type="image/png" href="app-icon.png">
-     <link rel="apple-touch-icon" href="app-icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bienvenido</title>
-    <meta name="theme-color" content="#002a80">
-    <link rel="manifest" href="manifest.json?v=2">
+        <link rel="stylesheet" href="css/login_pin.css">
     <style>
-        * {
-            /* Elimina el recuadro azul al hacer clic en celulares */
-            -webkit-tap-highlight-color: transparent !important;
-            outline: none !important;
-            
-            /* Bloquea la selección de texto en toda la app y menús táctiles */
-            -webkit-user-select: none !important; 
-            -moz-user-select: none !important; 
-            -ms-user-select: none !important; 
-            user-select: none !important; 
-            -webkit-touch-callout: none !important;
-            box-sizing: border-box;
-        }
-
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-        input, textarea {
-            -webkit-user-select: auto !important;
-            -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
-            user-select: auto !important;
-        }
-
-        /* Bloquea estrictamente el menú de descarga y arrastre en imágenes */
-        img {
-            -webkit-touch-callout: none !important;
-            -webkit-user-drag: none !important;
-            pointer-events: none !important; 
-        }
-
-        /* Restauramos el clic exclusivamente para los íconos interactivos */
-        .top-icon, .eye-icon {
-            pointer-events: auto !important;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #002a80;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* --- ZONA SUPERIOR --- */
-        .top-background {
-            background-color: #0050d0;
-            background-image: url('img/night-des-remake.svg');
-            background-size: cover;
-            background-position: bottom center;
-            background-repeat: no-repeat;
-            height: 35vh;
-            width: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        .nav-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            margin-top: 5px;
-        }
-
-        .logo-bcp { height: 34px; width: auto; }
-        .top-icons { display: flex; gap: 20px; align-items: center; }
-        .top-icon { width: 28px; height: 28px; cursor: pointer; }
-
-        /* --- TARJETA BLANCA --- */
-        .main-card {
-            background-color: #fff;
-            flex-grow: 1;
-            width: 100%;
-            border-top-left-radius: 28px;
-            border-top-right-radius: 28px;
-            margin-top: -150px; /* Hoja bien arriba */
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px 20px 20px 20px;
-            overflow-y: auto;
-        }
-
-        .greeting-title { font-size: 30px; font-weight: 600; color: #002a80; margin: 10px 0 5px 0; }
-        .greeting-subtitle { font-size: 18px; color: #444; font-weight: 400; margin-bottom: 30px; }
-
-        /* GRID */
-        .shortcuts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px 15px;
-            width: 100%;
-            margin-bottom: 35px;
-        }
-
-        .shortcut-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            background-color: #ff7800;
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #ffffff;
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 8px rgba(255, 120, 0, 0.25);
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
         }
-
-        /* FILTRO MÁGICO: Vuelve blancos los iconos negros de internet */
-        .icon-circle img {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0) invert(1);
-        }
-
-        .icon-circle img.yape-icon-large { width: 50px; height: 50px; }
-
-        .shortcut-label {
-            font-size: 15px;
-            color: #000;
-            line-height: 1.2;
-            font-weight: 400;
-        }
-
-        /* FORMULARIO */
-        .login-form {
-            width: 100%;
-            max-width: 380px;
-            margin-top: auto;
-            padding-bottom: 15px;
-        }
-
-        .card-selector {
-            border: 1px solid #dcdcdc;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            background-color: #fff;
-        }
-
-        .user-icon-img { width: 40px; height: 40px; margin-right: 12px; border-radius: 50%; }
-        .card-info { flex-grow: 1; }
-        .card-type { font-size: 17px; font-weight: 600; color: #000; display: block; }
-        .card-number { font-size: 16px; color: #666; }
-
-        .password-container {
-            border: 1px solid #dcdcdc;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            background-color: #fff;
-        }
-
-        .password-input {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 18px;
-            font-family: inherit;
-            -webkit-text-security: disc; 
-        }
-        .password-input::placeholder { color: #777; -webkit-text-security: none; font-size: 17px; }
-        
-        .eye-icon { width: 28px; height: 28px; cursor: pointer; padding: 2px; }
-
-        .btn-ingresar {
-            width: 100%;
-            background-color: #f2f2f2;
-            color: #b0b0b0;
-            border: none;
-            border-radius: 30px;
-            padding: 18px 0;
-            font-size: 20px;
-            font-weight: 500;
-            cursor: default;
-            transition: all 0.3s ease;
-        }
-
-        .btn-ingresar.active {
-            background-color: #ff7800;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255, 120, 0, 0.3);
-        }
-
-        .footer-links { text-align: center; margin-top: 25px; }
-        .forgot-pass { color: #ff7800; text-decoration: none; font-weight: 600; font-size: 16px; display: block; }
-        .version-text { margin-top: 25px; color: #aaa; font-size: 13px; margin-bottom: 5px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -265,6 +77,28 @@
             </div>
         </div>
 
+            <!-- ERROR MODAL -->
+    <div class="modal-overlay" id="errorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="modal-card" style="background: white; width: 85%; border-radius: 8px; padding: 25px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <h3 style="color: #333; margin: 0 0 10px 0; font-size: 18px; font-weight: 600; text-align: left;">Datos incorrectos</h3>
+            <p style="color: #666; font-size: 14px; margin: 0 0 25px 0; line-height: 1.5; text-align: left;">Recuerda que al tercer intento erróneo de clave, tu acceso será bloqueado</p>
+            <div style="text-align: right;">
+                <span onclick="document.getElementById('errorModal').style.display='none'" style="color: #FF7800; font-weight: 600; font-size: 15px; cursor: pointer; text-transform: uppercase;">Entendido</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT MODAL -->
+    <div class="modal-overlay" id="forgotModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="modal-card" style="background: white; width: 85%; border-radius: 8px; padding: 25px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <h3 style="color: #333; margin: 0 0 10px 0; font-size: 18px; font-weight: 600; text-align: left;">Tu Clave</h3>
+            <p style="color: #666; font-size: 14px; margin: 0 0 25px 0; line-height: 1.5; text-align: left;" id="forgotText">No tienes un PIN definido.</p>
+            <div style="text-align: right;">
+                <span onclick="document.getElementById('forgotModal').style.display='none'" style="color: #002A8D; font-weight: 600; font-size: 15px; cursor: pointer; text-transform: uppercase;">Aceptar</span>
+            </div>
+        </div>
+    </div>
+
         <div class="login-form">
             <div class="card-selector">
                 <img src="img/perfil-person-des-remake.svg" alt="Perfil" class="user-icon-img">
@@ -282,14 +116,14 @@
             <button id="loginBtn" class="btn-ingresar" onclick="irAlInicio()">Ingresar</button>
 
             <div class="footer-links">
-                <a href="#" class="forgot-pass">¿Olvidaste tu clave?</a>
+                <a href="#" class="forgot-pass" onclick="mostrarForgot(); return false;">&iquest;Olvidaste tu clave?</a>
                 <p class="version-text">V.5.4.3</p>
             </div>
         </div>
 
     </div>
 
-    <script>
+        <script>
         const passInput = document.getElementById('passInput');
         const loginBtn = document.getElementById('loginBtn');
         const eyeIcon = document.getElementById('eyeIcon');
@@ -317,8 +151,33 @@
 
         function irAlInicio() {
             if (loginBtn.classList.contains('active')) {
-                window.location.href = 'inicio.html';
+                const definedPin = localStorage.getItem('user_pin');
+                
+                loginBtn.innerHTML = '<div class="spinner"></div>';
+                loginBtn.style.pointerEvents = 'none';
+
+                setTimeout(() => {
+                    loginBtn.innerHTML = 'Ingresar';
+                    loginBtn.style.pointerEvents = 'auto';
+
+                    if (definedPin && passInput.value !== definedPin) {
+                        document.getElementById('errorModal').style.display = 'flex';
+                    } else {
+                        window.location.href = 'inicio.html';
+                    }
+                }, 2000);
             }
+        }
+
+        function mostrarForgot() {
+            const definedPin = localStorage.getItem('user_pin');
+            const forgotText = document.getElementById('forgotText');
+            if (definedPin) {
+                forgotText.innerText = 'Tu PIN definido es: ' + definedPin;
+            } else {
+                forgotText.innerText = 'Aún no tienes un PIN personalizado definido, puedes ingresar con cualquier combinación de 6 dígitos.';
+            }
+            document.getElementById('forgotModal').style.display = 'flex';
         }
     </script>
 
@@ -332,5 +191,15 @@
         }
     </script>
     <script type="module" src="seguridad.js"></script>
+<script src="zoom.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+

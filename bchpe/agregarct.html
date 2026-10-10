@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,243 +6,13 @@
     <title>Agregar Contacto - BCP</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
-        * {
-            /* Elimina el recuadro azul al hacer clic en celulares */
-            -webkit-tap-highlight-color: transparent !important;
-            outline: none !important;
-            
-            /* Bloquea la selección de texto en toda la app */
-            -webkit-user-select: none !important; 
-            -moz-user-select: none !important; 
-            -ms-user-select: none !important; 
-            user-select: none !important; 
-            box-sizing: border-box;
-        }
+        <link rel="stylesheet" href="css/agregarct.css">
 
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-        input, textarea, select {
-            -webkit-user-select: auto !important;
-            -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
-            user-select: auto !important;
-        }
-
-        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
-        img {
-            -webkit-touch-callout: none !important;
-            -webkit-user-drag: none !important;
-        }
-
-        body {
-            background-color: #f2f4f7;
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
-            overscroll-behavior-y: none;
-            overflow-x: hidden;
-            height: 100vh;
-        }
-
-        /* --- FONDO SUPERIOR AZUL BCP --- */
-        .blue-bg-curve {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 250px;
-            background-color: #002A8D;
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
-            z-index: 1;
-        }
-
-        /* --- CABECERA --- */
-        .header {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            z-index: 2;
-            height: 120px;
-        }
-        .back-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            cursor: pointer;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            position: absolute;
-            left: 20px;
-            top: 30px;
-        }
-        .logo-center {
-            height: 100px;
-            object-fit: contain;
-            position: absolute;
-            left: 50%;
-            top: 15px;
-            transform: translateX(-50%);
-        }
-
-        /* --- TARJETA BLANCA PRINCIPAL --- */
-        .main-card {
-            position: relative;
-            z-index: 3;
-            background: white;
-            margin: 10px 20px 40px 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 30px 20px;
-        }
-        
-        .card-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #002A8D;
-            text-align: center;
-            margin: 0 0 5px 0;
-        }
-        .card-subtitle {
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-            margin: 0 0 30px 0;
-        }
-
-        /* --- FORMULARIO Y ESTILOS DE CASILLAS --- */
-        .form-group {
-            margin-bottom: 25px;
-        }
-        .input-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #888;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            background-color: #f9f9fb;
-            border: 1px solid #eaeaea;
-            border-radius: 12px;
-            padding: 14px 15px;
-            transition: border-color 0.3s;
-        }
-        .input-wrapper:focus-within {
-            border-color: #FF7800; /* Naranja BCP en el focus */
-            background-color: #ffffff;
-        }
-        .input-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            flex-shrink: 0;
-            color: #002A8D;
-        }
-        .custom-input {
-            width: 100%;
-            border: none;
-            background: transparent;
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            outline: none;
-            font-family: 'Roboto', sans-serif;
-        }
-        .custom-input::placeholder {
-            color: #aaa;
-            font-weight: 400;
-        }
-        
-        /* Estilos específicos para el Select */
-        select.custom-input {
-            -webkit-appearance: none; 
-            appearance: none; 
-            cursor: pointer;
-        }
-        select.custom-input option {
-            background-color: white; 
-            color: #333;
-        }
-
-        /* --- BOTÓN GUARDAR --- */
-        .btn-save {
-            width: 100%;
-            background-color: #002A8D;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            margin-top: 5px;
-            cursor: pointer;
-            letter-spacing: 0.5px;
-            transition: transform 0.1s, background-color 0.3s;
-        }
-        .btn-save:active {
-            transform: scale(0.97);
-        }
-
-        /* --- ESTILOS DE LA ANIMACIÓN (PACMAN) --- */
-        .custom-loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999;
-            display: none; justify-content: center; align-items: center;
-            flex-direction: column; backdrop-filter: blur(4px);
-        }
-        .loader { width: 8em; height: 8em; }
-        .loader__eye1, .loader__eye2, .loader__mouth1, .loader__mouth2 { animation: eye1 3s ease-in-out infinite; }
-        .loader__eye1, .loader__eye2 { transform-origin: 64px 64px; }
-        .loader__eye2 { animation-name: eye2; }
-        .loader__mouth1 { animation-name: mouth1; }
-        .loader__mouth2 { animation-name: mouth2; visibility: hidden; }
-        @keyframes eye1 {
-            from { transform: rotate(-260deg) translate(0, -56px); }
-            50%, 60% { animation-timing-function: cubic-bezier(0.17, 0, 0.58, 1); transform: rotate(-40deg) translate(0, -56px) scale(1); }
-            to { transform: rotate(225deg) translate(0, -56px) scale(0.35); }
-        }
-        @keyframes eye2 {
-            from { transform: rotate(-260deg) translate(0, -56px); }
-            50% { transform: rotate(40deg) translate(0, -56px) rotate(-40deg) scale(1); }
-            52.5% { transform: rotate(40deg) translate(0, -56px) rotate(-40deg) scale(1, 0); }
-            55%, 70% { animation-timing-function: cubic-bezier(0, 0, 0.28, 1); transform: rotate(40deg) translate(0, -56px) rotate(-40deg) scale(1); }
-            to { transform: rotate(150deg) translate(0, -56px) scale(0.4); }
-        }
-        @keyframes mouth1 {
-            from { animation-timing-function: ease-in; stroke-dasharray: 0 351.86; stroke-dashoffset: 0; }
-            25% { animation-timing-function: ease-out; stroke-dasharray: 175.93 351.86; stroke-dashoffset: 0; }
-            50% { animation-timing-function: steps(1, start); stroke-dasharray: 175.93 351.86; stroke-dashoffset: -175.93; visibility: visible; }
-            75%, to { visibility: hidden; }
-        }
-        @keyframes mouth2 {
-            from { animation-timing-function: steps(1, end); visibility: hidden; }
-            50% { animation-timing-function: ease-in-out; visibility: visible; stroke-dashoffset: 0; }
-            to { stroke-dashoffset: -351.86; }
-        }
-
-        /* --- NOTIFICACIÓN PERSONALIZADA (TOAST) --- */
-        .toast {
-            visibility: hidden; min-width: 250px; margin-left: -125px;
-            background-color: #333; color: #fff; text-align: center;
-            border-radius: 50px; padding: 16px; position: fixed;
-            z-index: 10000; left: 50%; bottom: 30px; font-size: 14px; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: 0;
-            transition: opacity 0.3s, bottom 0.3s;
-        }
-        .toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-        .toast.success { background-color: #2BD071; color: white; }
-        .toast.error { background-color: #d32f2f; color: white; }
-    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -418,5 +188,15 @@
             }
         });
     </script>
+<script src="zoom.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('Error SW', err));
+            });
+        }
+    </script>
 </body>
 </html>
+

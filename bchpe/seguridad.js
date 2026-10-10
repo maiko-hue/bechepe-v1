@@ -1,4 +1,4 @@
-// seguridad.js - MODO VELOCIDAD Y PERSISTENCIA (VERSIÓN BCP)
+﻿// seguridad.js - MODO VELOCIDAD Y PERSISTENCIA (VERSIÓN BCP)
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -9,7 +9,7 @@ const esPuertaPrincipal = paginaActual.includes("datos.html") || paginaActual.in
 const esIndex = paginaActual.includes("index.html") || paginaActual === "/" || paginaActual.endsWith("/");
 
 // Ocultar cuerpo solo en puertas principales para evitar destellos
-const esPuertaPrincipal = paginaActual.includes("datos.html");
+const esPuertaSecundaria = paginaActual.includes("datos.html");
 if (esPuertaPrincipal) {
     document.body.style.opacity = "0";
 }

@@ -1,181 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Transferir dinero</title>
-    <style>
-        * {
-            /* Elimina el recuadro azul al hacer clic en celulares */
-            -webkit-tap-highlight-color: transparent;
-            outline: none !important;
-            
-            /* Bloquea la selección de texto en toda la app */
-            -webkit-user-select: none; 
-            -moz-user-select: none; 
-            -ms-user-select: none; 
-            user-select: none; 
-        }
+        <link rel="stylesheet" href="css/trans.css">
 
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-        input, textarea {
-            -webkit-user-select: auto;
-            -moz-user-select: auto;
-            -ms-user-select: auto;
-            user-select: auto;
-        }
-
-        /* --- SOLUCIÓN: Bloqueo estricto contra descargas de imágenes --- */
-        img {
-            -webkit-touch-callout: none !important; 
-            -webkit-user-drag: none !important;     
-            pointer-events: none !important;        
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            color: #333;
-        }
-
-        /* HEADER */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background-color: #fff;
-        }
-
-        .header-title {
-            font-size: 24px; 
-            font-weight: 400;
-            color: #444;
-            flex-grow: 1;
-            margin-left: 15px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .icon-btn svg {
-            width: 28px;
-            height: 28px;
-            fill: #444;
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            padding: 20px;
-        }
-
-        h2 {
-            color: #002a80;
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        h3 {
-            color: #002a80;
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 35px;
-            margin-bottom: 20px;
-        }
-
-        /* GRID DE OPCIONES */
-        .options-grid {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .option-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 23%;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            /* Efecto visual al tocar */
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .icon-box img {
-            width: 42px; 
-            height: 42px; 
-            object-fit: contain;
-        }
-
-        .option-text {
-            font-size: 15px; 
-            font-weight: 500;
-            color: #333;
-            line-height: 1.2;
-        }
-
-        /* SECCIÓN FAVORITOS (EMPTY STATE) */
-        .favorites-empty {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .illustration {
-            width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .empty-title {
-            font-size: 20px;
-            color: #000;
-            margin-bottom: 10px;
-            font-weight: 400;
-        }
-
-        .empty-desc {
-            font-size: 16px;
-            color: #666;
-            max-width: 300px;
-            line-height: 1.4;
-            margin-bottom: 15px;
-        }
-
-        .add-link {
-            color: #002a80;
-            font-size: 17px;
-            text-decoration: none;
-            font-weight: 500;
-        }
-    </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -241,5 +76,15 @@
 
     </div>
 
+<script src="zoom.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('Error SW', err));
+            });
+        }
+    </script>
 </body>
 </html>
+

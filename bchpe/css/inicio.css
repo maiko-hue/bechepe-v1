@@ -1,0 +1,167 @@
+
+        * {
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none; 
+            -moz-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            overscroll-behavior-y: none;
+        }
+
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+        /* --- SOLUCIÓN: Bloquea el menú de descarga al mantener presionadas las imágenes --- */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+            pointer-events: none !important; /* Bloqueo estricto */
+        }
+        /* Restauramos el clic exclusivamente para los íconos interactivos como el ojito */
+        img.action-icon {
+            pointer-events: auto !important;
+        }
+
+        /* ==================================================
+           SKELETON ANIMATION
+           ================================================== */
+        .skeleton {
+            position: relative !important;
+            overflow: hidden !important;
+            background-color: #dbe1e8 !important;
+            color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+        .skeleton * {
+            opacity: 0 !important;
+        }
+        .skeleton::after {
+            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: skeleton-shimmer 1s infinite;
+        }
+        @keyframes skeleton-shimmer { 100% { left: 100%; } }
+
+        .sk-text { border-radius: 4px; display: inline-block; min-width: 50px; }
+        .sk-text-block { border-radius: 4px; display: block; width: fit-content; margin-bottom: 4px; min-height: 14px;}
+        .sk-text-center { margin-left: auto; margin-right: auto; }
+        .icon-circle.skeleton { border-radius: 50%; }
+        .card-icon.skeleton { border-radius: 50%; }
+
+        /* Quitar caja, bordes y sombras de Mis Productos */
+        .card-product {
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1px solid #e0e0e0 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding-left: 0 !important; 
+            padding-right: 0 !important; 
+        }
+        /* Quitar bordes de las esquinas del contenedor blanco */
+        .main-card {
+            border-radius: 0 !important;
+        }
+
+        /* Ajuste del fondo azul de la cabecera */
+        .top-header {
+            background-color: #002a8d !important;
+            padding: 20px 20px 50px 20px !important;
+            color: white !important;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .greeting {
+            margin-top: 15px;
+            font-size: 22px;
+        }
+
+        /* Efecto de arrastrar tipo catálogo magnético */
+        #carrusel-destacados {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; 
+        }
+        #carrusel-destacados::-webkit-scrollbar {
+            display: none; 
+        }
+        .highlight-card {
+            scroll-snap-align: start;
+        }
+
+        .ops-full-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 10px;
+            padding: 25px 15px;
+        }
+        .op-grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+            text-decoration: none;
+            line-height: 1.2;
+            cursor: pointer;
+        }
+        .op-grid-icon-box {
+            width: 55px;
+            height: 55px;
+            background-color: #f4f6f9; 
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .op-grid-icon-box img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%);
+        }
+        .blue-top-header {
+            background-color: #002a8d; 
+            color: white; 
+            padding: 20px; 
+            font-size: 20px; 
+            font-weight: 500;
+        }
+
+        /* Efectos de color para el Menú Inferior (Inicio y Operaciones) */
+        #btn-inicio:not(.active) .icon,
+        #btn-operaciones:not(.active) .icon {
+            filter: brightness(0) saturate(100%) invert(64%) sepia(4%) saturate(702%) hue-rotate(143deg) brightness(89%) contrast(85%) !important;
+        }
+        #btn-inicio:not(.active) .text,
+        #btn-operaciones:not(.active) .text {
+            color: #898E8F !important;
+        }
+
+        #btn-inicio.active .icon,
+        #btn-operaciones.active .icon {
+            filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%) !important;
+        }
+        #btn-inicio.active .text,
+        #btn-operaciones.active .text {
+            color: #072799 !important;
+            font-weight: 500;
+        }
+    
+
+

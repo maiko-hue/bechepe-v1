@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -7,171 +7,36 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
+        <link rel="stylesheet" href="css/inicio.css">
     <style>
-        * {
-            /* Elimina el recuadro azul al hacer clic en celulares */
-            -webkit-tap-highlight-color: transparent;
-            outline: none !important;
-            
-            /* Bloquea la selección de texto en toda la app */
-            -webkit-user-select: none; 
-            -moz-user-select: none; 
-            -ms-user-select: none; 
-            user-select: none; 
-            overscroll-behavior-y: none;
-        }
-
-        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
-        input, textarea {
-            -webkit-user-select: auto;
-            -moz-user-select: auto;
-            -ms-user-select: auto;
-            user-select: auto;
-        }
-
-        /* --- SOLUCIÓN: Bloquea el menú de descarga al mantener presionadas las imágenes --- */
-        img {
-            -webkit-touch-callout: none !important;
-            -webkit-user-drag: none !important;
-            pointer-events: none !important; /* Bloqueo estricto */
-        }
-        /* Restauramos el clic exclusivamente para los íconos interactivos como el ojito */
-        img.action-icon {
-            pointer-events: auto !important;
-        }
-
-        /* ==================================================
-           SKELETON ANIMATION
-           ================================================== */
-        .skeleton {
-            position: relative !important;
-            overflow: hidden !important;
-            background-color: #dbe1e8 !important;
+        .skeleton-text {
             color: transparent !important;
-            border-color: transparent !important;
-            box-shadow: none !important;
+            background-color: #e0e0e0 !important;
+            border-radius: 4px;
+            animation: skeleton-pulse 1.5s infinite ease-in-out;
+            position: relative;
+            width: fit-content;
         }
-        .skeleton * {
-            opacity: 0 !important;
+        @keyframes skeleton-pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
-        .skeleton::after {
-            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-            animation: skeleton-shimmer 1s infinite;
+            .skeleton-icon-wrapper {
+            background-color: #e0e0e0 !important;
+            border-radius: 50%;
+            animation: skeleton-pulse 1.5s infinite ease-in-out;
         }
-        @keyframes skeleton-shimmer { 100% { left: 100%; } }
-
-        .sk-text { border-radius: 4px; display: inline-block; min-width: 50px; }
-        .sk-text-block { border-radius: 4px; display: block; width: fit-content; margin-bottom: 4px; min-height: 14px;}
-        .sk-text-center { margin-left: auto; margin-right: auto; }
-        .icon-circle.skeleton { border-radius: 50%; }
-        .card-icon.skeleton { border-radius: 50%; }
-
-        /* Quitar caja, bordes y sombras de Mis Productos */
-        .card-product {
-            background: transparent !important;
-            border: none !important;
-            border-bottom: 1px solid #e0e0e0 !important;
-            box-shadow: none !important;
-            border-radius: 0 !important;
-            padding-left: 0 !important; 
-            padding-right: 0 !important; 
-        }
-        /* Quitar bordes de las esquinas del contenedor blanco */
-        .main-card {
-            border-radius: 0 !important;
-        }
-
-        /* Ajuste del fondo azul de la cabecera */
-        .top-header {
-            background-color: #002a8d !important;
-            padding: 20px 20px 50px 20px !important;
-            color: white !important;
-        }
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .greeting {
-            margin-top: 15px;
-            font-size: 22px;
-        }
-
-        /* Efecto de arrastrar tipo catálogo magnético */
-        #carrusel-destacados {
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; 
-        }
-        #carrusel-destacados::-webkit-scrollbar {
-            display: none; 
-        }
-        .highlight-card {
-            scroll-snap-align: start;
-        }
-
-        .ops-full-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 10px;
-            padding: 25px 15px;
-        }
-        .op-grid-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            font-size: 11px;
-            color: #555;
-            text-decoration: none;
-            line-height: 1.2;
-            cursor: pointer;
-        }
-        .op-grid-icon-box {
-            width: 55px;
-            height: 55px;
-            background-color: #f4f6f9; 
-            border-radius: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .op-grid-icon-box img {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%);
-        }
-        .blue-top-header {
-            background-color: #002a8d; 
-            color: white; 
-            padding: 20px; 
-            font-size: 20px; 
-            font-weight: 500;
-        }
-
-        /* Efectos de color para el Menú Inferior (Inicio y Operaciones) */
-        #btn-inicio:not(.active) .icon,
-        #btn-operaciones:not(.active) .icon {
-            filter: brightness(0) saturate(100%) invert(64%) sepia(4%) saturate(702%) hue-rotate(143deg) brightness(89%) contrast(85%) !important;
-        }
-        #btn-inicio:not(.active) .text,
-        #btn-operaciones:not(.active) .text {
-            color: #898E8F !important;
-        }
-
-        #btn-inicio.active .icon,
-        #btn-operaciones.active .icon {
-            filter: brightness(0) saturate(100%) invert(13%) sepia(90%) saturate(4155%) hue-rotate(227deg) brightness(85%) contrast(102%) !important;
-        }
-        #btn-inicio.active .text,
-        #btn-operaciones.active .text {
-            color: #072799 !important;
-            font-weight: 500;
+        .skeleton-icon-wrapper img {
+            visibility: hidden;
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#002A8D">
+    <link rel="apple-touch-icon" href="img/app-icon.png">
 </head>
 <body>
 
@@ -208,11 +73,11 @@
                                 <img src="img/lg_favicon_light.svg" alt="Cuenta" class="account-img-icon"> 
                             </div>
                             <div class="product-info-col">
-                                <p class="product-label skeleton sk-text">CUENTAS DE AHORRO</p>
-                                <p class="product-number skeleton sk-text">**** 7809</p>
+                                <p class="product-label skeleton-text">CUENTAS DE AHORRO</p>
+                                <p class="product-number skeleton-text">**** 7809</p>
                             </div>
                             <div class="product-balance-col">
-                                <p class="balance skeleton sk-text" id="balance-text">S/ *****</p>
+                                <p class="balance skeleton-text" id="balance-text">S/ *****</p>
                             </div>
                             <div class="product-arrow-col">›</div>
                         </div>
@@ -224,105 +89,105 @@
 
                     <section class="operations-grid">
                         <a href="yapearcel.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle skeleton">
+                            <div class="icon-circle ">
                                 <img src="img/yapear-a-celular.svg" alt="" class="op-img">
                             </div>
-                            <p class="skeleton sk-text sk-text-center">Yapear a<br>celular</p>
+                            <p>Yapear a<br>celular</p>
                         </a>
 
                         <a href="escanear.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle skeleton">
+                            <div class="icon-circle ">
                                 <img src="img/qricono.svg" alt="" class="op-img">
                             </div>
-                            <p class="skeleton sk-text sk-text-center">Pagar con<br>QR</p>
+                            <p>Pagar con<br>QR</p>
                         </a>
 
                         <a href="servicio.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle skeleton">
+                            <div class="icon-circle ">
                                 <img src="img/pagar-servicios.svg" alt="" class="op-img">
                             </div>
-                            <p class="skeleton sk-text sk-text-center">Pagar<br>servicios</p>
+                            <p>Pagar<br>servicios</p>
                         </a>
 
                         <a href="trans.html" class="op-item" style="text-decoration: none; color: inherit;">
-                            <div class="icon-circle skeleton">
+                            <div class="icon-circle ">
                                 <img src="img/transf-dinero.svg" alt="" class="op-img">
                             </div>
-                            <p class="skeleton sk-text sk-text-center">Transferir<br>dinero</p>
+                            <p>Transferir<br>dinero</p>
                         </a>
                     </section>
 
                     <section class="highlights-section">
-                        <h3>Lo más destacado</h3>
+                        <h3>Lo m&aacute;s destacado</h3>
                         <div class="scroll-container" id="carrusel-destacados">
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/highlight-1.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Descubre Qore</h4>
-                                    <p class="skeleton sk-text-block">Tu nueva zona de beneficios</p>
+                                    <h4 class="skeleton-text">Descubre Qore</h4>
+                                    <p class="skeleton-text">Tu nueva zona de beneficios</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-2.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Cambia soles y dólares</h4>
-                                    <p class="skeleton sk-text-block">¡Con el mejor tipo de cambio!</p>
+                                    <h4 class="skeleton-text">Cambia soles y dólares</h4>
+                                    <p class="skeleton-text">¡Con el mejor tipo de cambio!</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-3.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Seguro de Tarjetas</h4>
-                                    <p class="skeleton sk-text-block">Protégete contra robos</p>
+                                    <h4 class="skeleton-text">Seguro de Tarjetas</h4>
+                                    <p class="skeleton-text">Protégete contra robos</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-4.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Actualiza tus datos</h4>
-                                    <p class="skeleton sk-text-block">Mejora tu nivel de seguridad</p>
+                                    <h4 class="skeleton-text">Actualiza tus datos</h4>
+                                    <p class="skeleton-text">Mejora tu nivel de seguridad</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-5.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Adelanto de Sueldo</h4>
-                                    <p class="skeleton sk-text-block">¡Obtenlo al instante!</p>
+                                    <h4 class="skeleton-text">Adelanto de Sueldo</h4>
+                                    <p class="skeleton-text">¡Obtenlo al instante!</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-6.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Tarjeta de Crédito</h4>
-                                    <p class="skeleton sk-text-block">Solicítala 100% online</p>
+                                    <h4 class="skeleton-text">Tarjeta de Crédito</h4>
+                                    <p class="skeleton-text">Solicítala 100% online</p>
                                 </div>
                             </div>
                             
                             <div class="highlight-card">
-                                <div class="card-icon skeleton">
+                                <div class="card-icon skeleton-icon-wrapper">
                                     <img src="img/destacado-7.jpg" alt="Icono" class="highlight-icon-img">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="skeleton sk-text-block">Dónaciones</h4>
-                                    <p class="skeleton sk-text-block">Sé parte del cambio</p>
+                                    <h4 class="skeleton-text">Dónaciones</h4>
+                                    <p class="skeleton-text">Sé parte del cambio</p>
                                 </div>
                             </div>
 
@@ -502,7 +367,16 @@
 <script>
         let currentBalance = "1,200.00"; // Valor por defecto
 
-        document.addEventListener("DOMContentLoaded", function() {
+                document.addEventListener("DOMContentLoaded", function() {
+            // Quitar skeleton despues de 2 segundos
+            setTimeout(() => {
+                document.querySelectorAll('.skeleton-text').forEach(el => {
+                    el.classList.remove('skeleton-text');
+                });
+                document.querySelectorAll('.skeleton-icon-wrapper').forEach(el => {
+                    el.classList.remove('skeleton-icon-wrapper');
+                });
+            }, 2000);
             // 1. Cargar Nombre
             const savedName = localStorage.getItem("userName");
             if (savedName) {
@@ -515,10 +389,10 @@
                 currentBalance = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
 
-            // --- LÓGICA SKELETON (3 SEGUNDOS) ---
+            // --- LÓGICA (3 SEGUNDOS) ---
             setTimeout(() => {
-                document.querySelectorAll('.skeleton').forEach(el => {
-                    el.classList.remove('skeleton', 'sk-text', 'sk-text-block', 'sk-text-center');
+                document.querySelectorAll('.').forEach(el => {
+                    el.classList.remove('', '', '', '');
                 });
             }, 3000);
 
@@ -597,5 +471,24 @@
             document.getElementById('btn-operaciones').classList.add('active');
         }
     </script>
+<script src="zoom.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('Error SW', err));
+            });
+        }
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

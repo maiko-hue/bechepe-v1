@@ -1,0 +1,261 @@
+
+        * {
+            /* Elimina el recuadro azul al hacer clic en celulares */
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            
+            /* Bloquea la selección de texto en toda la app */
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important; 
+            box-sizing: border-box;
+        }
+
+        /* Excepción para que sí se pueda seleccionar/escribir en los inputs */
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
+        }
+
+        /* Bloquea el menú de descarga al mantener presionadas las imágenes */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-drag: none !important;
+        }
+
+        body {
+            background-color: #f2f4f7;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            /* Evita que la página se recargue al deslizar hacia abajo (Pull-to-refresh) */
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+        }
+
+        /* --- FONDO SUPERIOR AZUL BCP --- */
+        .blue-bg-curve {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 240px;
+            background-color: #002A8D;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            z-index: 1;
+        }
+
+        /* --- CABECERA --- */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            height: 80px;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .logo-center {
+            height: 100px;
+            object-fit: contain;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- TARJETA BLANCA PRINCIPAL --- */
+        .main-card {
+            position: relative;
+            z-index: 3;
+            background: white;
+            margin: 10px 20px 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px 20px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #002A8D;
+            text-align: center;
+            margin: 0 0 5px 0;
+        }
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 0 0 30px 0;
+        }
+
+        /* --- LISTA DE OPCIONES --- */
+        .menu-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .menu-row:last-child {
+            border-bottom: none;
+        }
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .menu-text {
+            flex-grow: 1;
+            color: #333;
+            font-size: 15.5px;
+            font-weight: 600;
+        }
+        .menu-arrow {
+            color: #ccc;
+        }
+
+        /* Colores de los íconos */
+        .bg-blue { background-color: #e6f0ff; color: #002A8D; }
+        .bg-cyan { background-color: #e0f7fa; color: #00838f; }
+        .bg-red { background-color: #ffebee; color: #d32f2f; }
+
+        /* --- MODALES NATIVOS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 320px;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        .modal-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 20px;
+        }
+        .modal-card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-modal {
+            padding: 14px;
+            border-radius: 25px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            letter-spacing: 0.5px;
+        }
+        .btn-confirm { background-color: #002A8D; color: white; }
+        .btn-cancel { background-color: #f2f2f2; color: #666; }
+        .btn-danger { background-color: #d32f2f; color: white; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; color: #555; font-size: 13px; margin-bottom: 6px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; font-family: inherit;}
+        .form-group input:focus { border-color: #002A8D; }
+
+        /* --- TOAST --- */
+        #toast-msg {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 10001;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+        }
+        #toast-msg.show {
+            visibility: visible;
+            animation: fadein 0.3s, fadeout 0.3s 2.7s;
+        }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    
+
+
+
+/* Toggle Switch para iPhone Mode */
+.switch input:checked + .slider { background-color: #002a8d; }
+.switch input:focus + .slider { box-shadow: 0 0 1px #002a8d; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+.switch input:checked + .slider:before { transform: translateX(20px); }
+
+/* Zoom Controls Styles */
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+.zoom-btn {
+    background: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #002A8D;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.zoom-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    min-width: 40px;
+    text-align: center;
+}
