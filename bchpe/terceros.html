@@ -198,7 +198,8 @@
 
         function procesarAvance(cuenta, nombre, banco) {
             // Guardamos la cuenta y el nombre
-            localStorage.setItem('v_cuenta', cuenta); 
+            localStorage.setItem('v_cuenta', cuenta);
+            localStorage.setItem('es_qr', 'false'); 
             localStorage.setItem('v_nombre', nombre); 
             localStorage.setItem('v_entidad_destino', banco); 
             
@@ -222,4 +223,5 @@
     </script>
 </body>
 </html>
+
 

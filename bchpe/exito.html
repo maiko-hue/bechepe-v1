@@ -17,8 +17,8 @@
 </head>
 <body>
 
-    <div class="mobile-wrapper" id="captureArea">
-        <div class="container">
+    <div class="mobile-wrapper">
+        <div class="container" id="captureArea">
             
             <div class="content-wrapper">
                 <div class="check-icon">
@@ -33,28 +33,32 @@
                 <div class="fecha-sub" id="displayFecha">--</div>
 
                 <div class="acciones" id="divAcciones">
-                    <div class="accion-btn" onclick="descargarVoucher()">
-                        <img src="img/descargar-icon.svg" alt="Descargar"> Descargar
-                    </div>
-                    <div class="accion-btn" onclick="compartirVoucher()">
-                        <img src="img/compartir-icon.svg" alt="Compartir"> Compartir
-                    </div>
+                    <div class="accion-btn" onclick="descargarVoucher()"><img src="img/descargar-icon.svg" alt="Descargar"> Descargar</div>
+                    <div class="accion-btn" onclick="compartirVoucher()"><img src="img/compartir-icon.svg" alt="Compartir"> Compartir</div>
                 </div>
 
                 <div class="detalles-lista">
                     <div class="fila">
-                        <div class="label" style="width: 40%">Enviado a</div>
-                        <div class="valor" style="width: 60%">
-                            <strong id="displayNombre">Nombre</strong>
-                            <span id="displayCuenta">****0000</span>
-                            <span id="displayMoneda">Moneda soles</span>
+                        <div class="label">Enviado a</div>
+                        <div class="valor">
+                            <strong id="displayNombre">Nombre Contacto</strong>
+                            <span id="displayNumero" style="letter-spacing: 1px;">*** **4 214</span>
+                            <span id="displayEntidad">Yape</span> 
                         </div>
                     </div>
+                    
+                    <div class="fila">
+                        <div class="label">Comisión</div>
+                        <div class="valor">
+                            <strong>Gratis</strong>
+                        </div>
+                    </div>
+
                     <div class="fila">
                         <div class="label">Desde</div>
                         <div class="valor">
                             <strong>Cuenta Digital Soles</strong>
-                            <span>7809</span>
+                            <span>**** 7809</span>
                         </div>
                     </div>
                     <div class="fila" style="border-bottom: none;"> 
@@ -67,15 +71,11 @@
 
                 <div class="separador-banner" id="divSeparador"></div>
 
-                <div class="banner" id="divBanner">
-                    <img src="img/super-des.svg" alt="Personaje" class="banner-img">
-                    <div class="banner-text">
-                        <h4>Protege tus tarjetas</h4>
-                        <p>Por solo S/ 13.99 al mes inc. IGV</p>
-                    </div>
+                                <div class="banner" id="divBanner" style="padding: 0; background: transparent; height: auto;">
+                    <img src="img/exito.jpeg" alt="Promocion" style="width: 100%; height: auto; object-fit: contain; border-radius: 10px;">
                 </div>
 
-                <button class="btn-otra" id="btnOtra" onclick="window.history.back()">Realizar otra transferencia</button>
+                <button class="btn-otra" id="btnOtra" onclick="window.location.href='yapearcel.html'">Yapear a otro celular</button>
                 <a href="inicio.html" class="link-inicio" id="linkInicio">Ir al inicio</a>
             </div>
 
@@ -83,82 +83,128 @@
     </div>
 
     <script>
-        const nombre = localStorage.getItem('v_nombre') || "Nombre";
-        const cuentaFull = localStorage.getItem('v_cuenta') || "0000";
-        let monto = localStorage.getItem('v_monto');
-        
+                // --- LOGICA UNIFICADA (YAPE + BCP/TERCEROS/QR) ---
+        const isYape = !!localStorage.getItem('v_monto_yape');
+
+        let nombre, cuentaOcelular, monto, entidad, tituloHistorial;
+
+        if (isYape) {
+            nombre = localStorage.getItem('v_nombre_yape') || "Nombre";
+            cuentaOcelular = localStorage.getItem('v_celular_destino') || "000000000";
+            monto = localStorage.getItem('v_monto_yape');
+            entidad = localStorage.getItem('v_entidad_destino') || "Yape";
+            tituloHistorial = "Pago YAPE de ";
+            
+            // Textos para Yape
+            document.getElementById('btnOtra').innerText = "Yapear a otro celular";
+            document.getElementById('btnOtra').onclick = () => window.location.href = 'yapearcel.html';
+        } else {
+            nombre = localStorage.getItem('v_nombre') || "Nombre";
+            cuentaOcelular = localStorage.getItem('v_cuenta') || "0000";
+            monto = localStorage.getItem('v_monto');
+            entidad = localStorage.getItem('v_entidad_destino') || "BCP";
+            tituloHistorial = "TRAN.CTAS.TERC.BM";
+            
+            // Textos para transferencias BCP/Terceros
+            document.getElementById('btnOtra').innerText = "Nueva transferencia";
+            document.getElementById('btnOtra').onclick = () => window.location.href = 'trans.html';
+        }
+
+        // 2. FORMATEAR MONTO
         if(monto) {
             if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
         } else { monto = "0.00"; }
 
-        // GENERAR NÚMERO DE OPERACIÓN Y FECHA DINÁMICA
-        const randomOp = Math.floor(10000000 + Math.random() * 90000000);
+        // 3. FORMATEAR NÚMERO Y ENTIDAD
+        let numeroFinal = "";
+        let ultimosCuatro = "0000"; 
+        
+        if (isYape && cuentaOcelular.length >= 9) {
+            const last4 = cuentaOcelular.slice(-4);
+            ultimosCuatro = last4;
+            const part1 = last4.charAt(0);
+            const part2 = last4.slice(1);
+            numeroFinal = `*** **${part1} ${part2}`;
+            tituloHistorial += ultimosCuatro;
+        } else {
+            const esQR = localStorage.getItem('es_qr') === 'true';
+            const destinoQR = localStorage.getItem('v_destino_qr');
+            
+            if (esQR && destinoQR) {
+                numeroFinal = destinoQR; 
+                entidad = ""; // Ocultar entidad extra si ya dice Yape en el numero
+            } else {
+                if (cuentaOcelular.length >= 4) {
+                    ultimosCuatro = cuentaOcelular.slice(-4);
+                    numeroFinal = "**** " + ultimosCuatro;
+                } else {
+                    numeroFinal = "**** " + cuentaOcelular;
+                }
+            }
+        }
 
+        // 4. GENERAR NÚMERO DE OPERACIÓN Y FECHA DINÁMICA
+        const randomOp = Math.floor(10000000 + Math.random() * 90000000);
+        
         const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
         const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         const ahora = new Date();
-        let ampm = ahora.getHours() >= 12 ? 'p.m.' : 'a.m.';
+        let ampm = ahora.getHours() >= 12 ? 'pm.' : 'am.';
         let hora = ahora.getHours() % 12;
         hora = hora ? hora : 12; 
+        let horaStr = hora < 10 ? '0' + hora : hora;
         let minutos = ahora.getMinutes() < 10 ? '0' + ahora.getMinutes() : ahora.getMinutes();
-        let fechaGenerada = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()} - ${hora}:${minutos} ${ampm}`;
+        let fechaGenerada = `${dias[ahora.getDay()]} ${ahora.getDate()} ${meses[ahora.getMonth()]} ${ahora.getFullYear()} - ${horaStr}:${minutos} ${ampm}`;
 
-        // Cortar cuenta
-        let cuentaFinal = "0000";
-        if (cuentaFull.length >= 4) {
-            cuentaFinal = cuentaFull.slice(-4);
-        } else {
-            cuentaFinal = cuentaFull;
-        }
-
-        // MOSTRAR DATOS EN PANTALLA
+        // 5. MOSTRAR DATOS
         document.getElementById('displayMonto').innerText = "S/ " + monto;
         document.getElementById('displayFecha').innerText = fechaGenerada;
         document.getElementById('displayNombre').innerText = nombre;
-        document.getElementById('numOperacion').innerText = "0" + randomOp;
-
-        // --- LÓGICA QR (MODIFICADO) ---
-        const destinoQR = localStorage.getItem('v_destino_qr');
-        if (destinoQR) {
-            // Si viene de QR, cambia el texto al destino (Yape) y oculta "Moneda soles"
-            document.getElementById('displayCuenta').innerText = destinoQR;
-            document.getElementById('displayMoneda').style.display = "none";
+        document.getElementById('displayNumero').innerText = numeroFinal;
+        
+        const displayEntidad = document.getElementById('displayEntidad');
+        if (entidad) {
+            displayEntidad.innerText = entidad;
+            displayEntidad.style.display = 'inline';
         } else {
-            // Si es transferencia normal, pone la cuenta con los ****
-            document.getElementById('displayCuenta').innerText = "****" + cuentaFinal;
+            displayEntidad.style.display = 'none';
         }
+        
+        document.getElementById('numOperacion').innerText = "0" + randomOp; 
 
-        // --- GUARDAR EN HISTORIAL ---
+        // --- 6. GUARDAR EN HISTORIAL ---
         let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
-        let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; // Ej: "28 febrero"
+        let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; 
 
         let nuevoMov = {
-            tipo: "transferencia", // Identificador para voucher.html
-            letra: "TR", 
-            titulo: "TRAN.CTAS.TERC.BM",
+            tipo: isYape ? "yape" : "transferencia", 
+            letra: isYape ? "PA" : "TR", 
+            titulo: tituloHistorial,
             fecha: fechaCorta,
-            fechaCompleta: fechaGenerada, // Para el voucher detallado
+            fechaCompleta: fechaGenerada, 
             monto: monto,
             destinoNombre: nombre,
-            destinoNumero: cuentaFull, // Guardamos la cuenta completa, el voucher la cortará
+            destinoNumero: cuentaOcelular,
+            entidad: isYape ? entidad : (entidad || "BCP"), 
             numOperacion: "0" + randomOp
         };
 
-        // Guardar solo si es una nueva carga (evita duplicados si el usuario recarga la página F5)
-        if(!sessionStorage.getItem('mov_guardado_trans_' + randomOp)){
+        if(!sessionStorage.getItem('mov_guardado_' + randomOp)){
             movimientos.unshift(nuevoMov);
             localStorage.setItem('bcp_movimientos', JSON.stringify(movimientos));
-            sessionStorage.setItem('mov_guardado_trans_' + randomOp, 'true'); 
+            sessionStorage.setItem('mov_guardado_' + randomOp, 'true'); 
         }
+
+        // --- LIMPIEZA ---
+        localStorage.removeItem('v_monto_yape');
+        localStorage.removeItem('v_monto');
         // -------------------------------------
 
-        // --- LA MAGIA: FUNCIONES DE DESCARGAR Y COMPARTIR ---
-        
+        // --- 7. FUNCIONES DE DESCARGAR Y COMPARTIR ---
         function prepararParaFoto(esParaFoto) {
             const botonesSuperior = document.getElementById('divAcciones');
             const btnInferior = document.getElementById('btnOtra');
             const linkInferior = document.getElementById('linkInicio');
-            
             if (esParaFoto) {
                 botonesSuperior.style.display = 'none';
                 btnInferior.style.display = 'none';
@@ -172,12 +218,10 @@
 
         function descargarVoucher() {
             prepararParaFoto(true); 
-            
             setTimeout(() => {
                 html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
                     const link = document.createElement('a');
-                    let nombreLimpio = nombre.replace(/[^a-zA-Z0-9]/g, "_");
-                    link.download = `Transferencia_${nombreLimpio}.png`;
+                    link.download = `Voucher_${entidad}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     prepararParaFoto(false); 
@@ -187,16 +231,13 @@
 
         function compartirVoucher() {
             prepararParaFoto(true);
-
             setTimeout(() => {
                 html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
                     canvas.toBlob(blob => {
-                        let nombreLimpio = nombre.replace(/[^a-zA-Z0-9]/g, "_");
-                        const file = new File([blob], `Transferencia_${nombreLimpio}.png`, { type: 'image/png' });
-                        
+                        const file = new File([blob], `Voucher_${entidad}.png`, { type: 'image/png' });
                         if (navigator.share) {
                             navigator.share({
-                                title: `Transferencia a ${nombre}`,
+                                title: `Voucher de ${entidad}`,
                                 files: [file]
                             }).then(() => {
                                 prepararParaFoto(false);
@@ -224,4 +265,10 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
 

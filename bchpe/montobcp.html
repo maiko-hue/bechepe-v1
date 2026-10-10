@@ -199,12 +199,20 @@
             const entidadGuardada = localStorage.getItem('v_entidad_destino') || 'BCP';
             const nombreGuardado = localStorage.getItem('v_nombre') || '';
 
-            // Mostrar cuenta cortada
+                        const esQR = localStorage.getItem('es_qr') === 'true';
+
             let cuentaMostrar = cuentaGuardada;
             if(cuentaGuardada.length >= 4) {
                 cuentaMostrar = "****" + cuentaGuardada.slice(-4);
             }
-            document.getElementById('displayDestPhone').innerText = cuentaMostrar;
+            const displayDestPhone = document.getElementById('displayDestPhone');
+            displayDestPhone.innerText = cuentaMostrar;
+            
+            if (esQR) {
+                displayDestPhone.style.display = 'none';
+            } else {
+                displayDestPhone.style.display = 'block';
+            }
             
             // Mostrar y configurar entidad seleccionada
             document.getElementById('entidadSeleccionada').innerText = entidadGuardada;
@@ -412,4 +420,5 @@
     </script>
 </body>
 </html>
+
 
