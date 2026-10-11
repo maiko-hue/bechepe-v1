@@ -50,7 +50,7 @@
                         <div class="label">Desde</div>
                         <div class="valor">
                             <strong>Cuenta Digital Soles</strong>
-                            <span>7809</span>
+                            <span>**** 7809</span>
                         </div>
                     </div>
                     <div class="fila" style="border-bottom: none;"> 
@@ -63,12 +63,8 @@
 
                 <div class="separador-banner"></div>
 
-                <div class="banner">
-                    <img src="img/super-des.svg" alt="Personaje" class="banner-img">
-                    <div class="banner-text">
-                        <h4>Protege tus tarjetas</h4>
-                        <p>Por solo S/ 13.99 al mes inc. IGV</p>
-                    </div>
+                                <div class="banner" style="padding: 0; background: transparent; height: auto;">
+                    <img src="img/exito.jpeg" alt="Promocion" style="width: 100%; height: auto; object-fit: contain; border-radius: 10px;">
                 </div>
 
                 <button class="btn-otra" id="btnOtra" onclick="window.location.href='servicio.html'">Realizar otro servicio</button>
@@ -97,11 +93,12 @@
         const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
         const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         const ahora = new Date();
-        let ampm = ahora.getHours() >= 12 ? 'p.m.' : 'a.m.';
+                let ampm = ahora.getHours() >= 12 ? 'pm.' : 'am.';
         let hora = ahora.getHours() % 12;
         hora = hora ? hora : 12; 
+        let horaStr = hora < 10 ? '0' + hora : hora;
         let minutos = ahora.getMinutes() < 10 ? '0' + ahora.getMinutes() : ahora.getMinutes();
-        let fechaGenerada = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()} - ${hora}:${minutos} ${ampm}`;
+        let fechaGenerada = `${dias[ahora.getDay()]} ${ahora.getDate()} ${meses[ahora.getMonth()]} ${ahora.getFullYear()} - ${horaStr}:${minutos} ${ampm}`;
 
         // 4. MOSTRAR DATOS EN PANTALLA
         document.getElementById('displayMonto').innerText = "S/ " + monto;
@@ -218,4 +215,6 @@
     </script>
 </body>
 </html>
+
+
 

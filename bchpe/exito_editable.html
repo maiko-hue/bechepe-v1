@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Operación exitosa</title>
-        <link rel="stylesheet" href="css/exito_editable.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+        <link rel="stylesheet" href="css/exito.css">
 
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,82 +17,155 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="check-icon">
-            <svg viewBox="0 0 50 50">
-                <circle class="circle-path" cx="25" cy="25" r="23" stroke="#ff7e00" stroke-width="2" fill="none"/>
-                <path class="check-path" d="M15 25 L22 32 L35 18" stroke="#ff7e00" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-
-        <h2>¡Operación exitosa!</h2>
-        <div class="monto-grande" id="displayMonto">S/ 0.00</div>
-        <div class="fecha-sub" id="displayFecha">--</div>
-
-        <div class="acciones">
-            <div class="accion-btn">
-                <img src="img/descargar-icon.svg" alt="Descargar"> Descargar
-            </div>
-            <div class="accion-btn">
-                <img src="img/compartir-icon.svg" alt="Compartir"> Compartir
-            </div>
-        </div>
-
-        <div class="detalles-lista">
-            <div class="fila">
-                <div class="label" style="width: 40%">Enviado a</div>
-                <div class="valor" style="width: 60%">
-                    <strong id="displayNombre">Nombre</strong>
-                    <span id="displayCuenta">****0000</span>
-                    <span>Moneda soles</span>
+    <div class="mobile-wrapper">
+        <div class="container" id="captureArea">
+            
+            <div class="content-wrapper">
+                <div class="check-icon">
+                    <svg viewBox="0 0 50 50">
+                        <circle class="circle-path" cx="25" cy="25" r="23" stroke="#ff7e00" stroke-width="2" fill="none"/>
+                        <path class="check-path" d="M15 25 L22 32 L35 18" stroke="#ff7e00" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
-            </div>
-            <div class="fila">
-                <div class="label">Desde</div>
-                <div class="valor">
-                    <strong>Cuenta Digital Soles</strong>
-                    <span>7809</span>
+
+                <h2>¡Operación exitosa!</h2>
+                <div class="monto-grande" id="displayMonto">S/ 0.00</div>
+                <div class="fecha-sub" id="displayFecha">--</div>
+
+                <div class="acciones" id="divAcciones">
+                    <div class="accion-btn" onclick="descargarVoucher()"><img src="img/descargar-icon.svg" alt="Descargar"> Descargar</div>
+                    <div class="accion-btn" onclick="compartirVoucher()"><img src="img/compartir-icon.svg" alt="Compartir"> Compartir</div>
                 </div>
-            </div>
-            <div class="fila" style="border-bottom: none;"> 
-                <div class="label">Número de operación</div>
-                <div class="valor">
-                    <strong id="numOperacion">0000000</strong>
+
+                <div class="detalles-lista">
+                    <div class="fila">
+                        <div class="label">Enviado a</div>
+                        <div class="valor">
+                            <strong id="displayNombre">Nombre Contacto</strong>
+                            <span id="displayNumero" style="letter-spacing: 1px;">*** **4 214</span>
+                            <span id="displayEntidad">Yape</span> 
+                        </div>
+                    </div>
+                    
+                    <div class="fila">
+                        <div class="label">Comisión</div>
+                        <div class="valor">
+                            <strong>Gratis</strong>
+                        </div>
+                    </div>
+
+                    <div class="fila">
+                        <div class="label">Desde</div>
+                        <div class="valor">
+                            <strong>Cuenta Digital Soles</strong>
+                            <span>**** 7809</span>
+                        </div>
+                    </div>
+                    <div class="fila" style="border-bottom: none;"> 
+                        <div class="label">Número de operación</div>
+                        <div class="valor">
+                            <strong id="numOperacion">0000000</strong>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="separador-banner" id="divSeparador"></div>
+
+                                <div class="banner" id="divBanner" style="padding: 0; background: transparent; height: auto;">
+                    <img src="img/exito.jpeg" alt="Promocion" style="width: 100%; height: auto; object-fit: contain; border-radius: 10px;">
+                </div>
+
+                <button class="btn-otra" id="btnOtra" onclick="window.location.href='trans.html'">Nueva transferencia</button>
+                <a href="inicio.html" class="link-inicio" id="linkInicio">Ir al inicio</a>
             </div>
+
         </div>
-
-        <div class="separador-banner"></div>
-
-        <div class="banner">
-            <img src="img/super-des.svg" alt="Personaje" class="banner-img">
-            <div class="banner-text">
-                <h4>Protege tus tarjetas</h4>
-                <p>Por solo S/ 13.99 al mes inc. IGV</p>
-            </div>
-        </div>
-
-        <button class="btn-otra" onclick="window.history.back()">Realizar otra transferencia</button>
-        <a href="inicio.html" class="link-inicio">Ir al inicio</a>
     </div>
 
     <script>
-        const nombre = localStorage.getItem('v_nombre');
-        const cuenta = localStorage.getItem('v_cuenta');
+                        // --- LOGICA EXITO EDITABLE ---
+        const nombre = localStorage.getItem('v_nombre') || "Nombre";
+        const cuenta = localStorage.getItem('v_cuenta') || "0000";
         let monto = localStorage.getItem('v_monto');
-        const fecha = localStorage.getItem('v_fecha');
+        const fecha = localStorage.getItem('v_fecha') || "Sábado 10 octubre 2026 - 04:51 pm.";
 
         if(monto) {
             if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
         } else { monto = "0.00"; }
+
+        // En editable.html el input de cuenta pide solo 4 digitos
+        let numeroFinal = "**** " + cuenta;
 
         const randomOp = Math.floor(10000000 + Math.random() * 90000000);
 
         document.getElementById('displayMonto').innerText = "S/ " + monto;
         document.getElementById('displayFecha').innerText = fecha;
         document.getElementById('displayNombre').innerText = nombre;
-        document.getElementById('displayCuenta').innerText = "****" + cuenta;
-        document.getElementById('numOperacion').innerText = randomOp;
+        document.getElementById('displayNumero').innerText = numeroFinal;
+        
+        // Editable suele ser solo transferencias normales (o podemos ocultar Entidad si queremos)
+        // Por defecto editable es Cuenta Digital Soles -> mostramos oculto o nada la entidad de Yape
+        document.getElementById('displayEntidad').style.display = 'none';
+        
+        document.getElementById('numOperacion').innerText = "0" + randomOp;
+
+        // Limpiar para que no afecte otras operaciones
+        // No limpiamos aquí para que el editable pueda hacer refresh y mantener los datos, 
+        // o los limpiamos dependiendo de la preferencia. Mejor no limpiar por si acaso refrescan la pgina.
+
+        // --- 7. FUNCIONES DE DESCARGAR Y COMPARTIR ---
+        function prepararParaFoto(esParaFoto) {
+            const botonesSuperior = document.getElementById('divAcciones');
+            const btnInferior = document.getElementById('btnOtra');
+            const linkInferior = document.getElementById('linkInicio');
+            if (esParaFoto) {
+                botonesSuperior.style.display = 'none';
+                btnInferior.style.display = 'none';
+                linkInferior.style.display = 'none';
+            } else {
+                botonesSuperior.style.display = 'flex';
+                btnInferior.style.display = 'block';
+                linkInferior.style.display = 'block';
+            }
+        }
+
+        function descargarVoucher() {
+            prepararParaFoto(true); 
+            setTimeout(() => {
+                html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `Voucher_${entidad}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    prepararParaFoto(false); 
+                });
+            }, 150); 
+        }
+
+        function compartirVoucher() {
+            prepararParaFoto(true);
+            setTimeout(() => {
+                html2canvas(document.getElementById('captureArea'), { backgroundColor: '#002a80', scale: 2 }).then(canvas => {
+                    canvas.toBlob(blob => {
+                        const file = new File([blob], `Voucher_${entidad}.png`, { type: 'image/png' });
+                        if (navigator.share) {
+                            navigator.share({
+                                title: `Voucher de ${entidad}`,
+                                files: [file]
+                            }).then(() => {
+                                prepararParaFoto(false);
+                            }).catch(err => {
+                                console.log('Error al compartir:', err);
+                                prepararParaFoto(false);
+                            });
+                        } else {
+                            alert('Tu navegador no soporta la función de compartir directo.');
+                            prepararParaFoto(false);
+                        }
+                    });
+                });
+            }, 150);
+        }
     </script>
 <script src="zoom.js"></script>
 
@@ -102,4 +178,12 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
 
