@@ -174,7 +174,7 @@
                     localStorage.setItem('v_cuenta', qrIdLimpio);
                     localStorage.setItem('es_qr', 'true');
                     if (data.nombre) {
-                        localStorage.setItem('v_nombre_destino', data.nombre);
+                        localStorage.setItem('v_nombre', data.nombre);
                     }
                     
                     window.location.href = 'montobcp.html';
@@ -187,7 +187,7 @@
                     localStorage.setItem('es_qr', 'true');
                     
                     // Limpiamos nombre y destino para que la pantalla de monto no muestre basura
-                    localStorage.setItem('v_nombre_destino', "");
+                    localStorage.setItem('v_nombre', "");
                     localStorage.removeItem('v_destino_qr'); 
                     
                     // Redirigimos silenciosamente
@@ -201,7 +201,7 @@
                 const qrIdLimpio = qrCodeData.trim();
                 localStorage.setItem('v_cuenta', qrIdLimpio);
                     localStorage.setItem('es_qr', 'true');
-                localStorage.setItem('v_nombre_destino', "");
+                localStorage.setItem('v_nombre', "");
                 localStorage.removeItem('v_destino_qr');
                 window.location.href = 'montobcp.html';
             }
@@ -239,5 +239,6 @@
     </script>
 </body>
 </html>
+
 
 
