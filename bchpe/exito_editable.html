@@ -7,6 +7,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/exito.css">
 
     <link rel="manifest" href="manifest.json">
@@ -89,16 +90,20 @@
         let monto = localStorage.getItem('v_monto');
         const fecha = localStorage.getItem('v_fecha') || "Sábado 10 octubre 2026 - 04:51 pm.";
 
+                let montoFormateado = "0.00";
         if(monto) {
-            if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
-        } else { monto = "0.00"; }
+            let numLimpio = parseFloat(monto.toString().replace(/,/g, ''));
+            if (!isNaN(numLimpio)) {
+                montoFormateado = numLimpio.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+        }
 
         // En editable.html el input de cuenta pide solo 4 digitos
         let numeroFinal = "**** " + cuenta;
 
         const randomOp = Math.floor(10000000 + Math.random() * 90000000);
 
-        document.getElementById('displayMonto').innerText = "S/ " + monto;
+        document.getElementById('displayMonto').innerText = "S/ " + montoFormateado;
         document.getElementById('displayFecha').innerText = fecha;
         document.getElementById('displayNombre').innerText = nombre;
         document.getElementById('displayNumero').innerText = numeroFinal;

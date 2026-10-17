@@ -35,7 +35,7 @@
 
         /* --- SOLUCIÓN: Fondo blanco global para evitar bordes azules en zoom --- */
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             padding: 0; 
             background-color: #002a80; /* Si hay zoom, los laterales son blancos */
@@ -97,12 +97,12 @@
         .circle-path { stroke-dasharray: 150; stroke-dashoffset: 150; transform: rotate(90deg) scaleX(-1); transform-origin: center; animation: dibujar-trazo 0.8s 2s ease-out forwards; }
         .check-path { stroke-dasharray: 50; stroke-dashoffset: 50; animation: dibujar-trazo 0.5s 2.7s ease-out forwards; }
 
-        h2 { font-size: 24px; font-weight: 700; margin: 0 0 10px 0; color: #000; text-align: center; }
-        .monto-grande { font-size: 54px; font-weight: 500; color: #002a80; margin: 0; line-height: 1.1; text-align: center; }
+        h2 { font-size: 24px; font-weight: 600; margin: 0 0 10px 0; color: #000; text-align: center; }
+        .monto-grande { font-size: 54px; font-weight: 400; color: #002a80; margin: 0; line-height: 1.1; text-align: center; letter-spacing: -0.5px; }
         .fecha-sub { color: #888; font-size: 18px; margin-top: 12px; margin-bottom: 35px; text-align: center; }
         
         .acciones { display: flex; justify-content: center; gap: 50px; margin-bottom: 45px; }
-        .accion-btn { display: flex; align-items: center; gap: 8px; color: #ff7e00; font-weight: 600; font-size: 17px; cursor: pointer; text-decoration: none; }
+        .accion-btn { display: flex; align-items: center; gap: 8px; color: #ff7e00; font-weight: 500; font-size: 17px; cursor: pointer; text-decoration: none; }
         .accion-btn img { width: 22px; height: 22px; }
         
         .detalles-lista { width: 100%; text-align: left; margin-bottom: 10px; }
@@ -110,7 +110,7 @@
         .fila:last-child { border-bottom: none; }
         .label { font-size: 17px; color: #000; font-weight: 400; white-space: nowrap; flex-shrink: 0; margin-right: 10px; }
         .valor { text-align: right; font-size: 17px; color: #000; flex-grow: 1; min-width: 0; }
-        .valor strong { display: block; font-weight: 700; font-size: 18px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .valor strong { display: block; font-weight: 500; font-size: 18px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .valor span { display: block; color: #666; font-size: 15px; }
 
         .separador-banner { width: 100%; height: 1px; background-color: #b0b0b0; margin-bottom: 30px; }

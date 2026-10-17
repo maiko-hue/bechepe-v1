@@ -7,6 +7,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/exito.css">
 
     <link rel="manifest" href="manifest.json">
@@ -110,10 +111,14 @@
             document.getElementById('btnOtra').onclick = () => window.location.href = 'trans.html';
         }
 
-        // 2. FORMATEAR MONTO
-        if(monto) {
-            if (!isNaN(monto)) { monto = parseFloat(monto).toFixed(2); }
-        } else { monto = "0.00"; }
+                // 2. FORMATEAR MONTO
+        let montoFormateado = "0.00";
+        if (monto) {
+            let numLimpio = parseFloat(monto.toString().replace(/,/g, ''));
+            if (!isNaN(numLimpio)) {
+                montoFormateado = numLimpio.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+        }
 
         // 3. FORMATEAR NÚMERO Y ENTIDAD
         let numeroFinal = "";
@@ -157,7 +162,7 @@
         let fechaGenerada = `${dias[ahora.getDay()]} ${ahora.getDate()} ${meses[ahora.getMonth()]} ${ahora.getFullYear()} - ${horaStr}:${minutos} ${ampm}`;
 
         // 5. MOSTRAR DATOS
-        document.getElementById('displayMonto').innerText = "S/ " + monto;
+        document.getElementById('displayMonto').innerText = "S/ " + montoFormateado;
         document.getElementById('displayFecha').innerText = fechaGenerada;
         document.getElementById('displayNombre').innerText = nombre;
         document.getElementById('displayNumero').innerText = numeroFinal;
@@ -198,7 +203,7 @@
             titulo: tituloHistorial,
             fecha: fechaCorta,
             fechaCompleta: fechaGenerada, 
-            monto: monto,
+            monto: montoFormateado,
             destinoNombre: nombre,
             destinoNumero: cuentaOcelular,
             entidad: isYape ? entidad : (entidad || "BCP"), 

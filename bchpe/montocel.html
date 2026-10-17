@@ -163,7 +163,7 @@
             </div>
             <div class="monto-input-wrapper">
                 <span class="currency monto-cero" id="currencySymbol">S/</span>
-                <input type="tel" id="amountInput" class="amount-input monto-cero" placeholder="0.00" value="0.00">
+                <input type="tel" id="amountInput" class="amount-input monto-cero" placeholder="0" value="0">
             </div>
             <div class="envio-gratis" id="envioGratisText" style="display:none;">Envío gratis</div>
             <div class="error-monto" id="errorMonto" style="display:block;">Monto mínimo S/ 1.00</div>
@@ -387,25 +387,41 @@
         const errorMonto = document.getElementById('errorMonto');
         const envioGratisText = document.getElementById('envioGratisText');
 
-        amountInput.addEventListener('input', function() {
-            let val = this.value.replace(/[^0-9]/g, '');
-            if(val === '') { val = '0'; }
-            
-            let floatVal = parseFloat(val) / 100;
-            this.value = floatVal.toFixed(2);
+                amountInput.addEventListener('input', function() {
+            let val = this.value;
+            // Solo permitir dígitos y hasta un punto decimal
+            let cleanVal = "";
+            let hasDot = false;
+            for (let i = 0; i < val.length; i++) {
+                let char = val[i];
+                if (char >= '0' && char <= '9') {
+                    cleanVal += char;
+                } else if (char === '.' && !hasDot) {
+                    cleanVal += '.';
+                    hasDot = true;
+                }
+            }
 
-            if(floatVal > 0 && floatVal < 1) {
-                this.classList.remove('monto-valido');
-                this.classList.add('monto-cero');
-                currencySymbol.classList.remove('monto-valido');
-                currencySymbol.classList.add('monto-cero');
+            if (cleanVal === '' || cleanVal === '0') {
+                this.value = cleanVal;
+            } else {
+                let parts = cleanVal.split('.');
+                let intPart = parts[0];
+                let decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
                 
-                errorMonto.style.display = 'block';
-                envioGratisText.style.display = 'none';
+                // Formatear la parte entera con coma de miles
+                let formattedInt = intPart ? parseInt(intPart, 10).toLocaleString('en-US') : '0';
                 
-                btnRealizar.classList.remove('active');
-                btnRealizar.disabled = true;
-            } else if (floatVal >= 1) {
+                if (decPart !== null) {
+                    this.value = formattedInt + '.' + decPart;
+                } else {
+                    this.value = formattedInt;
+                }
+            }
+
+            let numVal = parseFloat(this.value.replace(/,/g, '')) || 0;
+
+            if (numVal >= 1) {
                 this.classList.remove('monto-cero');
                 this.classList.add('monto-valido');
                 currencySymbol.classList.remove('monto-cero');
@@ -419,7 +435,7 @@
             } else {
                 this.classList.remove('monto-valido');
                 this.classList.add('monto-cero');
-                currencySymbol.classList.remove('monto-cero');
+                currencySymbol.classList.remove('monto-valido');
                 currencySymbol.classList.add('monto-cero');
                 
                 errorMonto.style.display = 'block';
@@ -430,12 +446,12 @@
             }
         });
 
-        // Limpiar el 0.00 visualmente al tocar
+        // Limpiar el 0 visualmente al tocar
         amountInput.addEventListener('focus', function() {
-            if (this.value === '0.00') { this.value = ''; }
+            if (this.value === '0' || this.value === '0.00') { this.value = ''; }
         });
         amountInput.addEventListener('blur', function() {
-            if (this.value === '') { this.value = '0.00'; }
+            if (this.value === '') { this.value = '0'; }
         });
 
         // --- CONTADOR DE MENSAJE ---
@@ -471,7 +487,7 @@
         btnRealizar.addEventListener('click', function() {
             if (this.classList.contains('active')) {
                 const nameIn = document.getElementById('destNameInput').value || "Usuario";
-                const montoVal = amountInput.value;
+                const montoVal = amountInput.value.replace(/,/g, "");
                 localStorage.setItem('v_nombre_yape', nameIn);
                 localStorage.setItem('v_monto_yape', montoVal);
                 localStorage.setItem('v_origen_cuenta', selectedAccount);
