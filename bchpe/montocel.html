@@ -94,9 +94,49 @@
                     <div class="entity-left"><div class="entity-name text-only">Izipay</div></div>
                     <div class="entity-arrow">›</div>
                 </div>
+            </div></div>
+    </div>
+
+
+            <!-- MODAL SELECCIONAR CUENTA (BOTTOM SHEET) -->
+    <div id="modalCuentas" class="modal-destinos">
+        <div class="sheet-content" style="padding-bottom: 25px;">
+            <div class="sheet-handle" onclick="cerrarModalCuentas()"></div>
+            <div class="sheet-title" style="font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 18px; color: #111;">Seleccionar Cuenta</div>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Opcion 1: Cuenta Digital -->
+                <div id="cardAccAhorros" class="card-modal-cuenta selected" onclick="seleccionarCuentaOrigen('ahorros')">
+                    <div class="card-modal-left">
+                        <div class="card-modal-name">Cuenta Digital</div>
+                        <div class="card-modal-num">**** 7809</div>
+                    </div>
+                    <div class="card-modal-right">
+                        <div class="card-modal-radio" id="radioAhorros">
+                            <div class="radio-dot"></div>
+                        </div>
+                        <div class="card-modal-saldo" id="modalSaldoAhorros">S/ 0.00</div>
+                    </div>
+                </div>
+
+                <!-- Opcion 2: Visa Platinum -->
+                <div id="cardAccVisa" class="card-modal-cuenta" onclick="seleccionarCuentaOrigen('visa')">
+                    <div class="card-modal-left">
+                        <div class="card-modal-name">Visa Platinum</div>
+                        <div class="card-modal-num">**** 3891</div>
+                    </div>
+                    <div class="card-modal-right">
+                        <div class="card-modal-radio" id="radioVisa" style="display:none;">
+                            <div class="radio-dot"></div>
+                        </div>
+                        <div class="card-modal-saldo" id="modalSaldoVisa">S/ 0.00</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    
 
     <!-- INTERFAZ PRINCIPAL -->
     <header class="header">
@@ -143,10 +183,10 @@
                 Desde 
                 <img src="img/ojo-cerrado-g-icon.svg" class="eye-icon" id="eyeIcon" onclick="toggleSaldo()">
             </div>
-            <div class="desde-box">
+                        <div class="desde-box" onclick="abrirModalCuentas()" style="cursor: pointer;">
                 <div class="desde-left">
-                    <div class="desde-name">Cuenta Digital Soles</div>
-                    <div class="desde-num" id="sourceAccountText">**** 7004</div>
+                    <div class="desde-name" id="sourceAccountName">Cuenta Digital Soles</div>
+                    <div class="desde-num" id="sourceAccountText">**** 7809</div>
                 </div>
                 <div class="desde-right">
                     <span class="desde-saldo" id="displaySaldo">S/ *****</span>
@@ -256,12 +296,73 @@
         });
     </script>
 
-    <!-- LÓGICA DE LA INTERFAZ -->
+        <!-- LÓGICA DE LA INTERFAZ -->
     <script>
-        // --- GESTIÓN DEL SALDO (CON EL OJITO) ---
-        let realBalance = localStorage.getItem('userBalance') || '1200.00';
-        let formattedBalance = parseFloat(realBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        // --- GESTIÓN DE CUENTAS (AHORROS Y VISA PLATINUM) ---
+        let selectedAccount = localStorage.getItem('v_origen_cuenta') || 'ahorros';
+        let balanceAhorros = parseFloat(localStorage.getItem('userBalance') || '1200.00');
+        let balanceVisa = parseFloat(localStorage.getItem('userBalanceVisa') || '1200.00');
         let isSaldoVisible = false;
+        let formattedBalance = "0.00";
+
+        function updateCuentaUI() {
+            const isVisa = selectedAccount === 'visa';
+            const accName = document.getElementById('sourceAccountName');
+            const accNum = document.getElementById('sourceAccountText');
+            const cardAhorros = document.getElementById('cardAccAhorros');
+            const cardVisa = document.getElementById('cardAccVisa');
+            const radioAhorros = document.getElementById('radioAhorros');
+            const radioVisa = document.getElementById('radioVisa');
+            
+            // Actualizar saldos en el modal
+            document.getElementById('modalSaldoAhorros').innerText = 'S/ ' + balanceAhorros.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('modalSaldoVisa').innerText = 'S/ ' + balanceVisa.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            if (isVisa) {
+                if (accName) accName.innerText = "Visa Platinum";
+                if (accNum) accNum.innerText = "**** 3891";
+                formattedBalance = balanceVisa.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                if (cardAhorros) cardAhorros.classList.remove('selected');
+                if (cardVisa) cardVisa.classList.add('selected');
+                if (radioAhorros) radioAhorros.style.display = 'none';
+                if (radioVisa) radioVisa.style.display = 'flex';
+            } else {
+                if (accName) accName.innerText = "Cuenta Digital Soles";
+                if (accNum) accNum.innerText = "**** 7809";
+                formattedBalance = balanceAhorros.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                if (cardAhorros) cardAhorros.classList.add('selected');
+                if (cardVisa) cardVisa.classList.remove('selected');
+                if (radioAhorros) radioAhorros.style.display = 'flex';
+                if (radioVisa) radioVisa.style.display = 'none';
+            }
+
+            const saldoEl = document.getElementById('displaySaldo');
+            if (saldoEl) {
+                if (isSaldoVisible) {
+                    saldoEl.innerText = 'S/ ' + formattedBalance;
+                } else {
+                    saldoEl.innerText = 'S/ *****';
+                }
+            }
+        }
+
+        function abrirModalCuentas() {
+            updateCuentaUI();
+            document.getElementById('modalCuentas').style.display = 'flex';
+        }
+
+        function cerrarModalCuentas() {
+            document.getElementById('modalCuentas').style.display = 'none';
+        }
+
+        function seleccionarCuentaOrigen(tipo) {
+            selectedAccount = tipo;
+            localStorage.setItem('v_origen_cuenta', tipo);
+            updateCuentaUI();
+            cerrarModalCuentas();
+        }
 
         function toggleSaldo() {
             isSaldoVisible = !isSaldoVisible;
@@ -275,6 +376,9 @@
                 saldoEl.innerText = 'S/ *****';
             }
         }
+
+        // Inicializar UI al cargar
+        updateCuentaUI();
 
         // --- GESTIÓN DEL MONTO ---
         const amountInput = document.getElementById('amountInput');
@@ -315,7 +419,7 @@
             } else {
                 this.classList.remove('monto-valido');
                 this.classList.add('monto-cero');
-                currencySymbol.classList.remove('monto-valido');
+                currencySymbol.classList.remove('monto-cero');
                 currencySymbol.classList.add('monto-cero');
                 
                 errorMonto.style.display = 'block';
@@ -367,8 +471,22 @@
         btnRealizar.addEventListener('click', function() {
             if (this.classList.contains('active')) {
                 const nameIn = document.getElementById('destNameInput').value || "Usuario";
+                const montoVal = amountInput.value;
                 localStorage.setItem('v_nombre_yape', nameIn);
-                localStorage.setItem('v_monto_yape', amountInput.value);
+                localStorage.setItem('v_monto_yape', montoVal);
+                localStorage.setItem('v_origen_cuenta', selectedAccount);
+                
+                // Descontar saldo de la cuenta correspondiente
+                const montoNum = parseFloat(montoVal);
+                if (selectedAccount === 'visa') {
+                    let nuevoSaldo = balanceVisa - montoNum;
+                    if (nuevoSaldo < 0) nuevoSaldo = 0;
+                    localStorage.setItem('userBalanceVisa', nuevoSaldo.toFixed(2));
+                } else {
+                    let nuevoSaldo = balanceAhorros - montoNum;
+                    if (nuevoSaldo < 0) nuevoSaldo = 0;
+                    localStorage.setItem('userBalance', nuevoSaldo.toFixed(2));
+                }
                 
                 // Mostrar pantalla de carga Azul
                 const loader = document.getElementById('blue-loader-screen');

@@ -28,22 +28,22 @@
 
         <main class="scroll-content">
             
-            <div class="account-details-container">
+                        <div class="account-details-container">
                 <div class="acc-row">
-                    <span class="acc-title">CUENTAS DE AHORRO</span>
+                    <span class="acc-title" id="accountTitleDisplay">Cuentas de ahorro</span>
                     <img src="img/lapiz-cop.svg" alt="Editar" class="icon-orange-small">
                 </div>
                 <div class="acc-row" style="margin-bottom: 8px;">
-                    <span class="acc-number">570-98341256-0-18</span>
+                    <span class="acc-number" id="accountNumberDisplay">570-98341256-0-18</span>
                 </div>
                 <div class="acc-row">
-                    <span class="acc-cci">CCI: 002-570-98341256018-14</span>
+                    <span class="acc-cci" id="accountCciDisplay">CCI: 002-570-98341256018-14</span>
                     <img src="img/compartir-cop.svg" alt="Compartir" class="icon-orange-small">
                 </div>
             </div>
 
             <div class="balance-section">
-                <div class="bal-label">Disponible</div>
+                <div class="bal-label" id="accountBalLabel">Disponible</div>
                 <div class="bal-amount-container">
                     <span class="bal-currency">S/</span>
                     <span class="bal-amount" id="accountBalanceDisplay">0.00</span>
@@ -122,19 +122,46 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // --- 1. CARGAR SALDO ---
-            const savedBalance = localStorage.getItem("userBalance");
+                document.addEventListener("DOMContentLoaded", function() {
+            // --- 0. DETERMINAR CUENTA ACTIVA ---
+            const activeAccount = localStorage.getItem('active_account') || 'ahorros';
+            const isVisa = activeAccount === 'visa';
+
+            const titleDisplay = document.getElementById("accountTitleDisplay");
+            const numberDisplay = document.getElementById("accountNumberDisplay");
+            const cciDisplay = document.getElementById("accountCciDisplay");
+            const balLabel = document.getElementById("accountBalLabel");
             const balanceDisplay = document.getElementById("accountBalanceDisplay");
-            
-            if (savedBalance) {
-                balanceDisplay.innerText = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            if (isVisa) {
+                if (titleDisplay) titleDisplay.innerText = "Visa Platinum";
+                if (numberDisplay) numberDisplay.innerText = "4557-8912-3456-3891";
+                if (cciDisplay) cciDisplay.innerText = "CCI: 002-455-789123456389-12";
+                if (balLabel) balLabel.innerText = "Monto consumido";
+
+                const savedBalanceVisa = localStorage.getItem("userBalanceVisa");
+                if (savedBalanceVisa) {
+                    balanceDisplay.innerText = parseFloat(savedBalanceVisa).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                } else {
+                    balanceDisplay.innerText = "1,200.00";
+                }
             } else {
-                balanceDisplay.innerText = "1,200.00";
+                if (titleDisplay) titleDisplay.innerText = "Cuentas de ahorro";
+                if (numberDisplay) numberDisplay.innerText = "570-98341256-0-18";
+                if (cciDisplay) cciDisplay.innerText = "CCI: 002-570-98341256018-14";
+                if (balLabel) balLabel.innerText = "Disponible";
+
+                const savedBalance = localStorage.getItem("userBalance");
+                if (savedBalance) {
+                    balanceDisplay.innerText = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                } else {
+                    balanceDisplay.innerText = "1,200.00";
+                }
             }
 
             // --- 2. CARGAR Y AGRUPAR MOVIMIENTOS ---
-            const movs = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+            const movStorageKey = isVisa ? 'bcp_movimientos_visa' : 'bcp_movimientos';
+            const movs = JSON.parse(localStorage.getItem(movStorageKey)) || [];
             const movsList = document.getElementById('movsList');
 
             if (movs.length > 0) {
@@ -186,9 +213,8 @@
                         // Formatear el monto con comas y asegurar los decimales
                         let montoF = parseFloat(mov.monto).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                         
-                        // AQUÍ ESTÁ EL CAMBIO: Se agrega el onclick y el cursor pointer
                         htmlFinal += `
-                            <div class="mov-item" onclick="window.location.href='voucher.html?id=${mov.originalIndex}'" style="cursor: pointer;">
+                            <div class="mov-item" onclick="window.location.href='voucher.html?id=${mov.originalIndex}&type=${isVisa ? 'visa' : 'ahorros'}'" style="cursor: pointer;">
                                 <div class="mov-icon">${mov.letra}</div>
                                 <div class="mov-details">
                                     <div class="mov-title">${mov.titulo}</div>
@@ -196,7 +222,7 @@
                                 </div>
                                 <div class="mov-right">
                                     <span class="mov-amount">-S/ ${montoF}</span>
-                                    <span class="mov-arrow">›</span>
+                                    <span class="mov-arrow">&rsaquo;</span>
                                 </div>
                             </div>
                         `;
@@ -204,6 +230,8 @@
                 });
 
                 movsList.innerHTML = htmlFinal;
+            } else {
+                movsList.innerHTML = '<div style="text-align: center; color: #888; padding: 35px 10px; font-size: 14px;">No tienes movimientos registrados en esta cuenta</div>';
             }
         });
     </script>

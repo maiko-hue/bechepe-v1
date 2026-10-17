@@ -30,10 +30,13 @@
         <p class="card-subtitle">Modifica la información de tu cuenta</p>
 
         <!-- SKELETON LOADER (Muestra la carga inicial) -->
-        <div id="skeleton-container">
+                <div id="skeleton-container">
             <div class="skeleton-label"></div>
             <div class="skeleton-box"></div>
             
+            <div class="skeleton-label"></div>
+            <div class="skeleton-box"></div>
+
             <div class="skeleton-label"></div>
             <div class="skeleton-box"></div>
 
@@ -58,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+                        <div class="form-group">
                 <span class="input-label">SALDO INICIAL</span>
                 <div class="input-wrapper">
                     <!-- Ícono de Dinero SVG Nativo -->
@@ -69,6 +72,19 @@
                     </svg>
                     <span style="color: #666; font-weight: 500; font-size: 16px; margin-right: 5px;">S/</span>
                     <input type="tel" id="editBalance" class="custom-input" inputmode="numeric" placeholder="0.00" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <span class="input-label">MONTO CONSUMIDO VISA PLATINUM</span>
+                <div class="input-wrapper">
+                    <!-- Ícono de Tarjeta SVG Nativo -->
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    <span style="color: #666; font-weight: 500; font-size: 16px; margin-right: 5px;">S/</span>
+                    <input type="tel" id="editBalanceVisa" class="custom-input" inputmode="numeric" placeholder="1200.00" autocomplete="off">
                 </div>
             </div>
 
@@ -120,12 +136,14 @@
                 document.getElementById('form-container').style.display = 'block';
 
                 // Cargar datos actuales
-                const savedName = localStorage.getItem('userName') || '';
+                                const savedName = localStorage.getItem('userName') || '';
                 const savedBalance = localStorage.getItem('userBalance') || '0.00';
+                const savedBalanceVisa = localStorage.getItem('userBalanceVisa') || '1200.00';
                 const savedBotStatus = localStorage.getItem("bcp_bot_telegram_activo");
 
                 document.getElementById('editName').value = savedName;
                 document.getElementById('editBalance').value = parseFloat(savedBalance).toFixed(2);
+                document.getElementById('editBalanceVisa').value = parseFloat(savedBalanceVisa).toFixed(2);
 
                 if (savedBotStatus === "true") {
                     isBotActive = true;
@@ -134,25 +152,22 @@
             }, 1000); 
         });
 
-        // --- LÓGICA DE ENTRADA DE SALDO ESTILO CAJERO (ATM) ---
-        const balanceInput = document.getElementById('editBalance');
-        
-        balanceInput.addEventListener('input', function(e) {
-            // 1. Extraer solamente los números que digita el usuario
-            let rawNumbers = this.value.replace(/\D/g, '');
-            
-            // 2. Si el usuario borra todo, lo devolvemos a 0.00
-            if (rawNumbers === '') {
-                this.value = '0.00';
-                return;
-            }
-
-            // 3. Convertirlo a número entero y dividirlo entre 100 para obtener decimales
-            let formattedNumber = (parseInt(rawNumbers, 10) / 100).toFixed(2);
-            
-            // 4. Mostrar el resultado formateado
-            this.value = formattedNumber;
-        });
+                // --- LÓGICA DE ENTRADA DE SALDO ESTILO CAJERO (ATM) ---
+        function aplicarFormatoATM(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            input.addEventListener('input', function(e) {
+                let rawNumbers = this.value.replace(/\D/g, '');
+                if (rawNumbers === '') {
+                    this.value = '0.00';
+                    return;
+                }
+                let formattedNumber = (parseInt(rawNumbers, 10) / 100).toFixed(2);
+                this.value = formattedNumber;
+            });
+        }
+        aplicarFormatoATM('editBalance');
+        aplicarFormatoATM('editBalanceVisa');
 
         // --- LÓGICA DEL INTERRUPTOR BOT ---
         function toggleBot() {
@@ -190,9 +205,11 @@
             btn.disabled = true;
 
             // Simulamos guardado en base de datos local
+                        const balanceVisaInput = document.getElementById("editBalanceVisa").value.trim();
             setTimeout(() => {
                 localStorage.setItem("userName", nameInput);
                 localStorage.setItem("userBalance", balanceInput || "0.00");
+                localStorage.setItem("userBalanceVisa", balanceVisaInput || "1200.00");
                 localStorage.setItem("bcp_bot_telegram_activo", isBotActive);
 
                 mostrarToast('Datos actualizados con éxito', '#2BD071'); // Verde

@@ -109,7 +109,9 @@
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             const moveId = urlParams.get('id');
-            const movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+            const cuentaTipo = urlParams.get('type') || 'ahorros';
+            const storageKey = cuentaTipo === 'visa' ? 'bcp_movimientos_visa' : 'bcp_movimientos';
+            const movimientos = JSON.parse(localStorage.getItem(storageKey)) || [];
             
             if (moveId !== null && movimientos[moveId]) {
                 const mov = movimientos[moveId];

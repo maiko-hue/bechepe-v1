@@ -1,4 +1,4 @@
-
+﻿
         * {
             -webkit-tap-highlight-color: transparent !important;
             outline: none !important;
@@ -351,3 +351,60 @@
     
 
 
+
+/* --- ESTILOS SELECCIONAR CUENTA (BOTTOM SHEET) --- */
+.card-modal-cuenta {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1.5px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.card-modal-cuenta.selected {
+    border: 1.5px solid #002A8D;
+}
+.card-modal-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.card-modal-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+}
+.card-modal-num {
+    font-size: 13px;
+    color: #666;
+}
+.card-modal-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+.card-modal-radio {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #002A8D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-modal-radio .radio-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #002A8D;
+}
+.card-modal-saldo {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+}

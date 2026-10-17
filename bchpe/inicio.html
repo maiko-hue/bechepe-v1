@@ -68,18 +68,33 @@
                             </div>
                         </div>
 
-                        <div class="card-product" onclick="window.location.href='cuentas.html'" style="cursor: pointer;">
+                        <div class="card-product" onclick="irACuenta('ahorros')" style="cursor: pointer;">
                             <div class="product-icon-col">
                                 <img src="img/lg_favicon_light.svg" alt="Cuenta" class="account-img-icon"> 
                             </div>
                             <div class="product-info-col">
-                                <p class="product-label skeleton-text">CUENTAS DE AHORRO</p>
+                                <p class="product-label skeleton-text">Cuentas de Ahorro</p>
                                 <p class="product-number skeleton-text">**** 7809</p>
                             </div>
                             <div class="product-balance-col">
                                 <p class="balance skeleton-text" id="balance-text">S/ *****</p>
                             </div>
-                            <div class="product-arrow-col">›</div>
+                            <div class="product-arrow-col">&rsaquo;</div>
+                        </div>
+
+                        <div class="card-product" onclick="irACuenta('visa')" style="cursor: pointer;">
+                            <div class="product-icon-col">
+                                <img src="img/icon-credit.svg" alt="Visa Platinum" class="account-img-icon"> 
+                            </div>
+                            <div class="product-info-col">
+                                <p class="product-label skeleton-text">Visa Platinum</p>
+                                <p class="product-number skeleton-text">**** 3891</p>
+                            </div>
+                            <div class="product-balance-col">
+                                <p class="balance skeleton-text" id="balance-text-visa">S/ *****</p>
+                                <span class="consumed-label skeleton-text" style="display: block; font-size: 13px; color: #666; margin-top: 2px;">Monto consumido</span>
+                            </div>
+                            <div class="product-arrow-col">&rsaquo;</div>
                         </div>
 
                         <div class="ver-todos">
@@ -365,7 +380,8 @@
     </div>
 
 <script>
-        let currentBalance = "1,200.00"; // Valor por defecto
+        let currentBalance = "1,200.00";
+        let currentBalanceVisa = "1,200.00";
 
                 document.addEventListener("DOMContentLoaded", function() {
             // Quitar skeleton despues de 2 segundos
@@ -387,6 +403,10 @@
             const savedBalance = localStorage.getItem("userBalance");
             if (savedBalance) {
                 currentBalance = parseFloat(savedBalance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+            const savedBalanceVisa = localStorage.getItem("userBalanceVisa");
+            if (savedBalanceVisa) {
+                currentBalanceVisa = parseFloat(savedBalanceVisa).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
 
             // --- LÓGICA (3 SEGUNDOS) ---
@@ -440,19 +460,37 @@
             }
         });
 
-        function toggleBalance() {
+                function toggleBalance() {
             var eye = document.getElementById('eye-icon');
             var balance = document.getElementById('balance-text');
+            var balanceVisa = document.getElementById('balance-text-visa');
             
             if (eye.src.includes('ojo-abierto-g-icon.svg')) {
                 eye.src = 'img/ojo-cerrado-g-icon.svg';
-                balance.innerText = 'S/ ' + currentBalance;
-                balance.style.fontWeight = '500';
+                if (balance) {
+                    balance.innerText = 'S/ ' + currentBalance;
+                    balance.style.fontWeight = '500';
+                }
+                if (balanceVisa) {
+                    balanceVisa.innerText = 'S/ ' + currentBalanceVisa;
+                    balanceVisa.style.fontWeight = '500';
+                }
             } else {
                 eye.src = 'img/ojo-abierto-g-icon.svg';
-                balance.innerText = 'S/ *****';
-                balance.style.fontWeight = '400';
+                if (balance) {
+                    balance.innerText = 'S/ *****';
+                    balance.style.fontWeight = '400';
+                }
+                if (balanceVisa) {
+                    balanceVisa.innerText = 'S/ *****';
+                    balanceVisa.style.fontWeight = '400';
+                }
             }
+        }
+
+        function irACuenta(tipo) {
+            localStorage.setItem('active_account', tipo);
+            window.location.href = 'cuentas.html';
         }
 
         function mostrarInicio() {
@@ -482,6 +520,7 @@
     </script>
 </body>
 </html>
+
 
 
 

@@ -54,11 +54,11 @@
                         </div>
                     </div>
 
-                    <div class="fila">
+                                        <div class="fila">
                         <div class="label">Desde</div>
                         <div class="valor">
-                            <strong>Cuenta Digital Soles</strong>
-                            <span>**** 7809</span>
+                            <strong id="displayDesdeNombre">Cuenta Digital Soles</strong>
+                            <span id="displayDesdeNumero">**** 7809</span>
                         </div>
                     </div>
                     <div class="fila" style="border-bottom: none;"> 
@@ -172,8 +172,24 @@
         
         document.getElementById('numOperacion').innerText = "0" + randomOp; 
 
-        // --- 6. GUARDAR EN HISTORIAL ---
-        let movimientos = JSON.parse(localStorage.getItem('bcp_movimientos')) || [];
+                // --- 6. GUARDAR EN HISTORIAL Y CUENTA DE ORIGEN ---
+        const origenCuenta = localStorage.getItem('v_origen_cuenta') || 'ahorros';
+        const isFromVisa = origenCuenta === 'visa';
+
+        const displayDesdeNombre = document.getElementById('displayDesdeNombre');
+        const displayDesdeNumero = document.getElementById('displayDesdeNumero');
+        if (displayDesdeNombre && displayDesdeNumero) {
+            if (isFromVisa) {
+                displayDesdeNombre.innerText = "Visa Platinum";
+                displayDesdeNumero.innerText = "**** 3891";
+            } else {
+                displayDesdeNombre.innerText = "Cuenta Digital Soles";
+                displayDesdeNumero.innerText = "**** 7809";
+            }
+        }
+
+        const storageKey = isFromVisa ? 'bcp_movimientos_visa' : 'bcp_movimientos';
+        let movimientos = JSON.parse(localStorage.getItem(storageKey)) || [];
         let fechaCorta = ahora.getDate() + " " + meses[ahora.getMonth()]; 
 
         let nuevoMov = {
@@ -191,7 +207,7 @@
 
         if(!sessionStorage.getItem('mov_guardado_' + randomOp)){
             movimientos.unshift(nuevoMov);
-            localStorage.setItem('bcp_movimientos', JSON.stringify(movimientos));
+            localStorage.setItem(storageKey, JSON.stringify(movimientos));
             sessionStorage.setItem('mov_guardado_' + randomOp, 'true'); 
         }
 
